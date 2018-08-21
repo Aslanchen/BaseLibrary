@@ -1,0 +1,60 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion TARGETSDKVERSION
+
+    defaultConfig {
+        minSdkVersion MINSDKVERSION
+        targetSdkVersion TARGETSDKVERSION
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+        }
+
+        release {
+            debuggable false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles 'proguard-ormlite-rules.pro'
+            proguardFiles 'proguard-rules-databinding.pro'
+            proguardFiles 'proguard-rules-okhttp.pro'
+            proguardFiles '../flexible-adapter/proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JAVA_VERSION
+        targetCompatibility JAVA_VERSION
+    }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    api 'com.squareup.okhttp3:okhttp:3.10.0'
+    api 'com.squareup.okio:okio:1.14.0'
+    api "com.android.support:appcompat-v7:$SUPPORT_VERSION"
+    api "com.android.support:design:$SUPPORT_VERSION"
+    api "com.android.support:cardview-v7:$SUPPORT_VERSION"
+    api 'com.google.code.gson:gson:2.8.5'
+    api 'com.j256.ormlite:ormlite-android:5.0'
+
+    api 'com.umeng.sdk:common:1.5.3'
+    api 'com.umeng.sdk:analytics:7.5.3'
+
+    api project(':flexible-adapter')
+}

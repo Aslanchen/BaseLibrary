@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">BaseLibrary</string>
+    <string name="error_net">服务器异常，请稍后再试</string>
+    <string name="error_net_no_net">网络不可用，请检查网络连接</string>
+    <string name="error_net_connect_timeout">连接超时，请重试</string>
+    <string name="error_net_socket_timeout">操作超时，请重试</string>
+
+    <string name="no_items">No data ~</string>
+    <string name="no_more_load_retry">No more data, refresh try ~</string>
+    <string name="endless_disabled">""</string>
+    <string name="endless_cancel">Cancel loading ~</string>
+    <string name="endless_error">Load error ~</string>
+
+    <string name="progress_waiting">等待中...</string>
+</resources>
