@@ -49,12 +49,25 @@ public class OkHttpLogInterceptor implements Interceptor {
     Log.e(TAG, sb.toString());
 
     sb.delete(0, sb.length());
-    Response response = chain.proceed(request);
+
     sb.append(" ");
     sb.append(System.getProperty("line.separator"));
     sb.append("--------------------回复开始-------------------------");
     sb.append(System.getProperty("line.separator"));
-    sb.append(String.format("Heads：%s", response.headers().toString()));
+
+    Response response = null;
+    try {
+      response = chain.proceed(request);
+    } catch (Exception e) {
+      sb.append(e.getMessage());
+      sb.append("--------------------回复结束-------------------------");
+      sb.append(System.getProperty("line.separator"));
+      Log.e(TAG, sb.toString());
+      throw e;
+    }
+
+    sb.append(System.getProperty("line.separator"));
+    sb.append(String.format("Heads：%s", String.valueOf(response.headers())));
     sb.append(System.getProperty("line.separator"));
     sb.append(String.format("Url：%s", response.request().url()));
     sb.append(System.getProperty("line.separator"));
@@ -83,6 +96,6 @@ public class OkHttpLogInterceptor implements Interceptor {
     sb.append("--------------------回复结束-------------------------");
     sb.append(System.getProperty("line.separator"));
     Log.e(TAG, sb.toString());
-    return response.newBuilder().body(responseBody).build();
+    return response;
   }
 }
