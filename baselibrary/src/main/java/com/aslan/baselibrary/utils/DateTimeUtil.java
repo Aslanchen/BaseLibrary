@@ -8,16 +8,16 @@ package com.aslan.baselibrary.utils;
  */
 public final class DateTimeUtil {
 
-    /**
-     * 时间差
-     */
-    private static long timeoffset = 0;
+  /**
+   * 时间差
+   */
+  private static long timeoffset = 0;
 
-    private DateTimeUtil() {
+  private DateTimeUtil() {
 
-    }
+  }
 
-    public static long currentTimeMillis() {
-        return System.currentTimeMillis() + timeoffset;
-    }
+  public static long currentTimeMillis() {
+    return System.currentTimeMillis() + timeoffset;
+  }
 }
