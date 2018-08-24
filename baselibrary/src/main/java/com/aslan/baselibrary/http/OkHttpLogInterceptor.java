@@ -60,6 +60,7 @@ public class OkHttpLogInterceptor implements Interceptor {
       response = chain.proceed(request);
     } catch (Exception e) {
       sb.append(e.getMessage());
+      sb.append(System.getProperty("line.separator"));
       sb.append("--------------------回复结束-------------------------");
       sb.append(System.getProperty("line.separator"));
       Log.e(TAG, sb.toString());
