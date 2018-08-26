@@ -1,5 +1,4 @@
 <resources>
-  <string name="app_name">BaseLibrary</string>
   <string name="error_net">Server exception. Please try again later</string>
   <string name="error_net_no_net">The Internet connection appears to be offline.</string>
   <string name="error_net_connect_timeout">Connect timeout</string>
