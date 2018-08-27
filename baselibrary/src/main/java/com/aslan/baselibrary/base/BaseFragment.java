@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.aslan.baselibrary.R;
+import com.aslan.baselibrary.http.BaseHttpError;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.view.CustomToolbar;
 
@@ -92,7 +93,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
 
   @UiThread
   @Override
-  public void showProgressBar(String msg) {
+  public void showProgressBar(@NonNull String msg) {
     showProgressBar(true, msg);
   }
 
@@ -118,7 +119,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
 
   @UiThread
   @Override
-  public void showProgressBar(boolean canCancel, String msg) {
+  public void showProgressBar(boolean canCancel, @NonNull String msg) {
     if (progressDialog == null) {
       progressDialog = new ProgressDialog(getContext());
     }
@@ -157,8 +158,14 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
 
   @UiThread
   @Override
-  public void showToastMessage(CharSequence text) {
+  public void showToastMessage(@NonNull CharSequence text) {
     Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+  }
+
+  @UiThread
+  @Override
+  public void showToastMessage(@NonNull BaseHttpError error) {
+    Toast.makeText(getContext(), error.getMsg(), Toast.LENGTH_SHORT).show();
   }
 
   @Override
