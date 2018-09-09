@@ -120,6 +120,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   @UiThread
   @Override
   public void showProgressBar(boolean canCancel, @NonNull String msg) {
+    if (isAdd() == false) {
+      return;
+    }
+
     if (progressDialog == null) {
       progressDialog = new ProgressDialog(this);
     }
@@ -141,6 +145,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   @UiThread
   @Override
   public void closeProgressBar() {
+    if (isAdd() == false) {
+      return;
+    }
+
     if (progressDialog != null && progressDialog.isShowing()) {
       try {
         progressDialog.dismiss();
@@ -153,18 +161,30 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   @UiThread
   @Override
   public void showToastMessage(@StringRes int resId) {
+    if (isAdd() == false) {
+      return;
+    }
+
     Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
   }
 
   @UiThread
   @Override
   public void showToastMessage(@NonNull CharSequence text) {
+    if (isAdd() == false) {
+      return;
+    }
+
     Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
   }
 
   @UiThread
   @Override
   public void showToastMessage(@NonNull BaseHttpError error) {
+    if (isAdd() == false) {
+      return;
+    }
+
     Toast.makeText(this, error.getMsg(), Toast.LENGTH_SHORT).show();
   }
 
@@ -174,6 +194,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
   @Override
   public boolean isAdd() {
-    return true;
+    return !isFinishing();
   }
 }
