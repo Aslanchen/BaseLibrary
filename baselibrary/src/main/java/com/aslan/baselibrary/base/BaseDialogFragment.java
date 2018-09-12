@@ -48,6 +48,10 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
   @UiThread
   @Override
   public void showProgressBar(@StringRes int msg) {
+    if (isAdd() == false) {
+      return;
+    }
+
     String message = getString(msg);
     showProgressBar(message);
   }
@@ -61,6 +65,10 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
   @UiThread
   @Override
   public void showProgressBar(boolean canCancel, @StringRes int msg) {
+    if (isAdd() == false) {
+      return;
+    }
+
     String message = getString(msg);
     showProgressBar(canCancel, message);
   }

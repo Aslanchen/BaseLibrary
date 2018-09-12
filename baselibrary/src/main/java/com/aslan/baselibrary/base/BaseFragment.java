@@ -100,6 +100,10 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   @UiThread
   @Override
   public void showProgressBar(@StringRes int msg) {
+    if (isAdd() == false) {
+      return;
+    }
+
     String message = getString(msg);
     showProgressBar(message);
   }
@@ -113,6 +117,10 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   @UiThread
   @Override
   public void showProgressBar(boolean canCancel, @StringRes int msg) {
+    if (isAdd() == false) {
+      return;
+    }
+
     String message = getString(msg);
     showProgressBar(canCancel, message);
   }
