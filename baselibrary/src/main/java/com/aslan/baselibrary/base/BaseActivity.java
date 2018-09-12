@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 import com.aslan.baselibrary.R;
-import com.aslan.baselibrary.control.ActivityManager;
 import com.aslan.baselibrary.http.BaseHttpError;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.view.CustomToolbar;
@@ -31,8 +30,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    ActivityManager.Instance().add(this);
-
     Intent intent = getIntent();
     if (savedInstanceState != null) {
       intent.putExtras(savedInstanceState);
@@ -206,11 +203,5 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   @Override
   public boolean isAdd() {
     return !isFinishing();
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    ActivityManager.Instance().remove(this);
   }
 }
