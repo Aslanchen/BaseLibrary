@@ -100,6 +100,10 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   @UiThread
   @Override
   public void showProgressBar(@StringRes int msg) {
+    if (isAdd() == false) {
+      return;
+    }
+
     String message = getString(msg);
     showProgressBar(message);
   }
@@ -113,6 +117,10 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   @UiThread
   @Override
   public void showProgressBar(boolean canCancel, @StringRes int msg) {
+    if (isAdd() == false) {
+      return;
+    }
+
     String message = getString(msg);
     showProgressBar(canCancel, message);
   }
@@ -120,6 +128,10 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   @UiThread
   @Override
   public void showProgressBar(boolean canCancel, @NonNull String msg) {
+    if (isAdd() == false) {
+      return;
+    }
+
     if (progressDialog == null) {
       progressDialog = new ProgressDialog(getContext());
     }
@@ -141,7 +153,11 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   @UiThread
   @Override
   public void closeProgressBar() {
-    if (progressDialog != null) {
+    if (isAdd() == false) {
+      return;
+    }
+
+    if (progressDialog != null && progressDialog.isShowing()) {
       try {
         progressDialog.dismiss();
       } catch (Exception ex) {
@@ -153,18 +169,30 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   @UiThread
   @Override
   public void showToastMessage(@StringRes int resId) {
+    if (isAdd() == false) {
+      return;
+    }
+
     Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
   }
 
   @UiThread
   @Override
   public void showToastMessage(@NonNull CharSequence text) {
+    if (isAdd() == false) {
+      return;
+    }
+
     Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
   }
 
   @UiThread
   @Override
   public void showToastMessage(@NonNull BaseHttpError error) {
+    if (isAdd() == false) {
+      return;
+    }
+
     Toast.makeText(getContext(), error.getMsg(), Toast.LENGTH_SHORT).show();
   }
 
