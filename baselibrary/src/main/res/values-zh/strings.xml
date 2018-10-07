@@ -4,11 +4,11 @@
     <string name="error_net_connect_timeout">连接超时，请重试</string>
     <string name="error_net_socket_timeout">操作超时，请重试</string>
 
-    <string name="no_items">No data ~</string>
-    <string name="no_more_load_retry">No more data, refresh try ~</string>
+    <string name="no_items">暂时没有数据</string>
+    <string name="no_more_load_retry">没有更多数据</string>
     <string name="endless_disabled">""</string>
-    <string name="endless_cancel">Cancel loading ~</string>
-    <string name="endless_error">Load error ~</string>
+    <string name="endless_cancel">取消加载</string>
+    <string name="endless_error">加载失败</string>
 
     <string name="progress_waiting">等待中...</string>
 </resources>
