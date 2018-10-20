@@ -1,14 +1,14 @@
 <resources>
-  <string name="error_net">Server exception. Please try again later</string>
-  <string name="error_net_no_net">The Internet connection appears to be offline.</string>
-  <string name="error_net_connect_timeout">Connect timeout</string>
-  <string name="error_net_socket_timeout">Waiting timeout</string>
+    <string name="error_net">Server exception. Please try again later</string>
+    <string name="error_net_no_net">The Internet connection appears to be offline.</string>
+    <string name="error_net_connect_timeout">Connect timeout</string>
+    <string name="error_net_socket_timeout">Waiting timeout</string>
 
-  <string name="no_items">No data ~</string>
-  <string name="no_more_load_retry">No more data, refresh try ~</string>
-  <string name="endless_disabled">""</string>
-  <string name="endless_cancel">Cancel loading ~</string>
-  <string name="endless_error">Load error ~</string>
+    <string name="no_items">No data ~</string>
+    <string name="no_more_load_retry">No more data, refresh try ~</string>
+    <string name="endless_disabled">No more data</string>
+    <string name="endless_cancel">Cancel loading ~</string>
+    <string name="endless_error">Load error ~</string>
 
-  <string name="progress_waiting">Waiting</string>
+    <string name="progress_waiting">Waiting</string>
 </resources>
