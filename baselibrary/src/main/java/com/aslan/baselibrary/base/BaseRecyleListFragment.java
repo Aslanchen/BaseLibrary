@@ -49,6 +49,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
 
     private LoadListCallback<M> callbackRefresh;
     private LoadListCallback<M> callbackLoad;
+    private int currentPage = 1;
 
     @Override
     public int getLayoutId() {
@@ -122,7 +123,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
                 recyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.onLoadMoreComplete(null);
+                        loadFialed();
                     }
                 }, 500L);
             }
@@ -156,6 +157,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
     @CallSuper
     @Override
     public void onRefresh() {
+        currentPage = 1;
         getDataFromNet(UpdateState.Refresh, 1, callbackRefresh);
     }
 
@@ -167,7 +169,14 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
     @CallSuper
     @Override
     public void onLoadMore(int lastPosition, int currentPage) {
+        this.currentPage = currentPage;
         getDataFromNet(UpdateState.LoadMore, currentPage + 1, callbackLoad);
+    }
+
+    private void loadFialed() {
+        if (progressItem != null) {
+            progressItem.setStatus(ProgressItem.StatusEnum.ON_ERROR);
+        }
     }
 
     /**
@@ -185,6 +194,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
         }
 
         if (abstractFlexibleItem instanceof ProgressItem) {
+            onLoadMoreItemClick();
             return false;
         } else if (view.getId() == -1) {
             onItemClick(abstractFlexibleItem, position);
@@ -280,7 +290,9 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
     }
 
     public void onLoadMoreItemClick() {
-
+        if (progressItem.getStatus() == ProgressItem.StatusEnum.ON_ERROR) {
+            getDataFromNet(UpdateState.LoadMore, currentPage + 1, callbackLoad);
+        }
     }
 
     /**
