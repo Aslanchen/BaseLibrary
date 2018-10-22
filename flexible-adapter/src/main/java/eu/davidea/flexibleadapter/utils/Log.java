@@ -16,6 +16,7 @@
 package eu.davidea.flexibleadapter.utils;
 
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -28,11 +29,12 @@ import static eu.davidea.flexibleadapter.utils.Log.Level.VERBOSE;
 import static eu.davidea.flexibleadapter.utils.Log.Level.WARN;
 
 /**
- * Utility class that simplifies the use of {@link android.util.Log} by improving the call
- * to all log methods by supplying arguments as parameters instead of creating a string. This
- * avoids useless memory allocations when not requested: the StringBuilder itself, the buffer
- * and the String object. The new methods check in advance if the level is enabled and only
- * after creates the string message with arguments.
+ * Utility class for Android libraries, that simplifies the use of {@link android.util.Log} by improving
+ * the call to all log methods by supplying arguments as parameters {@code '%s'} instead of creating a string.
+ * This avoids useless memory allocations when not requested: the {@code StringBuilder} itself, the <i>buffer</i>
+ * and the {@code String} object. The new methods check in advance if the level is enabled and only after
+ * the string message with arguments is created.
+ * <p><b>Note:</b> This class can work in collaboration with {@link Logger}.</p>
  * <p>Others features are:</p>
  * <ul>
  * <li>Automatic TAG corresponding to the caller class name.</li>
@@ -46,9 +48,11 @@ import static eu.davidea.flexibleadapter.utils.Log.Level.WARN;
  * } else {
  *     Log.setLevel(Level.SUPPRESS);
  * }
+ * Log.i("Message arg1=%s, arg2=%s", arg1, arg2);
  * </pre>
  *
  * @author Davide Steduto
+ * @see Logger
  * @since 02/06/2017
  */
 public class Log {
@@ -57,6 +61,7 @@ public class Log {
     private static int LEVEL = SUPPRESS;
     private static boolean withMethodName;
     private static boolean withLineNumber;
+    public static String customTag;
 
     private Log() {
     }
@@ -164,22 +169,22 @@ public class Log {
         }
     }
 
-	/**
-	 * Sends a {@link Level#WARN} log message.
-	 *
-	 * @param msg  the message you would like logged
-	 * @param args the extra arguments for the message
-	 */
-	public static void w(String msg, Object... args) {
-		if (isWarnEnabled()) {
-			android.util.Log.w(getTag(), formatMessage(msg, args));
-		}
-	}
+    /**
+     * Sends a {@link Level#WARN} log message.
+     *
+     * @param msg  the message you would like logged
+     * @param args the extra arguments for the message
+     */
+    public static void w(String msg, Object... args) {
+        if (isWarnEnabled()) {
+            android.util.Log.w(getTag(), formatMessage(msg, args));
+        }
+    }
 
     /**
      * Sends a {@link Level#WARN} log message with the Exception at the end of the message.
      *
-	 * @param t    The exception to log
+     * @param t    The exception to log
      * @param msg  the message you would like logged
      * @param args the extra arguments for the message
      */
@@ -240,14 +245,26 @@ public class Log {
         }
     }
 
+    /**
+     * Sets a general static custom tag for ALL log calls.
+     * <p><b>Note:</b> If a {@link Logger} instance is created, this custom tag will be
+     * reset to {@code null} and current filename will be used instead.</p>
+     *
+     * @param customTag general static tag for ALL logs.
+     */
+    public static void useTag(@Nullable String customTag) {
+        Log.customTag = customTag;
+    }
+
     private static String getTag() {
+        if (customTag != null) return customTag;
         StackTraceElement traceElement = new Throwable().getStackTrace()[2];
         String fileName = traceElement.getFileName();
         if (fileName == null) return SOURCE_FILE;
         return fileName.split("[.]")[0];
     }
 
-    private static String formatMessage(String msg, Object... args) {
+    static String formatMessage(String msg, Object... args) {
         // In order to have the "null" values logged we need to pass args when null to the formatter
         // (This can still break depending on conversion of the formatter, see String.format)
         // else if there is no args, we return the message as-is, otherwise we pass args to formatting normally.

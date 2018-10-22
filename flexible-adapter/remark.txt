@@ -1,3 +1,2 @@
-Android RecyclerView adapter库
+﻿Android RecyclerView adapter库
 https://github.com/davideas/FlexibleAdapter
-修改了，添加OnItemSubClickListener回调，方便item中View点击事件
