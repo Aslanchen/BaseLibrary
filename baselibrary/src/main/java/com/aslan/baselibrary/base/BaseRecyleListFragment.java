@@ -65,9 +65,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
 
         iniEmptyView();
 
-        swipeRefreshLayout.setColorSchemeResources(
-                android.R.color.holo_purple, android.R.color.holo_blue_light,
-                android.R.color.holo_green_light, android.R.color.holo_orange_light);
+        setColorSchemeResources(swipeRefreshLayout);
         swipeRefreshLayout.setEnabled(true);
 
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext()));
@@ -103,12 +101,13 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
 
             @Override
             public void onDataNotAvailable(BaseHttpError error) {
-                recyclerView.postDelayed(new Runnable() {
+                recyclerView.post(new Runnable() {
                     @Override
                     public void run() {
+                        showToastMessage(error.getMsg());
                         swipeRefreshLayout.setRefreshing(false);
                     }
-                }, 500L);
+                });
             }
         };
 
@@ -120,12 +119,13 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
 
             @Override
             public void onDataNotAvailable(BaseHttpError error) {
-                recyclerView.postDelayed(new Runnable() {
+                recyclerView.post(new Runnable() {
                     @Override
                     public void run() {
+                        showToastMessage(error.getMsg());
                         loadFialed();
                     }
-                }, 500L);
+                });
             }
         };
 
