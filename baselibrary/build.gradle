@@ -22,14 +22,13 @@ android {
         release {
             debuggable false
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            proguardFiles 'proguard-rules-databinding.pro'
-            proguardFiles 'proguard-rules-eventbus.pro'
-            proguardFiles 'proguard-rules-glide.pro'
-            proguardFiles 'proguard-rules-gson.pro'
-            proguardFiles 'proguard-rules-okhttp.pro'
-            proguardFiles 'proguard-rules-ormlite.pro'
-            proguardFiles '../flexible-adapter/proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules-databinding.pro'
+            consumerProguardFiles 'proguard-rules-eventbus.pro'
+            consumerProguardFiles 'proguard-rules-glide.pro'
+            consumerProguardFiles 'proguard-rules-gson.pro'
+            consumerProguardFiles 'proguard-rules-okhttp.pro'
+            consumerProguardFiles 'proguard-rules-ormlite.pro'
         }
     }
 
