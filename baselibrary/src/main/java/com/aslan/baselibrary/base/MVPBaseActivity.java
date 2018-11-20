@@ -1,5 +1,6 @@
 package com.aslan.baselibrary.base;
 
+import android.content.Intent;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
@@ -57,5 +58,17 @@ public abstract class MVPBaseActivity<V extends ViewDataBinding, P extends IMVPB
   protected void onDestroy() {
     mPresentrt.onDestroy();
     super.onDestroy();
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    mPresenter.onActivityResult(requestCode, resultCode, data);
+    super.onActivityResult(requestCode, resultCode, data);
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
 }
