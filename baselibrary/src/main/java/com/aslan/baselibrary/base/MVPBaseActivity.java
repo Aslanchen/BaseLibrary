@@ -17,46 +17,46 @@ import com.aslan.baselibrary.listener.IMVPBasePresenter;
 public abstract class MVPBaseActivity<V extends ViewDataBinding, P extends IMVPBasePresenter> extends
     DataBindBaseActivity<V> {
 
-  protected P mPresentrt;
+  protected P mPresenter;
 
   public abstract P iniPresenter();
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
-    mPresentrt = iniPresenter();
+    mPresenter = iniPresenter();
     super.onCreate(savedInstanceState);
   }
 
   @CallSuper
   @Override
   public void iniBundle(@NonNull Bundle bundle) {
-    mPresentrt.iniBundle(bundle);
+    mPresenter.iniBundle(bundle);
   }
 
   @CallSuper
   @Override
   public void iniData() {
-    mPresentrt.onCreate();
+    mPresenter.onCreate();
   }
 
   @CallSuper
   @Override
   protected void onResume() {
-    mPresentrt.onResume();
+    mPresenter.onResume();
     super.onResume();
   }
 
   @CallSuper
   @Override
   protected void onPause() {
-    mPresentrt.onPause();
+    mPresenter.onPause();
     super.onPause();
   }
 
   @CallSuper
   @Override
   protected void onDestroy() {
-    mPresentrt.onDestroy();
+    mPresenter.onDestroy();
     super.onDestroy();
   }
 
