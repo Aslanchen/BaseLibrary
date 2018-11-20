@@ -2,6 +2,9 @@ package com.aslan.baselibrary.base;
 
 import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.listener.IMVPBasePresenter;
@@ -51,6 +54,16 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
 
   @Override
   public void onDestroy() {
+
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
   }
 }
