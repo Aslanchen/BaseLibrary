@@ -29,5 +29,6 @@ public interface IMVPBasePresenter {
   void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
       @NonNull int[] grantResults);
 
+  @Nullable
   FragmentManager getFragmentManager();
 }

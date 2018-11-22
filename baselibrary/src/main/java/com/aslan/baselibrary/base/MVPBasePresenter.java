@@ -65,15 +65,13 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
 
   }
 
+  @Nullable
   @Override
   public FragmentManager getFragmentManager() {
-    if (activity != null) {
-      return activity.getSupportFragmentManager();
-    }
-
     if (fragment != null) {
       return fragment.getFragmentManager();
     }
-    return null;
+
+    return activity.getSupportFragmentManager();
   }
 }
