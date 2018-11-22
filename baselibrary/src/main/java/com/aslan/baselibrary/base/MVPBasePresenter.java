@@ -22,7 +22,6 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
   public LifecycleOwner lifecycleOwner;
   public BaseActivity activity;
   public BaseFragment fragment;
-  public FragmentManager fragmentManager;
 
   @SuppressWarnings({"unchecked"})
   public MVPBasePresenter(BaseActivity activity) {
@@ -30,7 +29,6 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     this.lifecycleOwner = activity;
     this.mView = (V) activity;
     this.activity = activity;
-    this.fragmentManager = activity.getSupportFragmentManager();
   }
 
   @SuppressWarnings({"unchecked"})
@@ -39,7 +37,6 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     this.lifecycleOwner = fragment;
     this.mView = (V) fragment;
     this.fragment = fragment;
-    this.fragmentManager = fragment.getFragmentManager();
   }
 
   @Override
@@ -63,7 +60,20 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
   }
 
   @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+      @NonNull int[] grantResults) {
 
+  }
+
+  @Override
+  public FragmentManager getFragmentManager() {
+    if (activity != null) {
+      return activity.getSupportFragmentManager();
+    }
+
+    if (fragment != null) {
+      return fragment.getFragmentManager();
+    }
+    return null;
   }
 }
