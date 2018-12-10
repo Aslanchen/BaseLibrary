@@ -25,7 +25,7 @@ import android.support.v4.app.NotificationManagerCompat;
  * @author Aslanchen
  * @date 2017/4/27
  */
-public class NotificationHelp {
+public final class NotificationHelp {
 
     private NotificationManagerCompat mNotificationManager;
     private NotificationCompat.Builder builder;
