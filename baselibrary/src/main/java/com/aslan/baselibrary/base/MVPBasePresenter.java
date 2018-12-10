@@ -2,6 +2,9 @@ package com.aslan.baselibrary.base;
 
 import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.listener.IMVPBasePresenter;
@@ -19,7 +22,6 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
   public LifecycleOwner lifecycleOwner;
   public BaseActivity activity;
   public BaseFragment fragment;
-  public FragmentManager fragmentManager;
 
   @SuppressWarnings({"unchecked"})
   public MVPBasePresenter(BaseActivity activity) {
@@ -27,7 +29,6 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     this.lifecycleOwner = activity;
     this.mView = (V) activity;
     this.activity = activity;
-    this.fragmentManager = activity.getSupportFragmentManager();
   }
 
   @SuppressWarnings({"unchecked"})
@@ -36,7 +37,6 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     this.lifecycleOwner = fragment;
     this.mView = (V) fragment;
     this.fragment = fragment;
-    this.fragmentManager = fragment.getFragmentManager();
   }
 
   @Override
@@ -52,5 +52,26 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
   @Override
   public void onDestroy() {
 
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+      @NonNull int[] grantResults) {
+
+  }
+
+  @Nullable
+  @Override
+  public FragmentManager getFragmentManager() {
+    if (fragment != null) {
+      return fragment.getFragmentManager();
+    }
+
+    return activity.getSupportFragmentManager();
   }
 }
