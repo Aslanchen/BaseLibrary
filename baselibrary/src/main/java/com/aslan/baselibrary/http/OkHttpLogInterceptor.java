@@ -119,7 +119,20 @@ public class OkHttpLogInterceptor implements Interceptor {
         }
         sb.append("--------------------回复结束-------------------------");
         sb.append(System.getProperty("line.separator"));
-        Log.e(TAG, sb.toString());
+        if (sb.length() >= 4000) {
+            int start = 0;
+            int end = 4000;
+            while (start < sb.length()) {
+                Log.e(TAG, sb.substring(start, end));
+                start = start + 4000;
+                end = start + 4000;
+                if (end > sb.length()) {
+                    end = sb.length();
+                }
+            }
+        } else {
+            Log.e(TAG, sb.toString());
+        }
         return response;
     }
 }
