@@ -38,7 +38,7 @@ public final class NotificationHelp {
 
     public NotificationCompat.Builder creat(@DrawableRes int icon, @NonNull String channelId, @NonNull String channelName) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(context, channelId, channelName, NotificationManager.IMPORTANCE_NONE);
+            createNotificationChannel(context, channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
         }
         mNotificationManager = NotificationManagerCompat.from(context);
         builder = new NotificationCompat.Builder(context, channelId);
@@ -46,6 +46,14 @@ public final class NotificationHelp {
         return builder;
     }
 
+    /**
+     * Oreo不用Priority了，用importance
+     * IMPORTANCE_NONE 关闭通知
+     * IMPORTANCE_MIN 开启通知，不会弹出，但没有提示音，状态栏中无显示
+     * IMPORTANCE_LOW 开启通知，不会弹出，不发出提示音，状态栏中显示
+     * IMPORTANCE_DEFAULT 开启通知，不会弹出，发出提示音，状态栏中显示
+     * IMPORTANCE_HIGH 开启通知，会弹出，发出提示音，状态栏中显示
+     */
     public NotificationCompat.Builder creat(@DrawableRes int icon, @NonNull String channelId, @NonNull String channelName, int importance) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(context, channelId, channelName, importance);
