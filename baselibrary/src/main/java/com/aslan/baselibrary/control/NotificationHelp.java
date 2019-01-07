@@ -60,6 +60,19 @@ public final class NotificationHelp {
         }
         mNotificationManager = NotificationManagerCompat.from(context);
         builder = new NotificationCompat.Builder(context, channelId);
+        if (importance == NotificationManagerCompat.IMPORTANCE_NONE) {
+            builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        } else if (importance == NotificationManagerCompat.IMPORTANCE_MIN) {
+            builder.setPriority(NotificationCompat.PRIORITY_MIN);
+        } else if (importance == NotificationManagerCompat.IMPORTANCE_LOW) {
+            builder.setPriority(NotificationCompat.PRIORITY_LOW);
+        } else if (importance == NotificationManagerCompat.IMPORTANCE_DEFAULT) {
+            builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        } else if (importance == NotificationManagerCompat.IMPORTANCE_HIGH) {
+            builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        } else if (importance == NotificationManagerCompat.IMPORTANCE_MAX) {
+            builder.setPriority(NotificationCompat.PRIORITY_MAX);
+        }
         builder.setSmallIcon(icon);
         return builder;
     }
