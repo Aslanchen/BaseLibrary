@@ -38,7 +38,7 @@ public final class NotificationHelp {
 
     public NotificationCompat.Builder creat(@DrawableRes int icon, @NonNull String channelId, @NonNull String channelName) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(context, channelId, channelName, NotificationCompat.IMPORTANCE_DEFAULT);
+            createNotificationChannel(context, channelId, channelName, NotificationManagerCompat.IMPORTANCE_DEFAULT);
         }
         mNotificationManager = NotificationManagerCompat.from(context);
         builder = new NotificationCompat.Builder(context, channelId);
