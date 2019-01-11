@@ -204,4 +204,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   public boolean isAdd() {
     return !isFinishing();
   }
+
+  @Override
+  protected void onDestroy() {
+    closeProgressBar();
+    super.onDestroy();
+  }
 }

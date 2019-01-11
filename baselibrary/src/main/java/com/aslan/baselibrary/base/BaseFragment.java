@@ -200,4 +200,10 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   public boolean isAdd() {
     return this.isAdded();
   }
+
+  @Override
+  public void onDestroy() {
+    closeProgressBar();
+    super.onDestroy();
+  }
 }

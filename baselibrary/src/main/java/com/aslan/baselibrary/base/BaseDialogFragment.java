@@ -148,4 +148,10 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
   public boolean isAdd() {
     return this.isAdded();
   }
+
+  @Override
+  public void onDestroy() {
+    closeProgressBar();
+    super.onDestroy();
+  }
 }
