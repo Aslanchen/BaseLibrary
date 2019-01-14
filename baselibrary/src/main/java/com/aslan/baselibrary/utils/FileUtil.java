@@ -1,7 +1,12 @@
 package com.aslan.baselibrary.utils;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.os.Build;
+import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,14 +22,9 @@ import java.io.InputStream;
 public final class FileUtil {
 
   private static final String LOG = "log";
-  private static final String DOWNLOAD = "download";
-  private static final String ASSET = "asset";
-  private static final String DOCUMENT = "document";
-  private static final String PHOTO = "photo";
 
   private static String log;
   private static String download;
-  private static String asset;
   private static String document;
   private static String photo;
 
@@ -33,7 +33,7 @@ public final class FileUtil {
       return log;
     }
 
-    log = context.getExternalFilesDir(LOG).getAbsolutePath();
+    log = getFilesDir(context, LOG).getAbsolutePath();
     return log;
   }
 
@@ -42,17 +42,8 @@ public final class FileUtil {
       return download;
     }
 
-    download = context.getExternalFilesDir(DOWNLOAD).getAbsolutePath();
+    download = getFilesDir(context, Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
     return download;
-  }
-
-  public static String getAsset(Context context) {
-    if (!TextUtils.isEmpty(asset)) {
-      return asset;
-    }
-
-    asset = context.getExternalFilesDir(ASSET).getAbsolutePath();
-    return asset;
   }
 
   public static String getDocument(Context context) {
@@ -60,7 +51,7 @@ public final class FileUtil {
       return document;
     }
 
-    document = context.getExternalFilesDir(DOCUMENT).getAbsolutePath();
+    document = getFilesDir(context, Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
     return document;
   }
 
@@ -69,8 +60,51 @@ public final class FileUtil {
       return photo;
     }
 
-    photo = context.getExternalFilesDir(PHOTO).getAbsolutePath();
+    photo = getFilesDir(context, Environment.DIRECTORY_PICTURES).getAbsolutePath();
     return photo;
+  }
+
+  private static Boolean isLackPermission(Context context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+        || ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        == PackageManager.PERMISSION_GRANTED) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * 获取本地文件路径,优先采用SD卡
+   */
+  private static File getFilesDir(Context context, String tag) {
+    if (isLackPermission(context)) {
+      return context.getFilesDir();
+    } else {
+      File file = context.getExternalFilesDir(tag);
+      if (file == null) {
+        return context.getFilesDir();
+      } else {
+        return file;
+      }
+    }
+  }
+
+  /**
+   * 批量删除文件
+   */
+  private void deleteFile(File file) {
+    if (file == null) {
+      return;
+    }
+
+    if (file.isDirectory()) {
+      File[] files = file.listFiles();
+      for (File f : files) {
+        deleteFile(f);
+      }
+    } else if (file.exists()) {
+      file.delete();
+    }
   }
 
   /**
