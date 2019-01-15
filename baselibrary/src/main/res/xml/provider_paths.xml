@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+  <files-path
+    name="log"
+    path="log"/>
+  <files-path
+    name="Documents"
+    path="Documents"/>
+  <files-path
+    name="Download"
+    path="Download"/>
+  <files-path
+    name="Pictures"
+    path="Pictures"/>
+
+  <external-files-path
+    name="log"
+    path="log"/>
+  <external-files-path
+    name="Documents"
+    path="Documents"/>
+  <external-files-path
+    name="Download"
+    path="Download"/>
+  <external-files-path
+    name="Pictures"
+    path="Pictures"/>
+</paths>

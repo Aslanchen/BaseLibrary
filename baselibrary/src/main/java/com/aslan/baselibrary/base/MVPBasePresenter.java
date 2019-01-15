@@ -5,6 +5,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -39,6 +40,11 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     this.lifecycleOwner = fragment;
     this.mView = (V) fragment;
     this.fragment = fragment;
+  }
+
+  @Override
+  public void iniBundle(@NonNull Bundle bundle) {
+
   }
 
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
