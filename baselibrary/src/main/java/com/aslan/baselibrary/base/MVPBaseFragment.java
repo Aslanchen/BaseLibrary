@@ -21,43 +21,18 @@ public abstract class MVPBaseFragment<V extends ViewDataBinding, P extends IMVPB
 
   public abstract P iniPresenter();
 
+  @CallSuper
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     mPresenter = iniPresenter();
     super.onCreate(savedInstanceState);
+    getLifecycle().addObserver(mPresenter);
   }
 
   @CallSuper
   @Override
   public void iniBundle(@NonNull Bundle bundle) {
     mPresenter.iniBundle(bundle);
-  }
-
-  @CallSuper
-  @Override
-  public void iniData() {
-    mPresenter.onCreate();
-  }
-
-  @CallSuper
-  @Override
-  public void onResume() {
-    mPresenter.onResume();
-    super.onResume();
-  }
-
-  @CallSuper
-  @Override
-  public void onPause() {
-    mPresenter.onPause();
-    super.onPause();
-  }
-
-  @CallSuper
-  @Override
-  public void onDestroy() {
-    mPresenter.onDestroy();
-    super.onDestroy();
   }
 
   @Override
@@ -67,7 +42,8 @@ public abstract class MVPBaseFragment<V extends ViewDataBinding, P extends IMVPB
   }
 
   @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+      @NonNull int[] grantResults) {
     mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
