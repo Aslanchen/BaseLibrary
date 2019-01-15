@@ -40,12 +40,14 @@ public abstract class MVPBaseActivity<V extends ViewDataBinding, P extends IMVPB
     mPresenter.iniBundle(bundle);
   }
 
+  @CallSuper
   @Override
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     mPresenter.onActivityResult(requestCode, resultCode, data);
     super.onActivityResult(requestCode, resultCode, data);
   }
 
+  @CallSuper
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
       @NonNull int[] grantResults) {
