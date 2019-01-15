@@ -42,12 +42,12 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     setCusContentView();
 
-    if (hasTitle()) {
-      titleBar = findViewById(R.id.titleBar);
+    titleBar = findViewById(R.id.titleBar);
+    if (titleBar != null) {
       titleBar.setNavigationOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          thisFinish();
+          navigationOnClickListener();
         }
       });
     }
@@ -70,10 +70,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   public abstract void iniListener();
 
   public abstract void iniData();
-
-  public boolean hasTitle() {
-    return true;
-  }
 
   @Override
   public void setTitle(CharSequence title) {
@@ -194,6 +190,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     }
 
     Toast.makeText(this, error.getMsg(), Toast.LENGTH_SHORT).show();
+  }
+
+  public void navigationOnClickListener() {
+    thisFinish();
   }
 
   public void thisFinish() {

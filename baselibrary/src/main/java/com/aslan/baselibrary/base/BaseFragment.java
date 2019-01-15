@@ -43,15 +43,16 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
       @Nullable Bundle savedInstanceState) {
     View view = setCusContentView(inflater, container);
 
-    if (hasTitle()) {
-      titleBar = view.findViewById(R.id.titleBar);
+    titleBar = view.findViewById(R.id.titleBar);
+    if (titleBar != null) {
       titleBar.setNavigationOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          ((BaseActivity) getActivity()).thisFinish();
+          navigationOnClickListener();
         }
       });
     }
+
     iniView(view);
     iniListener();
     iniData();
@@ -72,10 +73,6 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   public abstract void iniListener();
 
   public abstract void iniData();
-
-  public boolean hasTitle() {
-    return false;
-  }
 
   public void setTitle(@StringRes int resid) {
     titleBar.setTitle(resid);
@@ -194,6 +191,10 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
     }
 
     Toast.makeText(getContext(), error.getMsg(), Toast.LENGTH_SHORT).show();
+  }
+
+  public void navigationOnClickListener() {
+    ((BaseActivity) getActivity()).thisFinish();
   }
 
   @Override
