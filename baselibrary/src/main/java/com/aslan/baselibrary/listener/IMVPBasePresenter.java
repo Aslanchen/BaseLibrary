@@ -22,6 +22,8 @@ public interface IMVPBasePresenter extends LifecycleObserver {
   @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
   void onCreate();
 
+  void iniData();
+
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   void onStart();
 

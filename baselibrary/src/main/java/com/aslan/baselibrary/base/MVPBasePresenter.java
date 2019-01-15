@@ -46,6 +46,10 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
   public void onCreate() {
   }
 
+  @Override
+  public void iniData() {
+  }
+
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   @Override
   public void onStart() {

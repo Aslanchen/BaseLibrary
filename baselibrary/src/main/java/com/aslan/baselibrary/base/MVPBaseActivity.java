@@ -30,6 +30,11 @@ public abstract class MVPBaseActivity<V extends ViewDataBinding, P extends IMVPB
   }
 
   @CallSuper
+  public void iniData() {
+    mPresenter.iniData();
+  }
+
+  @CallSuper
   @Override
   public void iniBundle(@NonNull Bundle bundle) {
     mPresenter.iniBundle(bundle);
