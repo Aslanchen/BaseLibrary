@@ -21,7 +21,7 @@ import java.io.InputStream;
  */
 public final class FileUtil {
 
-  private static final String LOG = "log";
+  private static final String LOG = "Logs";
 
   private static String log;
   private static String download;

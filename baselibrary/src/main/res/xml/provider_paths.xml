@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
   <files-path
-    name="log"
-    path="log"/>
+    name="Logs"
+    path="Logs"/>
   <files-path
     name="Documents"
     path="Documents"/>
@@ -14,8 +14,8 @@
     path="Pictures"/>
 
   <external-files-path
-    name="log"
-    path="log"/>
+    name="Logs"
+    path="Logs"/>
   <external-files-path
     name="Documents"
     path="Documents"/>
