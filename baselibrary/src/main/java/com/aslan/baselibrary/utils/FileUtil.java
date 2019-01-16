@@ -65,14 +65,11 @@ public final class FileUtil {
   }
 
   private static Boolean isLackPermission(Context context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-        && ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        == PackageManager.PERMISSION_GRANTED
-        && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
-        == PackageManager.PERMISSION_GRANTED) {
-      return false;
-    }
-    return true;
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+        && (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        != PackageManager.PERMISSION_GRANTED
+        || ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
+        != PackageManager.PERMISSION_GRANTED);
   }
 
   /**
