@@ -52,10 +52,6 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
         }
       });
     }
-
-    iniView(view);
-    iniListener();
-    iniData();
     return view;
   }
 
@@ -64,6 +60,19 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   public View setCusContentView(@NonNull LayoutInflater inflater,
       @Nullable ViewGroup container) {
     return LayoutInflater.from(getContext()).inflate(getLayoutId(), container, false);
+  }
+
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    iniView(view);
+    iniListener();
+  }
+
+  @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    iniData();
   }
 
   public abstract int getLayoutId();

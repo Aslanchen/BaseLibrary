@@ -126,7 +126,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
       }
     };
 
-    getDataFromDB(UpdateState.Refresh, 1, new LoadListCallback<M>() {
+    getData(UpdateState.Refresh, 1, new LoadListCallback<M>() {
       @Override
       public void onLoaded(@NonNull List<M> respones) {
         addToListView(UpdateState.Refresh, respones);
@@ -155,7 +155,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
   @Override
   public void onRefresh() {
     currentPage = 1;
-    getDataFromNet(UpdateState.Refresh, 1, callbackRefresh);
+    getData(UpdateState.Refresh, currentPage, callbackRefresh);
   }
 
   @Override
@@ -167,11 +167,12 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
   @Override
   public void onLoadMore(int lastPosition, int currentPage) {
     this.currentPage = currentPage + 1;
-    getDataFromNet(UpdateState.LoadMore, this.currentPage, callbackLoad);
+    getData(UpdateState.LoadMore, this.currentPage, callbackLoad);
   }
 
   private void loadFialed() {
-    if (progressItem != null) {
+      this.currentPage--;
+      if (progressItem != null) {
       progressItem.setStatus(ProgressItem.StatusEnum.ON_ERROR);
     }
   }
@@ -272,13 +273,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
   /**
    * @param curPage 当前页数，从1开始
    */
-  public abstract void getDataFromDB(UpdateState rushState, int curPage,
-      LoadListCallback<M> callback);
-
-  /**
-   * @param curPage 当前页数，从1开始
-   */
-  public abstract void getDataFromNet(UpdateState rushState, int curPage,
+  public abstract void getData(UpdateState rushState, int curPage,
       LoadListCallback<M> callback);
 
   public void iniEmptyView() {
@@ -287,7 +282,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
 
   public void onLoadMoreItemClick() {
     if (progressItem.getStatus() == ProgressItem.StatusEnum.ON_ERROR) {
-      getDataFromNet(UpdateState.LoadMore, currentPage + 1, callbackLoad);
+      getData(UpdateState.LoadMore, currentPage + 1, callbackLoad);
     }
   }
 
