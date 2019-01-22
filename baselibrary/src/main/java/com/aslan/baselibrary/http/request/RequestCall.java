@@ -44,11 +44,15 @@ public class RequestCall {
     request = generateRequest(callback);
 
     if (readTimeOut > 0 || writeTimeOut > 0 || connTimeOut > 0) {
-      readTimeOut = readTimeOut > 0 ? readTimeOut : OkHttpManager.DEFAULT_MILLISECONDS;
-      writeTimeOut = writeTimeOut > 0 ? writeTimeOut : OkHttpManager.DEFAULT_MILLISECONDS;
-      connTimeOut = connTimeOut > 0 ? connTimeOut : OkHttpManager.DEFAULT_MILLISECONDS;
+      OkHttpClient.Builder builder = OkHttpManager.getInstance().newBuilder();
+      readTimeOut = readTimeOut > 0 ? readTimeOut
+          : OkHttpManager.getInstance().getOkHttpClient().readTimeoutMillis();
+      writeTimeOut = writeTimeOut > 0 ? writeTimeOut
+          : OkHttpManager.getInstance().getOkHttpClient().writeTimeoutMillis();
+      connTimeOut = connTimeOut > 0 ? connTimeOut
+          : OkHttpManager.getInstance().getOkHttpClient().connectTimeoutMillis();
 
-      clone = OkHttpManager.getInstance().getOkHttpClient().newBuilder()
+      clone = builder
           .readTimeout(readTimeOut, TimeUnit.MILLISECONDS)
           .writeTimeout(writeTimeOut, TimeUnit.MILLISECONDS)
           .connectTimeout(connTimeOut, TimeUnit.MILLISECONDS)

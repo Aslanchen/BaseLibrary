@@ -1,12 +1,12 @@
 package com.aslan.baselibrary.http;
 
-import com.aslan.baselibrary.BuildConfig;
 import com.aslan.baselibrary.http.builder.GetBuilder;
 import com.aslan.baselibrary.http.builder.OtherRequestBuilder;
 import com.aslan.baselibrary.http.builder.PostFormBuilder;
 import com.aslan.baselibrary.http.builder.PostStringBuilder;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
+import okhttp3.OkHttpClient.Builder;
 
 /**
  * Okhttp单列
@@ -17,18 +17,10 @@ public class OkHttpManager {
 
   public static final long DEFAULT_MILLISECONDS = 10_000L;
   private OkHttpClient mOkHttpClient;
+  private Boolean isLogEnable = false;
 
   private OkHttpManager() {
-    if (mOkHttpClient == null) {
-      OkHttpClient.Builder builder = new OkHttpClient.Builder();
-      if (BuildConfig.DEBUG == true) {
-        builder.addInterceptor(new OkHttpLogInterceptor());
-      }
-      builder.connectTimeout(8, TimeUnit.SECONDS);
-      builder.writeTimeout(6, TimeUnit.SECONDS);
-      builder.readTimeout(8, TimeUnit.SECONDS);
-      mOkHttpClient = builder.build();
-    }
+
   }
 
   public static OkHttpManager getInstance() {
@@ -42,8 +34,27 @@ public class OkHttpManager {
     return instance;
   }
 
+  public void setLogEnable(boolean isEnable) {
+    this.isLogEnable = isEnable;
+  }
+
   public OkHttpClient getOkHttpClient() {
+    if (mOkHttpClient == null) {
+      Builder builder = newBuilder();
+      mOkHttpClient = builder.build();
+    }
     return mOkHttpClient;
+  }
+
+  public Builder newBuilder() {
+    Builder builder = new Builder();
+    if (isLogEnable) {
+      builder.addInterceptor(new OkHttpLogInterceptor());
+    }
+    builder.connectTimeout(8, TimeUnit.SECONDS);
+    builder.writeTimeout(6, TimeUnit.SECONDS);
+    builder.readTimeout(8, TimeUnit.SECONDS);
+    return builder;
   }
 
   public static GetBuilder get() {
