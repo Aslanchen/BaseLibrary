@@ -1,2 +1,0 @@
-﻿Android RecyclerView adapter库
-https://github.com/davideas/FlexibleAdapter

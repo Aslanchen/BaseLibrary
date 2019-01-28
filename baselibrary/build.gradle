@@ -60,5 +60,6 @@ dependencies {
     api 'org.greenrobot:eventbus:3.1.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 
-    api project(':flexible-adapter')
+    api 'eu.davidea:flexible-adapter:5.0.6'
+    api 'eu.davidea:flexible-adapter-ui:1.0.0-b5'
 }

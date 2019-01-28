@@ -2,6 +2,8 @@ package com.aslan.baselibrary.base;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Size;
+import android.support.annotation.UiThread;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
@@ -12,11 +14,11 @@ import com.aslan.baselibrary.http.BaseHttpError;
 import com.aslan.baselibrary.items.ProgressItem;
 import com.aslan.baselibrary.listener.LoadListCallback;
 import com.aslan.baselibrary.view.EmptyView;
-import eu.davidea.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.SelectableAdapter;
+import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+import eu.davidea.flexibleadapter.helpers.ActionModeHelper;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
-import eu.davidea.helpers.ActionModeHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,17 +118,14 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
 
       @Override
       public void onDataNotAvailable(BaseHttpError error) {
-        recyclerView.post(new Runnable() {
-          @Override
-          public void run() {
-            showToastMessage(error.getMsg());
-            loadFialed();
-          }
+        AppTaskExecutor.getInstance().executeOnMainThread(() -> {
+          showToastMessage(error.getMsg());
+          loadFialed();
         });
       }
     };
 
-    getData(UpdateState.Refresh, 1, new LoadListCallback<M>() {
+    getDataFromCache(UpdateState.Refresh, 1, new LoadListCallback<M>() {
       @Override
       public void onLoaded(@NonNull List<M> respones) {
         addToListView(UpdateState.Refresh, respones);
@@ -141,11 +140,10 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
   }
 
   protected void autoRefreshDelay() {
-    AppTaskExecutor.getInstance().postToMainThreadDelayed(() -> {
-      autoRefresh();
-    }, 500L);
+    AppTaskExecutor.getInstance().postToMainThreadDelayed(this::autoRefresh, 500L);
   }
 
+  @UiThread
   protected void autoRefresh() {
     swipeRefreshLayout.setRefreshing(true);
     onRefresh();
@@ -155,7 +153,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
   @Override
   public void onRefresh() {
     currentPage = 1;
-    getData(UpdateState.Refresh, currentPage, callbackRefresh);
+    getDataFromNet(UpdateState.Refresh, currentPage, callbackRefresh);
   }
 
   @Override
@@ -167,14 +165,11 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
   @Override
   public void onLoadMore(int lastPosition, int currentPage) {
     this.currentPage = currentPage + 1;
-    getData(UpdateState.LoadMore, this.currentPage, callbackLoad);
+    getDataFromNet(UpdateState.LoadMore, this.currentPage, callbackLoad);
   }
 
   private void loadFialed() {
-      this.currentPage--;
-      if (progressItem != null) {
-      progressItem.setStatus(ProgressItem.StatusEnum.ON_ERROR);
-    }
+    progressItem.setStatus(ProgressItem.StatusEnum.ON_ERROR);
   }
 
   /**
@@ -249,6 +244,8 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
         adapter.updateDataSet(items);
         if (items.size() >= getDataCountPrePage()) {
           adapter.setEndlessProgressItem(progressItem);
+        } else {
+          adapter.setEndlessProgressItem(null);
         }
 
         AppTaskExecutor.getInstance()
@@ -273,7 +270,13 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
   /**
    * @param curPage 当前页数，从1开始
    */
-  public abstract void getData(UpdateState rushState, int curPage,
+  public abstract void getDataFromCache(UpdateState rushState, @Size(min = 1) int curPage,
+      LoadListCallback<M> callback);
+
+  /**
+   * @param curPage 当前页数，从1开始
+   */
+  public abstract void getDataFromNet(UpdateState rushState, @Size(min = 1) int curPage,
       LoadListCallback<M> callback);
 
   public void iniEmptyView() {
@@ -282,7 +285,8 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
 
   public void onLoadMoreItemClick() {
     if (progressItem.getStatus() == ProgressItem.StatusEnum.ON_ERROR) {
-      getData(UpdateState.LoadMore, currentPage + 1, callbackLoad);
+      currentPage = currentPage + 1;
+      getDataFromNet(UpdateState.LoadMore, currentPage, callbackLoad);
     }
   }
 
