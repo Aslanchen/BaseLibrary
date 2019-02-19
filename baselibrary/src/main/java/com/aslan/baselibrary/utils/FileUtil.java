@@ -107,43 +107,36 @@ public final class FileUtil {
   }
 
   /**
-   * @param assetpath asset下的路径
-   * @param SDpath SDpath下保存路径
+   * 把asset下文件copy到SD卡
+   *
+   * @param context 上下文
+   * @param assetName 资源文件名称，完整路径
+   * @param output 目标文件
    */
-  public static boolean AssetToSD(Context context, String assetpath, String SDpath) {
+  public static void copyAssetFile(Context context, String assetName, File output)
+      throws IOException {
     AssetManager asset = context.getAssets();
     FileOutputStream out = null;
     InputStream in = null;
     try {
-      File SDFlie = new File(SDpath + File.separatorChar + assetpath);
-
-      File SDFlieDirect = SDFlie.getParentFile();
-      if (!SDFlieDirect.exists()) {
-        SDFlieDirect.mkdirs();
-      }
-
-      if (!SDFlie.exists()) {
-        SDFlie.createNewFile();
-      }
-
-      in = asset.open(assetpath);
-      out = new FileOutputStream(SDFlie);
+      in = asset.open(assetName);
+      out = new FileOutputStream(output);
       byte[] buffer = new byte[1024];
       int byteCount = 0;
       while ((byteCount = in.read(buffer)) != -1) {
         out.write(buffer, 0, byteCount);
       }
       out.flush();
-      return true;
-    } catch (IOException e) {
-      e.printStackTrace();
-      return false;
     } finally {
       try {
         if (out != null) {
           out.close();
         }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
 
+      try {
         if (in != null) {
           in.close();
         }
@@ -151,31 +144,5 @@ public final class FileUtil {
         e.printStackTrace();
       }
     }
-  }
-
-  /**
-   * 读取assets下的txt文件，返回utf-8 String
-   *
-   * @param fileName 不包括后缀
-   */
-  public static String readAssetsTxt(Context context, String fileName) {
-    InputStream is = null;
-    try {
-      is = context.getAssets().open(fileName);
-      int size = is.available();
-      byte[] buffer = new byte[size];
-      is.read(buffer);
-      is.close();
-      return new String(buffer, "utf-8");
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        is.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-    return null;
   }
 }

@@ -1,11 +1,10 @@
 package com.aslan.baselibrary.listener;
 
-import android.support.annotation.Nullable;
 import com.aslan.baselibrary.http.BaseHttpError;
 
-public interface LoadItemCallback<T> {
+public interface LoadCallback<T> {
 
-  void onLoaded(@Nullable T respone);
+  void onLoaded();
 
   void onDataNotAvailable(BaseHttpError error);
 }

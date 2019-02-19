@@ -11,7 +11,7 @@ import android.content.SharedPreferences;
  */
 public class SharePreferenceUtils {
 
-  public final static String SHARED_PREFERENCES_NAME = "Vivalnk";
+  public final static String SHARED_PREFERENCES_NAME = "BaseSharePreference";
 
   /**
    * 向SharedPreferences中写入int类型数据
@@ -164,6 +164,6 @@ public class SharePreferenceUtils {
 
   //获取SharedPreferences实例
   public static SharedPreferences getSharedPreferences(Context context) {
-    return context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_MULTI_PROCESS);
+    return context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
   }
 }
