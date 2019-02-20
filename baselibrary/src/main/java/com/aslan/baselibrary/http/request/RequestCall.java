@@ -1,6 +1,7 @@
 package com.aslan.baselibrary.http.request;
 
 import com.aslan.baselibrary.http.OkHttpManager;
+import com.aslan.baselibrary.http.callback.BaseCallback;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import okhttp3.Call;
@@ -40,7 +41,7 @@ public class RequestCall {
     return this;
   }
 
-  public Call buildCall(Callback callback) {
+  private void buildCall(BaseCallback callback) {
     request = generateRequest(callback);
 
     if (readTimeOut > 0 || writeTimeOut > 0 || connTimeOut > 0) {
@@ -62,16 +63,14 @@ public class RequestCall {
     } else {
       call = OkHttpManager.getInstance().getOkHttpClient().newCall(request);
     }
-    return call;
   }
 
   private Request generateRequest(Callback callback) {
     return okHttpRequest.generateRequest(callback);
   }
 
-  public void execute(Callback callback) {
+  public void execute(BaseCallback callback) {
     buildCall(callback);
-
     this.getCall().enqueue(callback);
   }
 

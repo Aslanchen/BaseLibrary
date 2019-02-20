@@ -34,6 +34,11 @@ public class OkHttpManager {
     return instance;
   }
 
+  /**
+   * 是否开启日志系统
+   *
+   * @param isEnable if true open log or not
+   */
   public void setLogEnable(boolean isEnable) {
     this.isLogEnable = isEnable;
   }

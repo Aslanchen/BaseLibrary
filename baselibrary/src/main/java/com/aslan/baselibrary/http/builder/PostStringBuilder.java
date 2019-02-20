@@ -20,8 +20,8 @@ public class PostStringBuilder extends OkHttpRequestBuilder<PostStringBuilder> {
   }
 
   @Override
-  public RequestCall build() {
+  public RequestCall buildRequestCall() {
     url = iniUrl(url, path, paramsUrl);
-    return new PostStringRequest(url, tag, headers, content, mediaType, id).build();
+    return new PostStringRequest(url, tag, headers, content, mediaType).build();
   }
 }

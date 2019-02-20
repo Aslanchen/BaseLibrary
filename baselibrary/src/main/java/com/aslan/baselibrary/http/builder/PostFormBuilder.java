@@ -14,9 +14,9 @@ public class PostFormBuilder extends OkHttpRequestBuilder<PostFormBuilder> {
   private Map<String, String> paramsData;
 
   @Override
-  public RequestCall build() {
+  public RequestCall buildRequestCall() {
     url = iniUrl(url, path, paramsUrl);
-    return new PostFormRequest(url, tag, paramsData, headers, files, id).build();
+    return new PostFormRequest(url, tag, paramsData, headers, files).build();
   }
 
   public PostFormBuilder files(String key, Map<String, File> files) {

@@ -1,6 +1,5 @@
 package com.aslan.baselibrary.http.builder;
 
-
 import com.aslan.baselibrary.http.request.OtherRequest;
 import com.aslan.baselibrary.http.request.RequestCall;
 import okhttp3.RequestBody;
@@ -19,9 +18,10 @@ public class OtherRequestBuilder extends OkHttpRequestBuilder<OtherRequestBuilde
   }
 
   @Override
-  public RequestCall build() {
+  public RequestCall buildRequestCall() {
     url = iniUrl(url, path, paramsUrl);
-    return new OtherRequest(requestBody, content, method, url, tag, headers, id).build();
+    return new OtherRequest(requestBody, content, method, url, tag, headers)
+        .build();
   }
 
   public OtherRequestBuilder requestBody(RequestBody requestBody) {

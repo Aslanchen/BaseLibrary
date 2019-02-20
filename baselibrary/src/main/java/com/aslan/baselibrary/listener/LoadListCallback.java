@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LoadListCallback<T> {
 
-  void onLoaded(@NonNull List<T> respones);
+  void onLoaded(@NonNull List<T> responses);
 
-  void onDataNotAvailable(BaseHttpError error);
+  void onDataNotAvailable(@NonNull BaseHttpError error);
 }

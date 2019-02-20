@@ -6,8 +6,8 @@ import com.aslan.baselibrary.http.request.RequestCall;
 public class GetBuilder extends OkHttpRequestBuilder<GetBuilder> {
 
   @Override
-  public RequestCall build() {
+  public RequestCall buildRequestCall() {
     url = iniUrl(url, path, paramsUrl);
-    return new GetRequest(url, tag, headers, id).build();
+    return new GetRequest(url, tag, headers).build();
   }
 }

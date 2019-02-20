@@ -99,7 +99,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
       }
 
       @Override
-      public void onDataNotAvailable(BaseHttpError error) {
+      public void onDataNotAvailable(@NonNull BaseHttpError error) {
         recyclerView.post(new Runnable() {
           @Override
           public void run() {
@@ -117,7 +117,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
       }
 
       @Override
-      public void onDataNotAvailable(BaseHttpError error) {
+      public void onDataNotAvailable(@NonNull BaseHttpError error) {
         AppTaskExecutor.getInstance().executeOnMainThread(() -> {
           showToastMessage(error.getMsg());
           loadFialed();
@@ -133,7 +133,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
       }
 
       @Override
-      public void onDataNotAvailable(BaseHttpError error) {
+      public void onDataNotAvailable(@NonNull BaseHttpError error) {
         autoRefreshDelay();
       }
     });

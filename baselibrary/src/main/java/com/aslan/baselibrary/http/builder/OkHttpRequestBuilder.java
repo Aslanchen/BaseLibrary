@@ -1,8 +1,11 @@
 package com.aslan.baselibrary.http.builder;
 
+import android.arch.lifecycle.Lifecycle.State;
+import android.arch.lifecycle.LifecycleOwner;
 import android.net.Uri;
 import android.text.TextUtils;
 import com.aslan.baselibrary.http.request.RequestCall;
+import com.aslan.baselibrary.http.request.RequestLifecycleObserver;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,10 +17,10 @@ public abstract class OkHttpRequestBuilder<T extends OkHttpRequestBuilder> {
   protected String path;
   protected Map<String, String> paramsUrl;
   protected Map<String, String> headers;
-  protected int id;
+  protected LifecycleOwner lifecycleOwner;
 
-  public T id(int id) {
-    this.id = id;
+  public T with(LifecycleOwner lifecycleOwner) {
+    this.lifecycleOwner = lifecycleOwner;
     return (T) this;
   }
 
@@ -49,7 +52,7 @@ public abstract class OkHttpRequestBuilder<T extends OkHttpRequestBuilder> {
     return (T) this;
   }
 
-  public T paths(Map<String, String> params) {
+  public T paramsUrl(Map<String, String> params) {
     this.paramsUrl = params;
     return (T) this;
   }
@@ -83,5 +86,18 @@ public abstract class OkHttpRequestBuilder<T extends OkHttpRequestBuilder> {
     return builder.build().toString();
   }
 
-  public abstract RequestCall build();
+  public abstract RequestCall buildRequestCall();
+
+  public RequestCall build() {
+    if (lifecycleOwner != null
+        && lifecycleOwner.getLifecycle().getCurrentState() == State.DESTROYED) {
+      throw new IllegalArgumentException("You cannot start a build for a destroyed activity");
+    }
+
+    RequestCall requestCall = buildRequestCall();
+    if (lifecycleOwner != null) {
+      lifecycleOwner.getLifecycle().addObserver(new RequestLifecycleObserver(requestCall));
+    }
+    return requestCall;
+  }
 }
