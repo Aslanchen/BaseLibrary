@@ -1,4 +1,4 @@
-package com.aslan.baselibrary.base;
+package com.aslan.baselibrary.utils;
 
 import android.arch.lifecycle.Observer;
 import android.database.Observable;
