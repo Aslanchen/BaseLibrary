@@ -6,19 +6,19 @@ ext {
     SUPPORT_VERSION = "27.1.1"
     BUILD_VERSION = "28.0.3"
     JAVA_VERSION = JavaVersion.VERSION_1_8
-    WORK_VERSION = "1.0.0-beta05"
+    WORK_VERSION = "1.0.0"
 }
 
 buildscript {
     repositories {
-        maven{ url 'https://maven.aliyun.com/repository/google'}
-        maven{ url 'https://maven.aliyun.com/repository/jcenter'}
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
         mavenCentral()
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -26,8 +26,8 @@ buildscript {
 
 allprojects {
     repositories {
-        maven{ url 'https://maven.aliyun.com/repository/google'}
-        maven{ url 'https://maven.aliyun.com/repository/jcenter'}
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
         mavenCentral()
         google()
         jcenter()

@@ -64,7 +64,21 @@ public final class FileUtil {
     return photo;
   }
 
-  private static Boolean isLackPermission(Context context) {
+  /**
+   * 判断sd卡是否存在
+   *
+   * @return 如果存在就返回true，反之不存在
+   */
+  public static boolean isSdCardExist() {
+    return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+  }
+
+  /**
+   * 是否缺少权限
+   *
+   * @return true缺少权限，反之不缺少
+   */
+  public static Boolean isLackPermission(Context context) {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
         && (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         != PackageManager.PERMISSION_GRANTED
@@ -76,7 +90,7 @@ public final class FileUtil {
    * 获取本地文件路径,优先采用SD卡
    */
   private static File getFilesDir(Context context, String tag) {
-    if (isLackPermission(context)) {
+    if (isLackPermission(context) || !isSdCardExist()) {
       return context.getFilesDir();
     } else {
       File file = context.getExternalFilesDir(tag);
