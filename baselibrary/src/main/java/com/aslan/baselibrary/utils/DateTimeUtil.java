@@ -22,6 +22,14 @@ public final class DateTimeUtil {
 
   }
 
+  public static long getTimeoffset() {
+    return timeoffset;
+  }
+
+  public static void setTimeoffset(long timeoffset) {
+    DateTimeUtil.timeoffset = timeoffset;
+  }
+
   public static long currentTimeMillis() {
     return System.currentTimeMillis() + timeoffset;
   }
