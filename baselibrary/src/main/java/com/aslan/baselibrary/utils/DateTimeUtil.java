@@ -8,6 +8,11 @@ package com.aslan.baselibrary.utils;
  */
 public final class DateTimeUtil {
 
+  public static final long SECOND = 1000;
+  public static final long MINUTE = SECOND * 60;
+  public static final long HOURS = MINUTE * 60;
+  public static final long DAY = HOURS * 24;
+
   /**
    * 时间差
    */
