@@ -16,17 +16,17 @@ public final class DateTimeUtil {
   /**
    * 时间差
    */
-  private static long timeoffset = 0;
+  private volatile static long timeoffset = 0;
 
   private DateTimeUtil() {
 
   }
 
-  public static long getTimeoffset() {
+  public synchronized static long getTimeoffset() {
     return timeoffset;
   }
 
-  public static void setTimeoffset(long timeoffset) {
+  public synchronized static void setTimeoffset(long timeoffset) {
     DateTimeUtil.timeoffset = timeoffset;
   }
 
