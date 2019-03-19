@@ -10,6 +10,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.provider.Settings;
 import android.support.annotation.DrawableRes;
@@ -20,6 +21,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.app.NotificationManagerCompat;
+import android.text.TextUtils;
 
 /**
  * 通知栏通知帮助类
@@ -39,7 +41,12 @@ public final class NotificationHelp {
   }
 
   public NotificationCompat.Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId) {
-    return creatBuilder(icon, channelId, NotificationManagerCompat.IMPORTANCE_DEFAULT);
+    return creatBuilder(icon, channelId, null, NotificationManagerCompat.IMPORTANCE_DEFAULT);
+  }
+
+  public NotificationCompat.Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
+      int importance) {
+    return creatBuilder(icon, channelId, null, importance);
   }
 
   /**
@@ -52,10 +59,16 @@ public final class NotificationHelp {
    * IMPORTANCE_DEFAULT 开启通知，不会弹出，发出提示音，状态栏中显示</p>
    * IMPORTANCE_HIGH 开启通知，会弹出，发出提示音，状态栏中显示</p>
    */
-  public NotificationCompat.Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
-      int importance) {
+  public Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
+      @Nullable String channelName, int importance) {
+    if (TextUtils.isEmpty(channelName) == false) {
+      if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        createNotificationChannel(context, channelId, channelName, importance);
+      }
+    }
+
     mNotificationManager = NotificationManagerCompat.from(context);
-    builder = new NotificationCompat.Builder(context, channelId);
+    builder = new Builder(context, channelId);
     if (importance == NotificationManagerCompat.IMPORTANCE_NONE) {
       builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
     } else if (importance == NotificationManagerCompat.IMPORTANCE_MIN) {
