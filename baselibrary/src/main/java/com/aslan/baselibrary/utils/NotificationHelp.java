@@ -40,7 +40,8 @@ public final class NotificationHelp {
     this.context = context;
   }
 
-  public NotificationCompat.Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId) {
+  public NotificationCompat.Builder creatBuilder(@DrawableRes int icon,
+      @NonNull String channelId) {
     return creatBuilder(icon, channelId, null, NotificationManagerCompat.IMPORTANCE_DEFAULT);
   }
 
@@ -50,7 +51,7 @@ public final class NotificationHelp {
   }
 
   public NotificationCompat.Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
-      @Nullable String channelName) {
+      @NonNull String channelName) {
     return creatBuilder(icon, channelId, channelName, NotificationManagerCompat.IMPORTANCE_DEFAULT);
   }
 
@@ -65,7 +66,7 @@ public final class NotificationHelp {
    * IMPORTANCE_HIGH 开启通知，会弹出，发出提示音，状态栏中显示
    */
   public Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
-      @Nullable String channelName, int importance) {
+      @NonNull String channelName, int importance) {
     if (TextUtils.isEmpty(channelName) == false) {
       if (VERSION.SDK_INT >= VERSION_CODES.O) {
         createNotificationChannel(context, channelId, channelName, importance);
