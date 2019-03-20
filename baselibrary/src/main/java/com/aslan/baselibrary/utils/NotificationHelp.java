@@ -49,15 +49,20 @@ public final class NotificationHelp {
     return creatBuilder(icon, channelId, null, importance);
   }
 
+  public NotificationCompat.Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
+      @Nullable String channelName) {
+    return creatBuilder(icon, channelId, channelName, NotificationManagerCompat.IMPORTANCE_DEFAULT);
+  }
+
   /**
    *
    * @param importance {@link NotificationManagerCompat#IMPORTANCE_DEFAULT}
    * Oreo不用Priority了，用importance
-   * IMPORTANCE_NONE 关闭通知</p>
-   * IMPORTANCE_MIN 开启通知，不会弹出，但没有提示音，状态栏中无显示</p>
-   * IMPORTANCE_LOW 开启通知，不会弹出，不发出提示音，状态栏中显示</p>
-   * IMPORTANCE_DEFAULT 开启通知，不会弹出，发出提示音，状态栏中显示</p>
-   * IMPORTANCE_HIGH 开启通知，会弹出，发出提示音，状态栏中显示</p>
+   * IMPORTANCE_NONE 关闭通知
+   * IMPORTANCE_MIN 开启通知，不会弹出，但没有提示音，状态栏中无显示
+   * IMPORTANCE_LOW 开启通知，不会弹出，不发出提示音，状态栏中显示
+   * IMPORTANCE_DEFAULT 开启通知，不会弹出，发出提示音，状态栏中显示
+   * IMPORTANCE_HIGH 开启通知，会弹出，发出提示音，状态栏中显示
    */
   public Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
       @Nullable String channelName, int importance) {
