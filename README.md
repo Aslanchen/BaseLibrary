@@ -1,4 +1,5 @@
 # BaseLibrary
+[ ![Download](https://api.bintray.com/packages/aslanchen/AndroidLibrary/BaseLibrary/images/download.svg) ](https://bintray.com/aslanchen/AndroidLibrary/BaseLibrary/_latestVersion)
 平常开发的基础框架
 
 ## 使用
