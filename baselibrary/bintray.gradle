@@ -1,0 +1,55 @@
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+version = '1.0.0'
+def siteUrl = 'https://github.com/Aslanchen/BaseLibrary'
+def gitUrl = 'https://github.com/Aslanchen/BaseLibrary.git'
+group = "com.github.aslanchen"
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                name 'BaseLibrary'
+                url siteUrl
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                //填写开发者基本信息，复制我的，这里需要修改。
+                developers {
+                    developer {
+                        id 'Aslanchen'
+                        name 'Aslan Chen'
+                        email 'chf122560007@gmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = "AndroidLibrary"
+        name = "BaseLibrary"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}

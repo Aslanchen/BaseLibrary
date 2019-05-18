@@ -2,10 +2,18 @@
 平常开发的基础框架
 
 ## 使用
+```
+implementation 'com.github.aslanchen:BaseLibrary:1.0.0'
+```
 
-### 混淆 原始文件在工程下面
+## 上传
+```
+gradlew install
+gradlew bintrayUpload
+```
 
-#### #proguard-databinding
+### 混淆(原始文件在工程下面)
+- proguard-databinding
 ```
 -dontwarn android.databinding.**
 -keep class <whatever your package name in AndroidManifest is>.databinding.** {
@@ -14,12 +22,12 @@
 }
 ```
 
-#### #proguard-flexible-adapter
+- proguard-flexible-adapter
 ```
 -dontnote eu.davidea.fastscroller.FastScroller
 ```
 
-#### #proguard-rules-eventbus
+- proguard-rules-eventbus
 ```
 -keepattributes *Annotation*
 -keepclassmembers class * {
@@ -33,7 +41,7 @@
 }
 ```
 
-#### #proguard-rules-gson
+- proguard-rules-gson
 ```
 -keepattributes Signature
 
@@ -54,7 +62,7 @@
 -keep class * implements com.google.gson.JsonDeserializer
 ```
 
-#### #proguard-rules-okhttp
+- proguard-rules-okhttp
 ```
 # A resource is loaded with a relative path so the package of this class must be preserved.
 -keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
@@ -75,7 +83,7 @@
 -dontwarn org.codehaus.mojo.animal_sniffer.*
 ```
 
-#### #proguard-rules-ormlite
+- proguard-rules-ormlite
 ```
 -keep class com.j256.**
 -keepclassmembers class com.j256.** { *; }
