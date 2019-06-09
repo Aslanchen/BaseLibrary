@@ -51,6 +51,10 @@ public class OkHttpManager {
     return mOkHttpClient;
   }
 
+  public void iniOkHttpClient(Builder builder) {
+    mOkHttpClient = builder.build();
+  }
+
   public Builder newBuilder() {
     Builder builder = new Builder();
     if (isLogEnable) {
