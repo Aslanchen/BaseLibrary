@@ -1,6 +1,7 @@
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
+version = VERSIONNAME
 def siteUrl = 'https://github.com/Aslanchen/BaseLibrary'
 def gitUrl = 'https://github.com/Aslanchen/BaseLibrary.git'
 group = "com.github.aslanchen"
@@ -50,9 +51,5 @@ bintray {
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]
         publish = true
-        version {
-            name = VERSIONNAME
-            desc = 'UI基础库'
-        }
     }
 }
