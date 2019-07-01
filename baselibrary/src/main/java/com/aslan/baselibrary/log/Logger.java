@@ -3,79 +3,66 @@ package com.aslan.baselibrary.log;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LoggerPrinter implements Printer {
+public class Logger implements Log {
 
   /**
    * It is used for json pretty print
    */
   private static final int JSON_INDENT = 2;
 
-  /**
-   * Provides one-time used tag for the log message
-   */
-  private final ThreadLocal<String> localTag = new ThreadLocal<>();
-
   private final List<LogAdapter> logAdapters = new ArrayList<>();
 
   @Override
-  public Printer t(String tag) {
-    if (tag != null) {
-      localTag.set(tag);
-    }
-    return this;
+  public void d(@Nullable String tag, @NonNull String message, @Nullable Object... args) {
+    log(android.util.Log.DEBUG, tag, null, message, args);
   }
 
   @Override
-  public void d(@NonNull String message, @Nullable Object... args) {
-    log(Log.DEBUG, null, message, args);
+  public void d(@Nullable String tag, @Nullable Object object) {
+    log(android.util.Log.DEBUG, tag, null, String.valueOf(object));
   }
 
   @Override
-  public void d(@Nullable Object object) {
-    log(Log.DEBUG, null, String.valueOf(object));
+  public void e(@Nullable String tag, @NonNull String message, @Nullable Object... args) {
+    e(tag, null, message, args);
   }
 
   @Override
-  public void e(@NonNull String message, @Nullable Object... args) {
-    e(null, message, args);
+  public void e(@Nullable String tag, @Nullable Throwable throwable, @NonNull String message,
+      @Nullable Object... args) {
+    log(android.util.Log.ERROR, tag, throwable, message, args);
   }
 
   @Override
-  public void e(@Nullable Throwable throwable, @NonNull String message, @Nullable Object... args) {
-    log(Log.ERROR, throwable, message, args);
+  public void w(@Nullable String tag, @NonNull String message, @Nullable Object... args) {
+    log(android.util.Log.WARN, tag, null, message, args);
   }
 
   @Override
-  public void w(@NonNull String message, @Nullable Object... args) {
-    log(Log.WARN, null, message, args);
+  public void i(@Nullable String tag, @NonNull String message, @Nullable Object... args) {
+    log(android.util.Log.INFO, tag, null, message, args);
   }
 
   @Override
-  public void i(@NonNull String message, @Nullable Object... args) {
-    log(Log.INFO, null, message, args);
+  public void v(@Nullable String tag, @NonNull String message, @Nullable Object... args) {
+    log(android.util.Log.VERBOSE, tag, null, message, args);
   }
 
   @Override
-  public void v(@NonNull String message, @Nullable Object... args) {
-    log(Log.VERBOSE, null, message, args);
+  public void wtf(@Nullable String tag, @NonNull String message, @Nullable Object... args) {
+    log(android.util.Log.ASSERT, tag, null, message, args);
   }
 
   @Override
-  public void wtf(@NonNull String message, @Nullable Object... args) {
-    log(Log.ASSERT, null, message, args);
-  }
-
-  @Override
-  public void json(@Nullable String json) {
+  public void json(@Nullable String tag, @Nullable String json) {
     if (TextUtils.isEmpty(json)) {
-      d("Empty/Null json content");
+      d(tag, "Empty/Null json content");
       return;
     }
     try {
@@ -83,18 +70,18 @@ public class LoggerPrinter implements Printer {
       if (json.startsWith("{")) {
         JSONObject jsonObject = new JSONObject(json);
         String message = jsonObject.toString(JSON_INDENT);
-        d(message);
+        d(tag, message);
         return;
       }
       if (json.startsWith("[")) {
         JSONArray jsonArray = new JSONArray(json);
         String message = jsonArray.toString(JSON_INDENT);
-        d(message);
+        d(tag, message);
         return;
       }
-      e("Invalid Json");
+      e(tag, "Invalid Json");
     } catch (JSONException e) {
-      e("Invalid Json");
+      e(tag, "Invalid Json");
     }
   }
 
@@ -128,25 +115,12 @@ public class LoggerPrinter implements Printer {
    * This method is synchronized in order to avoid messy of logs' order.
    */
   private synchronized void log(int priority,
+      @Nullable String tag,
       @Nullable Throwable throwable,
       @NonNull String msg,
       @Nullable Object... args) {
-    String tag = getTag();
     String message = createMessage(msg, args);
     log(priority, tag, message, throwable);
-  }
-
-  /**
-   * @return the appropriate tag based on local or global
-   */
-  @Nullable
-  private String getTag() {
-    String tag = localTag.get();
-    if (tag != null) {
-      localTag.remove();
-      return tag;
-    }
-    return null;
   }
 
   @NonNull

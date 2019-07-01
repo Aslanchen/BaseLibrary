@@ -1,4 +1,4 @@
-package com.aslan.baselibrary.utils;
+package com.aslan.baselibrary.log;
 
 import android.os.Bundle;
 import android.os.Handler;
