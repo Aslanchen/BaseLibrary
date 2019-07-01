@@ -51,8 +51,8 @@ public class OkHttpManager {
     return mOkHttpClient;
   }
 
-  public void iniOkHttpClient(Builder builder) {
-    mOkHttpClient = builder.build();
+  public void iniOkHttpClient(OkHttpClient mOkHttpClient) {
+    this.mOkHttpClient = mOkHttpClient;
   }
 
   public Builder newBuilder() {

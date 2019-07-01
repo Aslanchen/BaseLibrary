@@ -34,6 +34,9 @@ public class WriteLogHandler extends Handler {
   @Override
   public void handleMessage(@NonNull Message msg) {
     Bundle bundle = msg.getData();
+    if (bundle == null) {
+      return;
+    }
 
     String folder = bundle.getString(TAG_FOLDER);
     if (TextUtils.isEmpty(folder)) {
