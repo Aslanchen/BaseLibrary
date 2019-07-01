@@ -21,5 +21,5 @@
 #-renamesourcefileattribute SourceFile
 -dontwarn java.lang.invoke.**
 
--dontwarn com.vivalnk.baselibrary.log.**
--keep com.vivalnk.baselibrary.log.**
+-dontwarn com.aslan.baselibrary.log.**
+-keep com.aslan.baselibrary.log.**
