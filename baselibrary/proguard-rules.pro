@@ -20,3 +20,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -dontwarn java.lang.invoke.**
+
+-dontwarn com.vivalnk.baselibrary.log.**
+-keep com.vivalnk.baselibrary.log.**
