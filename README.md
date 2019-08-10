@@ -8,6 +8,12 @@ implementation 'com.github.aslanchen:baselibrary:1.0.2'
 ```
 
 ## 上传
+local.properties中填写
+```
+bintray.user=
+bintray.apikey=
+```
+
 ```
 gradlew install
 gradlew bintrayUpload
