@@ -30,15 +30,15 @@ public class OkHttpLogInterceptor implements Interceptor {
     Request request = chain.request();
     StringBuilder sb = new StringBuilder();
     sb.append(" ");
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
     sb.append("--------------------请求开始-------------------------");
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
     sb.append(String.format("Heads：%s", request.headers().toString()));
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
     sb.append(String.format("Url：%s", request.url()));
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
     sb.append(String.format("Method：%s", request.method()));
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
 
     RequestBody requestBody = request.body();
     if (requestBody != null) {
@@ -51,15 +51,15 @@ public class OkHttpLogInterceptor implements Interceptor {
         charset = contentType.charset(UTF8);
       }
       sb.append(String.format("Body：%s", buffer.readString(charset)));
-      sb.append(System.getProperty("line.separator"));
+      sb.append(System.lineSeparator());
     }
     sb.append("--------------------请求结束-------------------------");
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
     if (sb.length() >= MAX) {
       int start = 0;
       int end = MAX;
       while (start < sb.length()) {
-        Log.e(TAG, sb.substring(start, end));
+        Log.d(TAG, sb.substring(start, end));
         start = start + MAX;
         end = start + MAX;
         if (end > sb.length()) {
@@ -67,15 +67,15 @@ public class OkHttpLogInterceptor implements Interceptor {
         }
       }
     } else {
-      Log.e(TAG, sb.toString());
+      Log.d(TAG, sb.toString());
     }
 
     sb.delete(0, sb.length());
 
     sb.append(" ");
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
     sb.append("--------------------回复开始-------------------------");
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
 
     Response response = null;
     try {
@@ -83,28 +83,28 @@ public class OkHttpLogInterceptor implements Interceptor {
     } catch (Exception e) {
       sb.append(e.toString());
       sb.append(e.getMessage());
-      sb.append(System.getProperty("line.separator"));
+      sb.append(System.lineSeparator());
       sb.append("--------------------回复结束-------------------------");
-      sb.append(System.getProperty("line.separator"));
-      Log.e(TAG, sb.toString());
+      sb.append(System.lineSeparator());
+      Log.d(TAG, sb.toString());
       throw e;
     }
 
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
     sb.append(String.format("Heads：%s", String.valueOf(response.headers())));
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
     sb.append(String.format("Url：%s", response.request().url()));
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
     sb.append(String.format("Code：%s", response.code()));
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
     sb.append(String.format("Method：%s", response.request().method()));
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
 
     if (response.isSuccessful()) {
 
     } else {
       sb.append(String.format("Message：%s", response.message()));
-      sb.append(System.getProperty("line.separator"));
+      sb.append(System.lineSeparator());
     }
 
     if (HttpHeaders.hasBody(response)) {
@@ -121,22 +121,22 @@ public class OkHttpLogInterceptor implements Interceptor {
             charset = contentType.charset(UTF8);
           } catch (UnsupportedCharsetException e) {
             sb.append("--------------------回复结束-------------------------");
-            sb.append(System.getProperty("line.separator"));
+            sb.append(System.lineSeparator());
             return response;
           }
         }
 
         sb.append(String.format("Body：%s", buffer.clone().readString(charset)));
-        sb.append(System.getProperty("line.separator"));
+        sb.append(System.lineSeparator());
       }
     }
     sb.append("--------------------回复结束-------------------------");
-    sb.append(System.getProperty("line.separator"));
+    sb.append(System.lineSeparator());
     if (sb.length() >= MAX) {
       int start = 0;
       int end = MAX;
       while (start < sb.length()) {
-        Log.e(TAG, sb.substring(start, end));
+        Log.d(TAG, sb.substring(start, end));
         start = start + MAX;
         end = start + MAX;
         if (end > sb.length()) {
@@ -144,7 +144,7 @@ public class OkHttpLogInterceptor implements Interceptor {
         }
       }
     } else {
-      Log.e(TAG, sb.toString());
+      Log.d(TAG, sb.toString());
     }
     return response;
   }

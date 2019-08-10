@@ -4,7 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-public class AndroidLogAdapter implements LogAdapter {
+/**
+ * AndroidLogcat
+ */
+public class LogcatAdapter implements LogAdapter {
 
   @Override
   public boolean isLoggable(int priority, @Nullable String tag) {

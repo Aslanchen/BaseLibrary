@@ -1,7 +1,9 @@
 package com.aslan.baselibrary.base;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -204,6 +206,15 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
 
   public void navigationOnClickListener() {
     ((BaseActivity) getActivity()).thisFinish();
+  }
+
+  @MainThread
+  @Override
+  public void thisFinish() {
+    Activity activity = getActivity();
+    if (activity != null && activity instanceof BaseActivity) {
+      ((BaseActivity) activity).thisFinish();
+    }
   }
 
   @Override

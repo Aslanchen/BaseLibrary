@@ -3,6 +3,7 @@ package com.aslan.baselibrary.base;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -196,6 +197,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     thisFinish();
   }
 
+  @MainThread
+  @Override
   public void thisFinish() {
     this.finish();
   }

@@ -1,9 +1,11 @@
-package com.aslan.baselibrary.utils;
+package com.aslan.baselibrary.log;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,19 +15,38 @@ import java.io.IOException;
  */
 public class WriteLogHandler extends Handler {
 
-  @NonNull
-  private final String folder;
-  private final int maxFileSize;
+  public static final String TAG_FOLDER = "folder";
+  public static final String TAG_MESSAGE = "message";
 
-  public WriteLogHandler(@NonNull Looper looper, @NonNull String folder) {
+  @NonNull
+  private final Long maxFileSize;
+
+  public WriteLogHandler(@NonNull Looper looper) {
     super(looper);
-    this.folder = folder;
-    this.maxFileSize = 10 * 1024 * 1024;
+    this.maxFileSize = 10 * 1024 * 1024L;
+  }
+
+  public WriteLogHandler(@NonNull Looper looper, @NonNull Long maxFileSize) {
+    super(looper);
+    this.maxFileSize = maxFileSize;
   }
 
   @Override
   public void handleMessage(@NonNull Message msg) {
-    String content = (String) msg.obj;
+    Bundle bundle = msg.getData();
+    if (bundle == null) {
+      return;
+    }
+
+    String folder = bundle.getString(TAG_FOLDER);
+    if (TextUtils.isEmpty(folder)) {
+      return;
+    }
+
+    String message = bundle.getString(TAG_MESSAGE);
+    if (TextUtils.isEmpty(message)) {
+      return;
+    }
 
     FileWriter fileWriter = null;
     File logFile = getLogFile(folder, "logs");
@@ -33,7 +54,7 @@ public class WriteLogHandler extends Handler {
     try {
       fileWriter = new FileWriter(logFile, true);
 
-      writeLog(fileWriter, content);
+      writeLog(fileWriter, message);
 
       fileWriter.flush();
       fileWriter.close();

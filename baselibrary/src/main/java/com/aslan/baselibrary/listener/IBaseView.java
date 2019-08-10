@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.StringRes;
 import android.support.annotation.UiThread;
-
 import com.aslan.baselibrary.http.BaseHttpError;
 
 /**
@@ -34,7 +33,7 @@ public interface IBaseView {
   void showProgressBar(boolean canCancel, @StringRes int msg);
 
   @UiThread
-  void showProgressBar(boolean canCancel,@NonNull String msg);
+  void showProgressBar(boolean canCancel, @NonNull String msg);
 
   @UiThread
   void closeProgressBar();
@@ -57,5 +56,9 @@ public interface IBaseView {
   void startActivityForResult(@RequiresPermission Intent intent, int requestCode);
 
   @UiThread
-  void startActivityForResult(@RequiresPermission Intent intent, int requestCode, @Nullable Bundle options);
+  void startActivityForResult(@RequiresPermission Intent intent, int requestCode,
+      @Nullable Bundle options);
+
+  @UiThread
+  void thisFinish();
 }
