@@ -4,7 +4,7 @@
 
 ## 使用
 ```
-implementation 'com.github.aslanchen:baselibrary:1.0.2'
+implementation 'com.github.aslanchen:baselibrary:x.x.x'
 ```
 
 ## 上传
