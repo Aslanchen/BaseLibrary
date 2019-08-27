@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.listener.IMVPBasePresenter;
+import pub.devrel.easypermissions.EasyPermissions;
+import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
 
 /**
  * MPV基础类
@@ -40,6 +42,7 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     this.lifecycleOwner = fragment;
     this.mView = (V) fragment;
     this.fragment = fragment;
+    this.activity = (BaseActivity) fragment.getActivity();
   }
 
   @Override
@@ -89,7 +92,9 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
       @NonNull int[] grantResults) {
-
+    if (this instanceof PermissionCallbacks) {
+      EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
   }
 
   @Nullable

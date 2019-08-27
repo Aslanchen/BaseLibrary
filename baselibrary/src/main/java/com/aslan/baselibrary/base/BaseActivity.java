@@ -16,6 +16,8 @@ import com.aslan.baselibrary.R;
 import com.aslan.baselibrary.http.BaseHttpError;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.view.CustomToolbar;
+import pub.devrel.easypermissions.EasyPermissions;
+import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
 
 /**
  * 基础类
@@ -212,5 +214,14 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   protected void onDestroy() {
     closeProgressBar();
     super.onDestroy();
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+      @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    if (this instanceof PermissionCallbacks) {
+      EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
   }
 }
