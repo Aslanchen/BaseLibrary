@@ -8,11 +8,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.Size;
+import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentManager;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.listener.IMVPBasePresenter;
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
+import pub.devrel.easypermissions.PermissionRequest;
 
 /**
  * MPV基础类
@@ -105,5 +108,36 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     }
 
     return activity.getSupportFragmentManager();
+  }
+
+  protected boolean somePermissionDenied(@NonNull String... perms) {
+    if (fragment == null) {
+      return EasyPermissions.somePermissionDenied(activity, perms);
+    } else {
+      return EasyPermissions.somePermissionDenied(fragment, perms);
+    }
+  }
+
+  protected void requestPermissions(@StringRes int rationaleResId, int requestCode,
+      @Size(min = 1) @NonNull String... perms) {
+    requestPermissions(context.getString(rationaleResId), requestCode, perms);
+  }
+
+  protected void requestPermissions(@NonNull String rationale, int requestCode,
+      @Size(min = 1) @NonNull String... perms) {
+    if (fragment == null) {
+      EasyPermissions.requestPermissions(activity, rationale, requestCode, perms);
+    } else {
+      EasyPermissions.requestPermissions(fragment, rationale, requestCode, perms);
+    }
+  }
+
+  protected PermissionRequest.Builder newPermissionRequestBuilder(int requestCode,
+      @NonNull @Size(min = 1) String... perms) {
+    if (fragment == null) {
+      return new PermissionRequest.Builder(activity, requestCode, perms);
+    } else {
+      return new PermissionRequest.Builder(fragment, requestCode, perms);
+    }
   }
 }
