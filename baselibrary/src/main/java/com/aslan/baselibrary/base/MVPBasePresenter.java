@@ -13,6 +13,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentManager;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.listener.IMVPBasePresenter;
+import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
 import pub.devrel.easypermissions.PermissionRequest;
@@ -138,6 +139,14 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
       return new PermissionRequest.Builder(activity, requestCode, perms);
     } else {
       return new PermissionRequest.Builder(fragment, requestCode, perms);
+    }
+  }
+
+  protected AppSettingsDialog.Builder newAppSettingsDialogBuilder() {
+    if (fragment == null) {
+      return new AppSettingsDialog.Builder(activity);
+    } else {
+      return new AppSettingsDialog.Builder(fragment);
     }
   }
 }
