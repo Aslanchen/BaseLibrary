@@ -3,15 +3,15 @@ package com.aslan.baselibrary.base;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.annotation.UiThread;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.annotation.UiThread;
+import androidx.appcompat.app.AppCompatActivity;
 import com.aslan.baselibrary.R;
 import com.aslan.baselibrary.http.BaseHttpError;
 import com.aslan.baselibrary.listener.IBaseView;
@@ -192,7 +192,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
       return;
     }
 
-    Toast.makeText(this, error.getMsg(), Toast.LENGTH_SHORT).show();
+    Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
   }
 
   public void navigationOnClickListener() {

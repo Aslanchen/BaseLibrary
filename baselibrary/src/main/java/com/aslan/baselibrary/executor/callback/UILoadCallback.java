@@ -1,7 +1,7 @@
 package com.aslan.baselibrary.executor.callback;
 
-import android.arch.lifecycle.LifecycleOwner;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.annotation.NonNull;
 import com.aslan.baselibrary.executor.AppTaskExecutor;
 import com.aslan.baselibrary.http.BaseHttpError;
 

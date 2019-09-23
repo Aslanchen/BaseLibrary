@@ -1,6 +1,6 @@
 package com.aslan.baselibrary.executor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * 多线程管理类

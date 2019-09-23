@@ -1,11 +1,11 @@
 package com.aslan.baselibrary.base;
 
 import android.content.Intent;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.ViewDataBinding;
 import com.aslan.baselibrary.listener.IMVPBasePresenter;
 
 /**

@@ -1,7 +1,7 @@
 package com.aslan.baselibrary.base;
 
-import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 /**
  * 基础类

@@ -1,13 +1,13 @@
 package com.aslan.baselibrary.base;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Size;
-import android.support.annotation.UiThread;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Size;
+import androidx.annotation.UiThread;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.aslan.baselibrary.R;
 import com.aslan.baselibrary.executor.AppTaskExecutor;
 import com.aslan.baselibrary.http.BaseHttpError;
@@ -103,7 +103,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
         recyclerView.post(new Runnable() {
           @Override
           public void run() {
-            showToastMessage(error.getMsg());
+            showToastMessage(error.getMessage());
             swipeRefreshLayout.setRefreshing(false);
           }
         });
@@ -119,7 +119,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
       @Override
       public void onDataNotAvailable(@NonNull BaseHttpError error) {
         AppTaskExecutor.getInstance().executeOnMainThread(() -> {
-          showToastMessage(error.getMsg());
+          showToastMessage(error.getMessage());
           loadFialed();
         });
       }

@@ -1,6 +1,6 @@
 package com.aslan.baselibrary.listener;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.aslan.baselibrary.http.BaseHttpError;
 import java.util.List;
 

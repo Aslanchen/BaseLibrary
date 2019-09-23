@@ -1,7 +1,7 @@
 package com.aslan.baselibrary.log;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * A proxy interface to enable additional operations. Contains all possible Log message usages.

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.ViewDataBinding;
 import com.aslan.baselibrary.listener.IMVPBasePresenter;
 
 /**
@@ -14,16 +13,15 @@ import com.aslan.baselibrary.listener.IMVPBasePresenter;
  * @author Aslan
  * @date 2018/4/11
  */
-public abstract class MVPBaseActivity<V extends ViewDataBinding, P extends IMVPBasePresenter> extends
-    DataBindBaseActivity<V> {
+public abstract class MVPKotlinBaseFragment<P extends IMVPBasePresenter> extends BaseFragment {
 
-  protected P mPresenter;
+  public P mPresenter;
 
   public abstract P iniPresenter();
 
   @CallSuper
   @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
+  public void onCreate(@Nullable Bundle savedInstanceState) {
     mPresenter = iniPresenter();
     super.onCreate(savedInstanceState);
     getLifecycle().addObserver(mPresenter);
@@ -42,7 +40,7 @@ public abstract class MVPBaseActivity<V extends ViewDataBinding, P extends IMVPB
 
   @CallSuper
   @Override
-  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
     mPresenter.onActivityResult(requestCode, resultCode, data);
     super.onActivityResult(requestCode, resultCode, data);
   }

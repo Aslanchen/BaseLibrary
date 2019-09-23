@@ -1,6 +1,6 @@
 package com.aslan.baselibrary.http;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import java.io.IOException;
 import java.nio.charset.Charset;

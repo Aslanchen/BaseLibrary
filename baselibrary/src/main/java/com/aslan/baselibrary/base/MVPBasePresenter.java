@@ -1,16 +1,16 @@
 package com.aslan.baselibrary.base;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.Size;
-import android.support.annotation.StringRes;
-import android.support.v4.app.FragmentManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.Size;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.OnLifecycleEvent;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.listener.IMVPBasePresenter;
 import pub.devrel.easypermissions.AppSettingsDialog;

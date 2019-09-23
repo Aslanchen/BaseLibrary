@@ -2,12 +2,12 @@ package com.aslan.baselibrary.base;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.annotation.UiThread;
-import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.annotation.UiThread;
+import androidx.fragment.app.DialogFragment;
 import com.aslan.baselibrary.R;
 import com.aslan.baselibrary.http.BaseHttpError;
 import com.aslan.baselibrary.listener.IBaseView;
@@ -143,7 +143,7 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
       return;
     }
 
-    Toast.makeText(getContext(), error.getMsg(), Toast.LENGTH_SHORT).show();
+    Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
   }
 
   @Override

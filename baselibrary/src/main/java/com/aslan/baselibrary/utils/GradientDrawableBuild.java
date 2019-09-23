@@ -1,7 +1,7 @@
 package com.aslan.baselibrary.utils;
 
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 import android.view.View;
 
 /**

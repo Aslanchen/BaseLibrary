@@ -1,6 +1,6 @@
 package com.aslan.baselibrary.listener;
 
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Created by Aslan on 2017/12/7.

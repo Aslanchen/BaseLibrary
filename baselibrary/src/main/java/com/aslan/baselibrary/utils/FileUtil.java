@@ -6,8 +6,8 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import androidx.core.content.ContextCompat;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -104,8 +104,11 @@ public final class FileUtil {
 
   /**
    * 批量删除文件
+   *
+   * @param file 文件夹
+   * @param isDeleteDirect 是否需要删除文件夹
    */
-  private void deleteFile(File file) {
+  private void deleteFile(File file, boolean isDeleteDirect) {
     if (file == null) {
       return;
     }
@@ -113,7 +116,11 @@ public final class FileUtil {
     if (file.isDirectory()) {
       File[] files = file.listFiles();
       for (File f : files) {
-        deleteFile(f);
+        deleteFile(f, isDeleteDirect);
+      }
+
+      if (isDeleteDirect) {
+        file.delete();
       }
     } else if (file.exists()) {
       file.delete();

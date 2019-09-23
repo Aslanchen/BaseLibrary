@@ -3,8 +3,8 @@ package com.aslan.baselibrary.log;
 import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import java.io.File;
 
 /**
