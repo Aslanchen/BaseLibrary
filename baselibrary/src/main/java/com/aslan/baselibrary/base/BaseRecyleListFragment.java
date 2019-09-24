@@ -64,7 +64,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
 
     iniEmptyView();
 
-    setColorSchemeResources(swipeRefreshLayout);
+    swipeRefreshLayout.setColorSchemeResources(getColorSchemeResources());
     swipeRefreshLayout.setEnabled(true);
 
     recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext()));
@@ -256,13 +256,10 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
     });
   }
 
-  /**
-   * 设置颜色值
-   */
-  private void setColorSchemeResources(SwipeRefreshLayout swipeRefreshLayout) {
-    swipeRefreshLayout.setColorSchemeResources(
+  public int[] getColorSchemeResources() {
+    return new int[]{
         android.R.color.holo_purple, android.R.color.holo_blue_light,
-        android.R.color.holo_green_light, android.R.color.holo_orange_light);
+        android.R.color.holo_green_light, android.R.color.holo_orange_light};
   }
 
   public abstract AbstractFlexibleItem getItem(M model);
