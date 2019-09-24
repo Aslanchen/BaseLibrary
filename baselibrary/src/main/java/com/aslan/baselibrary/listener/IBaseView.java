@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.StringRes;
 import androidx.annotation.UiThread;
-import com.aslan.baselibrary.http.BaseHttpError;
+import com.aslan.baselibrary.http.BaseError;
 
 /**
  * 错误提示类以及等待框
@@ -45,7 +45,7 @@ public interface IBaseView {
   void showToastMessage(@NonNull CharSequence text);
 
   @UiThread
-  void showToastMessage(@NonNull BaseHttpError error);
+  void showToastMessage(@NonNull BaseError error);
 
   boolean isAdd();
 

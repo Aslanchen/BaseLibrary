@@ -1,21 +1,21 @@
 package com.aslan.baselibrary.http;
 
 /**
- * HTTP基础错误类
+ * 基础错误类
  *
  * @author Aslan
  * @date 2019/9/23
  */
-public class BaseHttpError extends Exception {
+public class BaseError extends Exception {
 
   private int code;
 
-  public BaseHttpError(int code, String message) {
+  public BaseError(int code, String message) {
     super(message);
     this.code = code;
   }
 
-  public BaseHttpError(int code, String message, Throwable e) {
+  public BaseError(int code, String message, Throwable e) {
     super(message);
     this.code = code;
   }

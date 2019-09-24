@@ -9,7 +9,7 @@ import androidx.annotation.StringRes;
 import androidx.annotation.UiThread;
 import androidx.fragment.app.DialogFragment;
 import com.aslan.baselibrary.R;
-import com.aslan.baselibrary.http.BaseHttpError;
+import com.aslan.baselibrary.http.BaseError;
 import com.aslan.baselibrary.listener.IBaseView;
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
@@ -138,7 +138,7 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
 
   @UiThread
   @Override
-  public void showToastMessage(@NonNull BaseHttpError error) {
+  public void showToastMessage(@NonNull BaseError error) {
     if (isAdd() == false) {
       return;
     }

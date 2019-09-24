@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.aslan.baselibrary.R;
 import com.aslan.baselibrary.executor.AppTaskExecutor;
-import com.aslan.baselibrary.http.BaseHttpError;
+import com.aslan.baselibrary.http.BaseError;
 import com.aslan.baselibrary.items.ProgressItem;
 import com.aslan.baselibrary.listener.LoadListCallback;
 import com.aslan.baselibrary.view.EmptyView;
@@ -99,7 +99,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
       }
 
       @Override
-      public void onDataNotAvailable(@NonNull BaseHttpError error) {
+      public void onDataNotAvailable(@NonNull BaseError error) {
         recyclerView.post(new Runnable() {
           @Override
           public void run() {
@@ -117,7 +117,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
       }
 
       @Override
-      public void onDataNotAvailable(@NonNull BaseHttpError error) {
+      public void onDataNotAvailable(@NonNull BaseError error) {
         AppTaskExecutor.getInstance().executeOnMainThread(() -> {
           showToastMessage(error.getMessage());
           loadFialed();
@@ -133,7 +133,7 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
       }
 
       @Override
-      public void onDataNotAvailable(@NonNull BaseHttpError error) {
+      public void onDataNotAvailable(@NonNull BaseError error) {
         autoRefreshDelay();
       }
     });

@@ -15,7 +15,7 @@ import androidx.annotation.StringRes;
 import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
 import com.aslan.baselibrary.R;
-import com.aslan.baselibrary.http.BaseHttpError;
+import com.aslan.baselibrary.http.BaseError;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.view.CustomToolbar;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -198,7 +198,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
 
   @UiThread
   @Override
-  public void showToastMessage(@NonNull BaseHttpError error) {
+  public void showToastMessage(@NonNull BaseError error) {
     if (isAdd() == false) {
       return;
     }
