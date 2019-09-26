@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProvider.Factory;
 import androidx.lifecycle.ViewModelProviders;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.listener.IMVPBasePresenter;
@@ -175,6 +176,17 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
       return ViewModelProviders.of(fragment);
     } else {
       return ViewModelProviders.of(activity);
+    }
+  }
+
+  /**
+   * ViewModelProviders.of 使用
+   */
+  protected ViewModelProvider ViewModelProvidersOf(@Nullable Factory factory) {
+    if (fragment != null) {
+      return ViewModelProviders.of(fragment, factory);
+    } else {
+      return ViewModelProviders.of(activity, factory);
     }
   }
 }
