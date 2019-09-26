@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.listener.IMVPBasePresenter;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -111,6 +113,9 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     return activity.getSupportFragmentManager();
   }
 
+  /**
+   * EasyPermissions 使用
+   */
   protected boolean somePermissionDenied(@NonNull String... perms) {
     if (fragment == null) {
       return EasyPermissions.somePermissionDenied(activity, perms);
@@ -119,11 +124,17 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     }
   }
 
+  /**
+   * EasyPermissions 使用
+   */
   protected void requestPermissions(@StringRes int rationaleResId, int requestCode,
       @Size(min = 1) @NonNull String... perms) {
     requestPermissions(context.getString(rationaleResId), requestCode, perms);
   }
 
+  /**
+   * EasyPermissions 使用
+   */
   protected void requestPermissions(@NonNull String rationale, int requestCode,
       @Size(min = 1) @NonNull String... perms) {
     if (fragment == null) {
@@ -133,6 +144,9 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     }
   }
 
+  /**
+   * EasyPermissions 使用
+   */
   protected PermissionRequest.Builder newPermissionRequestBuilder(int requestCode,
       @NonNull @Size(min = 1) String... perms) {
     if (fragment == null) {
@@ -142,11 +156,25 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     }
   }
 
+  /**
+   * EasyPermissions 使用,进入设置界面
+   */
   protected AppSettingsDialog.Builder newAppSettingsDialogBuilder() {
     if (fragment == null) {
       return new AppSettingsDialog.Builder(activity);
     } else {
       return new AppSettingsDialog.Builder(fragment);
+    }
+  }
+
+  /**
+   * ViewModelProviders.of 使用
+   */
+  protected ViewModelProvider ViewModelProvidersOf() {
+    if (fragment != null) {
+      return ViewModelProviders.of(fragment);
+    } else {
+      return ViewModelProviders.of(activity);
     }
   }
 }
