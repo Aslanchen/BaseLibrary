@@ -2,12 +2,14 @@ package com.aslan.baselibrary.listener;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.aslan.baselibrary.http.BaseError;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.StringRes;
 import androidx.annotation.UiThread;
-import com.aslan.baselibrary.http.BaseError;
 
 /**
  * 错误提示类以及等待框
@@ -15,50 +17,37 @@ import com.aslan.baselibrary.http.BaseError;
  * @author Aslan
  * @date 2018/4/11
  */
+@UiThread
 public interface IBaseView {
 
-  @UiThread
-  void showProgressBar();
+    void showProgressBar();
 
-  @UiThread
-  void showProgressBar(@StringRes int msg);
+    void showProgressBar(@StringRes int msg);
 
-  @UiThread
-  void showProgressBar(@NonNull String msg);
+    void showProgressBar(@NonNull String msg);
 
-  @UiThread
-  void showProgressBar(boolean canCancel);
+    void showProgressBar(boolean canCancel);
 
-  @UiThread
-  void showProgressBar(boolean canCancel, @StringRes int msg);
+    void showProgressBar(boolean canCancel, @StringRes int msg);
 
-  @UiThread
-  void showProgressBar(boolean canCancel, @NonNull String msg);
+    void showProgressBar(boolean canCancel, @NonNull String msg);
 
-  @UiThread
-  void closeProgressBar();
+    void closeProgressBar();
 
-  @UiThread
-  void showToastMessage(@StringRes int resId);
+    void showToastMessage(@StringRes int resId);
 
-  @UiThread
-  void showToastMessage(@NonNull CharSequence text);
+    void showToastMessage(@NonNull CharSequence text);
 
-  @UiThread
-  void showToastMessage(@NonNull BaseError error);
+    void showToastMessage(@NonNull BaseError error);
 
-  boolean isAdd();
+    boolean isAdd();
 
-  @UiThread
-  void startActivity(Intent intent);
+    void startActivity(Intent intent);
 
-  @UiThread
-  void startActivityForResult(@RequiresPermission Intent intent, int requestCode);
+    void startActivityForResult(@RequiresPermission Intent intent, int requestCode);
 
-  @UiThread
-  void startActivityForResult(@RequiresPermission Intent intent, int requestCode,
-      @Nullable Bundle options);
+    void startActivityForResult(@RequiresPermission Intent intent, int requestCode,
+                                @Nullable Bundle options);
 
-  @UiThread
-  void thisFinish();
+    void thisFinish();
 }
