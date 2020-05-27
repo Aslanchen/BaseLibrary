@@ -21,23 +21,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CustomHttpClient {
     public static final String TAG_LOG = "OkHttp";
 
-    private volatile static CustomHttpClient mInstance;
-
-    public static CustomHttpClient getInstance() {
-        if (null == mInstance) {
-            synchronized (CustomHttpClient.class) {
-                if (null == mInstance) {
-                    mInstance = new CustomHttpClient();
-                }
-            }
-        }
-        return mInstance;
-    }
-
-    private CustomHttpClient() {
-
-    }
-
     public <T> T create(@NonNull String url, Class<T> service) {
         HttpLoggingInterceptor.Logger logger = new HttpLoggingInterceptor.Logger() {
             @Override
