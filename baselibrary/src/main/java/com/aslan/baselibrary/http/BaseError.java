@@ -8,23 +8,18 @@ package com.aslan.baselibrary.http;
  */
 public class BaseError extends Exception {
 
-  private int code;
+    private int code;
 
-  public BaseError(int code, String message) {
-    super(message);
-    this.code = code;
-  }
+    public BaseError(int code, String message) {
+        super(message);
+        this.code = code;
+    }
 
-  public BaseError(int code, String message, Throwable e) {
-    super(message);
-    this.code = code;
-  }
+    public int getCode() {
+        return code;
+    }
 
-  public int getCode() {
-    return code;
-  }
-
-  public void setCode(int code) {
-    this.code = code;
-  }
+    public void setCode(int code) {
+        this.code = code;
+    }
 }
