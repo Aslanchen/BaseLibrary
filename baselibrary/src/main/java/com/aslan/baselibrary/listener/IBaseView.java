@@ -1,5 +1,6 @@
 package com.aslan.baselibrary.listener;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -19,6 +20,9 @@ import androidx.annotation.UiThread;
  */
 @UiThread
 public interface IBaseView {
+
+    @Nullable
+    Context getContext();
 
     void showProgressBar();
 
