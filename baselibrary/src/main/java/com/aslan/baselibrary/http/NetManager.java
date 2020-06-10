@@ -24,6 +24,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public final class NetManager {
 
+    public static final int ERROR_NET_SERVER = -100;//HttpException
+    public static final int ERROR_NO_NET = -101;//没有网络
+    public static final int ERROR_NET_UNKNOWHOST = -103;//UnknownHostException
+    public static final int ERROR_NET_CONNECT_TIMEOUT = -104;//ERROR_NET_CONNECT_TIMEOUT
+    public static final int ERROR_NET_SOCKET_TIMEOUT = -105;//ERROR_NET_SOCKET_TIMEOUT
+    public static final int ERROR_PARSE_DATA_ERROR = -106;//JsonParseException
+    public static final int ERROR_OTHER = -107;//服务器异常
+    public static final int ERROR_TOKEN_ERROR = -108;//Token异常
+
     /**
      * 网络是否可用
      */

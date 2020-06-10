@@ -6,7 +6,7 @@ package com.aslan.baselibrary.http;
  * @author Aslan
  * @date 2019/9/23
  */
-public interface IHttpBean {
+public interface IHttpBean<T> {
     int getCode();
 
     String getMessage();
@@ -14,4 +14,6 @@ public interface IHttpBean {
     boolean isSuccessful();
 
     boolean isTokenError();
+
+    T getData();
 }
