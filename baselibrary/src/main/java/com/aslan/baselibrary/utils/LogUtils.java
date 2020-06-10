@@ -1,6 +1,5 @@
 package com.aslan.baselibrary.utils;
 
-import com.aslan.baselibrary.BuildConfig;
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.LogLevel;
 import com.elvishew.xlog.XLog;
@@ -28,9 +27,9 @@ public class LogUtils {
     private static SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS",
             Locale.getDefault());
 
-    public static void config(String folderPath) {
+    public static void config(String folderPath, int logLevel) {
         LogConfiguration config = new LogConfiguration.Builder()
-                .logLevel(BuildConfig.DEBUG ? LogLevel.ALL : LogLevel.NONE)
+                .logLevel(logLevel)
                 .build();
         Printer androidPrinter = new AndroidPrinter();
         Printer filePrinter = new FilePrinter
@@ -53,35 +52,35 @@ public class LogUtils {
     }
 
     public static void v(String msg) {
-        XLog.d(msg);
+        XLog.v(msg);
     }
 
     public static void v(String format, Object... args) {
-        XLog.d(format, args);
+        XLog.v(format, args);
     }
 
     public static void d(String msg) {
-        XLog.e(msg);
-    }
-
-    public static void d(String format, Object... args) {
-        XLog.e(format, args);
-    }
-
-    public static void i(String msg) {
         XLog.d(msg);
     }
 
-    public static void i(String format, Object... args) {
+    public static void d(String format, Object... args) {
         XLog.d(format, args);
     }
 
+    public static void i(String msg) {
+        XLog.i(msg);
+    }
+
+    public static void i(String format, Object... args) {
+        XLog.i(format, args);
+    }
+
     public static void w(String msg) {
-        XLog.e(msg);
+        XLog.w(msg);
     }
 
     public static void w(String format, Object... args) {
-        XLog.e(format, args);
+        XLog.w(format, args);
     }
 
     public static void e(String msg) {

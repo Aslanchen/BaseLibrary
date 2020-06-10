@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.aslan.baselibrary.R;
 
+import androidx.annotation.NonNull;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -48,7 +49,7 @@ public abstract class BaseObserver<T> implements Observer<T> {
         handleSuccess(t);
     }
 
-    public abstract void handleError(BaseError e);
+    public abstract void handleError(@NonNull BaseError e);
 
-    public abstract void handleSuccess(T t);
+    public abstract void handleSuccess(@NonNull T t);
 }

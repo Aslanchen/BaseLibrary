@@ -13,6 +13,13 @@ android {
         versionName VERSIONNAME
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "proguard-rules-databinding.pro"
+        consumerProguardFiles "proguard-rules-eventbus.pro"
+        consumerProguardFiles "proguard-rules-glide.pro"
+        consumerProguardFiles "proguard-rules-gson.pro"
+        consumerProguardFiles "proguard-rules-okhttp.pro"
+        consumerProguardFiles "proguard-rules-ormlite.pro"
+        consumerProguardFiles "proguard-rules-retrofit.pro"
     }
 
     compileOptions {

@@ -3,6 +3,7 @@ package com.aslan.baselibrary.http;
 import com.aslan.baselibrary.listener.IBaseView;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -36,7 +37,7 @@ public abstract class ViewObserver<T extends IHttpBean> extends BaseObserver<T> 
 
     @CallSuper
     @Override
-    public void handleError(BaseError e) {
+    public void handleError(@NonNull BaseError e) {
         iBaseView.showToastMessage(e);
     }
 }

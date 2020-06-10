@@ -4,7 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.aslan.baselibrary.utils.LogUtils;
+import com.elvishew.xlog.Logger;
+import com.elvishew.xlog.XLog;
 
 import java.util.concurrent.TimeUnit;
 
@@ -74,12 +75,13 @@ public final class NetManager {
     }
 
     public static final String TAG_LOG = "OkHttp";
+    private static final Logger mLogger = XLog.tag(TAG_LOG).build();
 
     public static <T> T create(@NonNull String url, Class<T> service) {
         HttpLoggingInterceptor.Logger logger = new HttpLoggingInterceptor.Logger() {
             @Override
             public void log(String message) {
-                LogUtils.d(TAG_LOG, message);
+                mLogger.d(message);
             }
         };
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor(logger);
