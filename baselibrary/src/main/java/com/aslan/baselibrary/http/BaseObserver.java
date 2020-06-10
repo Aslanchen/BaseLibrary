@@ -13,7 +13,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import io.reactivex.SingleObserver;
+import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import retrofit2.HttpException;
 
@@ -23,7 +23,7 @@ import retrofit2.HttpException;
  * @author Aslan
  * @date 2019/9/23
  */
-public abstract class BaseObserver<T extends IHttpBean> implements SingleObserver<T> {
+public abstract class BaseObserver<T extends IHttpBean> implements Observer<T> {
 
     private Context context;
 
@@ -43,6 +43,11 @@ public abstract class BaseObserver<T extends IHttpBean> implements SingleObserve
     @Override
     public void onError(Throwable e) {
         handleError(tranlateError(e));
+    }
+
+    @Override
+    public void onComplete() {
+
     }
 
     private BaseError tranlateError(Throwable e) {
@@ -76,7 +81,7 @@ public abstract class BaseObserver<T extends IHttpBean> implements SingleObserve
     }
 
     @Override
-    public void onSuccess(T t) {
+    public void onNext(T t) {
         if (t.isTokenError()) {
             handleError(new BaseError(ERROR_TOKEN_ERROR,
                     context.getString(R.string.error_net_token_error)));
