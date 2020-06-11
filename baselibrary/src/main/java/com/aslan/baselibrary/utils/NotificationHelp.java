@@ -32,7 +32,7 @@ import android.text.TextUtils;
 public final class NotificationHelp {
 
   private NotificationManagerCompat mNotificationManager;
-  private NotificationCompat.Builder builder;
+  private Builder builder;
   private Notification notification;
   private Context context;
 
@@ -40,17 +40,17 @@ public final class NotificationHelp {
     this.context = context;
   }
 
-  public NotificationCompat.Builder creatBuilder(@DrawableRes int icon,
+  public Builder creatBuilder(@DrawableRes int icon,
       @NonNull String channelId) {
     return creatBuilder(icon, channelId, null, NotificationManagerCompat.IMPORTANCE_DEFAULT);
   }
 
-  public NotificationCompat.Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
+  public Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
       int importance) {
     return creatBuilder(icon, channelId, null, importance);
   }
 
-  public NotificationCompat.Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
+  public Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
       @NonNull String channelName) {
     return creatBuilder(icon, channelId, channelName, NotificationManagerCompat.IMPORTANCE_DEFAULT);
   }
@@ -198,7 +198,7 @@ public final class NotificationHelp {
    */
   public static void openNotificationSetting(Activity activity, int requestCode) {
     try {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      if (VERSION.SDK_INT >= VERSION_CODES.O) {
         //这种方案适用于 API 26, 即8.0（含8.0）以上可以用
         ApplicationInfo appInfo = activity.getApplicationInfo();
         String pkg = activity.getApplicationContext().getPackageName();
@@ -208,7 +208,7 @@ public final class NotificationHelp {
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, pkg);
         intent.putExtra(Settings.EXTRA_CHANNEL_ID, uid);
         activity.startActivityForResult(intent, requestCode);
-      } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      } else if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
         //这种方案适用于 API21——25，即 5.0——7.1 之间的版本可以使用
         ApplicationInfo appInfo = activity.getApplicationInfo();
         String pkg = activity.getApplicationContext().getPackageName();
@@ -218,7 +218,7 @@ public final class NotificationHelp {
         intent.putExtra("app_package", pkg);
         intent.putExtra("app_uid", uid);
         activity.startActivityForResult(intent, requestCode);
-      } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+      } else if (VERSION.SDK_INT == VERSION_CODES.KITKAT) {
         ApplicationInfo appInfo = activity.getApplicationInfo();
         String pkg = activity.getApplicationContext().getPackageName();
         Intent intent = new Intent();
@@ -241,7 +241,7 @@ public final class NotificationHelp {
    */
   public static void openNotificationSetting(Fragment fragment, int requestCode) {
     try {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      if (VERSION.SDK_INT >= VERSION_CODES.O) {
         //这种方案适用于 API 26, 即8.0（含8.0）以上可以用
         ApplicationInfo appInfo = fragment.getContext().getApplicationInfo();
         String pkg = fragment.getContext().getApplicationContext().getPackageName();
@@ -251,7 +251,7 @@ public final class NotificationHelp {
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, pkg);
         intent.putExtra(Settings.EXTRA_CHANNEL_ID, uid);
         fragment.startActivityForResult(intent, requestCode);
-      } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      } else if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
         //这种方案适用于 API21——25，即 5.0——7.1 之间的版本可以使用
         ApplicationInfo appInfo = fragment.getContext().getApplicationInfo();
         String pkg = fragment.getContext().getApplicationContext().getPackageName();
@@ -261,7 +261,7 @@ public final class NotificationHelp {
         intent.putExtra("app_package", pkg);
         intent.putExtra("app_uid", uid);
         fragment.startActivityForResult(intent, requestCode);
-      } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+      } else if (VERSION.SDK_INT == VERSION_CODES.KITKAT) {
         ApplicationInfo appInfo = fragment.getContext().getApplicationInfo();
         String pkg = fragment.getContext().getApplicationContext().getPackageName();
         Intent intent = new Intent();

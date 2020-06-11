@@ -1,9 +1,10 @@
 package com.aslan.baselibrary.http;
 
-import com.aslan.baselibrary.listener.IBaseView;
-
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
+
+import com.aslan.baselibrary.listener.IBaseView;
+
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -12,7 +13,7 @@ import io.reactivex.disposables.Disposable;
  * @author Aslan
  * @date 2019/9/23
  */
-public abstract class ViewObserver<T extends IHttpBean> extends BaseObserver<T> {
+public abstract class ViewObserver<T> extends BaseObserver<T> {
 
     private IBaseView iBaseView;
 

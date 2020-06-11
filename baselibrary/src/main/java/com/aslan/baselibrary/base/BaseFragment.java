@@ -9,17 +9,19 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.aslan.baselibrary.R;
-import com.aslan.baselibrary.http.BaseError;
-import com.aslan.baselibrary.listener.IBaseView;
-import com.aslan.baselibrary.view.CustomToolbar;
-
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+
+import com.aslan.baselibrary.R;
+import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.listener.IBaseView;
+import com.aslan.baselibrary.view.CustomToolbar;
+
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
 
@@ -240,5 +242,11 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
             EasyPermissions
                     .onRequestPermissionsResult(requestCode, permissions, grantResults, this);
         }
+    }
+
+    @NonNull
+    @Override
+    public LifecycleOwner getLifecycleOwner() {
+        return this;
     }
 }

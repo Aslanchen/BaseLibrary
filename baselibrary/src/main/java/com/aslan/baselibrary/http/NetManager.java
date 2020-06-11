@@ -25,6 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public final class NetManager {
 
+    public static final int ERROR_DB = -200;//SQLException
     public static final int ERROR_NET_SERVER = -100;//HttpException
     public static final int ERROR_NO_NET = -101;//没有网络
     public static final int ERROR_NET_UNKNOWHOST = -103;//UnknownHostException

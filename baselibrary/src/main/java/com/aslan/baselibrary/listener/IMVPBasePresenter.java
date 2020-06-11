@@ -42,7 +42,7 @@ public interface IMVPBasePresenter extends LifecycleObserver {
   void onActivityResult(int requestCode, int resultCode, @Nullable Intent data);
 
   void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-      @NonNull int[] grantResults);
+                                  @NonNull int[] grantResults);
 
   @Nullable
   FragmentManager getFragmentManager();

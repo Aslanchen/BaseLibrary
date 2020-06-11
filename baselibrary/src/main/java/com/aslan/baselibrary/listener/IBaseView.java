@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.aslan.baselibrary.http.BaseError;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.StringRes;
 import androidx.annotation.UiThread;
+import androidx.lifecycle.LifecycleOwner;
+
+import com.aslan.baselibrary.http.BaseError;
 
 /**
  * 错误提示类以及等待框
@@ -20,6 +21,9 @@ import androidx.annotation.UiThread;
  */
 @UiThread
 public interface IBaseView {
+
+    @NonNull
+    LifecycleOwner getLifecycleOwner();
 
     @Nullable
     Context getContext();
