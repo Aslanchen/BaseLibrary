@@ -1,12 +1,13 @@
-package com.aslan.baselibrary.http;
+package com.aslan.baselibrary.http.observer;
 
 import android.content.Context;
 
+import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.http.NetManager;
+
 import androidx.annotation.NonNull;
-
-import com.aslan.baselibrary.R;
-
-import io.reactivex.Observer;
+import androidx.annotation.Nullable;
+import io.reactivex.MaybeObserver;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -15,11 +16,11 @@ import io.reactivex.disposables.Disposable;
  * @author Aslan
  * @date 2019/9/23
  */
-public abstract class BaseObserver<T> implements Observer<T> {
+public abstract class DataMaybeObserver<T> implements MaybeObserver<T> {
 
     private Context context;
 
-    public BaseObserver(Context context) {
+    public DataMaybeObserver(Context context) {
         this.context = context;
     }
 
@@ -33,24 +34,21 @@ public abstract class BaseObserver<T> implements Observer<T> {
     }
 
     @Override
-    public void onComplete() {
-
-    }
-
-    @Override
     public void onSubscribe(Disposable d) {
-        if (!NetManager.isNetworkAvailable(context)) {
-            handleError(new BaseError(NetManager.ERROR_NO_NET,
-                    context.getString(R.string.error_net_no_net)));
-        }
+
     }
 
     @Override
-    public void onNext(T t) {
+    public void onComplete() {
+        handleSuccess(null);
+    }
+
+    @Override
+    public void onSuccess(@NonNull T t) {
         handleSuccess(t);
     }
 
     public abstract void handleError(@NonNull BaseError e);
 
-    public abstract void handleSuccess(@NonNull T t);
+    public abstract void handleSuccess(@Nullable T t);
 }
