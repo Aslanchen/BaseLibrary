@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.aslan.baselibrary.http.BaseError;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import io.reactivex.Completable;
 
 /**
@@ -19,12 +21,12 @@ public class CompletableResponseFunction<T> extends BaseResponseFunction<T, Comp
     }
 
     @Override
-    Completable error(BaseError ex) {
+    Completable error(@NonNull BaseError ex) {
         return Completable.error(ex);
     }
 
     @Override
-    Completable just(T item) {
+    Completable handleData(@Nullable T item) {
         return Completable.complete();
     }
 }

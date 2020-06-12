@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.aslan.baselibrary.http.BaseError;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import io.reactivex.Flowable;
 
 /**
@@ -19,12 +21,16 @@ public class FlowableResponseFunction<T> extends BaseResponseFunction<T, Flowabl
     }
 
     @Override
-    Flowable<T> error(BaseError ex) {
+    Flowable<T> error(@NonNull BaseError ex) {
         return Flowable.error(ex);
     }
 
     @Override
-    Flowable<T> just(T item) {
-        return Flowable.just(item);
+    Flowable<T> handleData(@Nullable T item) {
+        if (item == null) {
+            return Flowable.error(new NullPointerException("respone data is empty"));
+        } else {
+            return Flowable.just(item);
+        }
     }
 }

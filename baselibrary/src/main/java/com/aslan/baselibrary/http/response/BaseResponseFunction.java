@@ -6,6 +6,8 @@ import com.aslan.baselibrary.http.BaseError;
 import com.aslan.baselibrary.http.IHttpBean;
 import com.aslan.baselibrary.http.NetManager;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import io.reactivex.functions.Function;
 
 /**
@@ -30,13 +32,13 @@ abstract class BaseResponseFunction<T, R> implements Function<IHttpBean<T>, R> {
         }
 
         if (respone.isSuccessful()) {
-            return just(respone.getData());
+            return handleData(respone.getData());
         } else {
             return error(new BaseError(respone.getCode(), respone.getMessage()));
         }
     }
 
-    abstract R error(BaseError ex);
+    abstract R error(@NonNull BaseError ex);
 
-    abstract R just(T item);
+    abstract R handleData(@Nullable T item);
 }

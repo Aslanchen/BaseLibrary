@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.aslan.baselibrary.http.BaseError;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import io.reactivex.Maybe;
 
 /**
@@ -19,12 +21,16 @@ public class MaybeResponseFunction<T> extends BaseResponseFunction<T, Maybe<T>> 
     }
 
     @Override
-    Maybe<T> error(BaseError ex) {
+    Maybe<T> error(@NonNull BaseError ex) {
         return Maybe.error(ex);
     }
 
     @Override
-    Maybe<T> just(T item) {
-        return Maybe.just(item);
+    Maybe<T> handleData(@Nullable T item) {
+        if (item == null) {
+            return Maybe.empty();
+        } else {
+            return Maybe.just(item);
+        }
     }
 }
