@@ -2,9 +2,10 @@ package com.aslan.baselibrary.http;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.aslan.baselibrary.R;
 
-import androidx.annotation.NonNull;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 

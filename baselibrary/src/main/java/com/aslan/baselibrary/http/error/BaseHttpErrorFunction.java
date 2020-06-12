@@ -1,9 +1,11 @@
-package com.aslan.baselibrary.http;
+package com.aslan.baselibrary.http.error;
 
 import android.content.Context;
 import android.net.ParseException;
 
 import com.aslan.baselibrary.R;
+import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.http.NetManager;
 import com.google.gson.JsonParseException;
 
 import org.apache.http.conn.ConnectTimeoutException;
@@ -14,44 +16,50 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 
-import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import retrofit2.HttpException;
 
 /**
- * 处理http异常
+ * 基础转换
  *
  * @author Aslan chenhengfei@yy.com
- * @date 2020/6/10
+ * @date 2020/6/12
  */
-public class HttpErrorFunction<T> implements Function<Throwable, Observable<T>> {
+abstract class BaseHttpErrorFunction<T> implements Function<Throwable, T> {
     private Context context;
 
-    public HttpErrorFunction(Context context) {
+    public BaseHttpErrorFunction(Context context) {
         this.context = context;
     }
 
     @Override
-    public Observable<T> apply(Throwable throwable) throws Exception {
+    public T apply(Throwable throwable) throws Exception {
         BaseError ex;
         if (throwable instanceof UnknownHostException) {
-            ex = new BaseError(NetManager.ERROR_NET_UNKNOWHOST, context.getString(R.string.error_net_no_net));
+            ex = new BaseError(NetManager.ERROR_NET_UNKNOWHOST,
+                    context.getString(R.string.error_net_no_net));
         } else if (throwable instanceof ConnectException
                 || throwable instanceof ConnectTimeoutException) {
-            ex = new BaseError(NetManager.ERROR_NET_CONNECT_TIMEOUT, context.getString(R.string.error_net_connect_timeout));
+            ex = new BaseError(NetManager.ERROR_NET_CONNECT_TIMEOUT,
+                    context.getString(R.string.error_net_connect_timeout));
         } else if (throwable instanceof SocketTimeoutException) {
-            ex = new BaseError(NetManager.ERROR_NET_SOCKET_TIMEOUT, context.getString(R.string.error_net_socket_timeout));
+            ex = new BaseError(NetManager.ERROR_NET_SOCKET_TIMEOUT,
+                    context.getString(R.string.error_net_socket_timeout));
         } else if (throwable instanceof HttpException) {
             ex = new BaseError(NetManager.ERROR_NET_SERVER, context.getString(R.string.error_net));
         } else if (throwable instanceof JsonParseException
                 || throwable instanceof JSONException
                 || throwable instanceof ParseException) {
-            ex = new BaseError(NetManager.ERROR_PARSE_DATA_ERROR, context.getString(R.string.error_net));
+            ex = new BaseError(NetManager.ERROR_PARSE_DATA_ERROR,
+                    context.getString(R.string.error_net));
         } else if (throwable instanceof SQLException) {
-            ex = new BaseError(NetManager.ERROR_DB, context.getString(R.string.error_local_database_default));
+            ex = new BaseError(NetManager.ERROR_DB,
+                    context.getString(R.string.error_local_database_default));
         } else {
             ex = new BaseError(NetManager.ERROR_OTHER, context.getString(R.string.error_net));
         }
-        return Observable.error(ex);
+        return error(ex);
     }
+
+    abstract T error(BaseError ex);
 }

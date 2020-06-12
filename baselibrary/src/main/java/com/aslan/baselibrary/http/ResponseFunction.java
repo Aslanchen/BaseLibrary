@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.aslan.baselibrary.R;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
 
 /**
@@ -13,7 +13,7 @@ import io.reactivex.functions.Function;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/10
  */
-public class ResponseFunction<T> implements Function<IHttpBean<T>, Observable<T>> {
+public class ResponseFunction<T> implements Function<IHttpBean<T>, Flowable<T>> {
     private Context context;
 
     public ResponseFunction(Context context) {
@@ -21,16 +21,16 @@ public class ResponseFunction<T> implements Function<IHttpBean<T>, Observable<T>
     }
 
     @Override
-    public Observable<T> apply(IHttpBean<T> respone) throws Exception {
+    public Flowable<T> apply(IHttpBean<T> respone) throws Exception {
         if (respone.isTokenError()) {
-            return Observable.error(new BaseError(NetManager.ERROR_TOKEN_ERROR,
+            return Flowable.error(new BaseError(NetManager.ERROR_TOKEN_ERROR,
                     context.getString(R.string.error_net_token_error)));
         }
 
         if (respone.isSuccessful()) {
-            return Observable.just(respone.getData());
+            return Flowable.just(respone.getData());
         } else {
-            return Observable.error(new BaseError(respone.getCode(), respone.getMessage()));
+            return Flowable.error(new BaseError(respone.getCode(), respone.getMessage()));
         }
     }
 }
