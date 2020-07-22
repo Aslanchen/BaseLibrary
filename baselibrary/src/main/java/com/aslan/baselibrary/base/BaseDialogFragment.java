@@ -8,11 +8,15 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.UiThread;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.aslan.baselibrary.R;
 import com.aslan.baselibrary.http.BaseError;
 import com.aslan.baselibrary.listener.IBaseView;
+import com.trello.lifecycle4.android.lifecycle.AndroidLifecycle;
+import com.trello.rxlifecycle4.LifecycleProvider;
+
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
 
@@ -23,6 +27,9 @@ import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
  * @date 2018/4/11
  */
 public abstract class BaseDialogFragment extends DialogFragment implements IBaseView {
+
+  protected final LifecycleProvider<Lifecycle.Event> provider =
+          AndroidLifecycle.createLifecycleProvider(this);
 
   protected ProgressDialog progressDialog;
 
@@ -172,5 +179,11 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
   @Override
   public LifecycleOwner getLifecycleOwner() {
     return this;
+  }
+
+  @NonNull
+  @Override
+  public LifecycleProvider<Lifecycle.Event> getLifecycleProvider() {
+    return provider;
   }
 }

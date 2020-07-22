@@ -4,14 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.aslan.baselibrary.http.BaseError;
+import com.trello.rxlifecycle4.LifecycleProvider;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.StringRes;
 import androidx.annotation.UiThread;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
-
-import com.aslan.baselibrary.http.BaseError;
 
 /**
  * 错误提示类以及等待框
@@ -21,6 +23,9 @@ import com.aslan.baselibrary.http.BaseError;
  */
 @UiThread
 public interface IBaseView {
+
+    @NonNull
+    LifecycleProvider<Lifecycle.Event> getLifecycleProvider();
 
     @NonNull
     LifecycleOwner getLifecycleOwner();

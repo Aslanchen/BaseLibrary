@@ -8,19 +8,21 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.aslan.baselibrary.R;
+import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.listener.IBaseView;
+import com.aslan.baselibrary.view.CustomToolbar;
+import com.trello.lifecycle4.android.lifecycle.AndroidLifecycle;
+import com.trello.rxlifecycle4.LifecycleProvider;
+
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
-
-import com.aslan.baselibrary.R;
-import com.aslan.baselibrary.http.BaseError;
-import com.aslan.baselibrary.listener.IBaseView;
-import com.aslan.baselibrary.view.CustomToolbar;
-
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
 
@@ -31,6 +33,9 @@ import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
  * @date 2018/4/11
  */
 public abstract class BaseActivity extends AppCompatActivity implements IBaseView {
+
+    protected final LifecycleProvider<Lifecycle.Event> provider =
+            AndroidLifecycle.createLifecycleProvider(this);
 
     protected ProgressDialog progressDialog;
     protected CustomToolbar titleBar;
@@ -241,5 +246,11 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     @Override
     public LifecycleOwner getLifecycleOwner() {
         return this;
+    }
+
+    @NonNull
+    @Override
+    public LifecycleProvider<Lifecycle.Event> getLifecycleProvider() {
+        return provider;
     }
 }
