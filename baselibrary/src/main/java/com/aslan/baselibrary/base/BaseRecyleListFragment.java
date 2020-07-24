@@ -49,10 +49,11 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
     protected EmptyView listEmptyView;
     protected ActionModeHelper mActionModeHelper;
 
-    private LoadListCallback<M> callbackRefresh;
-    private LoadListCallback<M> callbackLoad;
-    private int currentPage = 1;
-    private Handler mHandler = new Handler();
+    protected LoadListCallback<M> callbackRefresh;
+    protected LoadListCallback<M> callbackLoad;
+    protected int currentPage = 1;
+
+    protected Handler mHandler = new Handler();
 
     @Override
     public int getLayoutId() {
@@ -104,13 +105,8 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
 
             @Override
             public void onDataNotAvailable(@NonNull BaseError error) {
-                recyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        showToastMessage(error.getMessage());
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                showToastMessage(error.getMessage());
+                swipeRefreshLayout.setRefreshing(false);
             }
         };
 
@@ -122,10 +118,8 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
 
             @Override
             public void onDataNotAvailable(@NonNull BaseError error) {
-                mHandler.post(() -> {
-                    showToastMessage(error.getMessage());
-                    loadFialed();
-                });
+                showToastMessage(error.getMessage());
+                loadFialed();
             }
         };
 
@@ -243,21 +237,19 @@ public abstract class BaseRecyleListFragment<M> extends BaseFragment implements
             items.add(item);
         }
 
-        mHandler.post(() -> {
-            if (rushState == UpdateState.Refresh) {
-                adapter.updateDataSet(items);
-                if (items.size() >= getDataCountPrePage()) {
-                    adapter.setEndlessProgressItem(progressItem);
-                } else {
-                    adapter.setEndlessProgressItem(null);
-                }
-
-                mHandler.postDelayed(() -> swipeRefreshLayout.setRefreshing(false),
-                        500L);
-            } else if (rushState == UpdateState.LoadMore) {
-                adapter.onLoadMoreComplete(items, -1);
+        if (rushState == UpdateState.Refresh) {
+            adapter.updateDataSet(items);
+            if (items.size() >= getDataCountPrePage()) {
+                adapter.setEndlessProgressItem(progressItem);
+            } else {
+                adapter.setEndlessProgressItem(null);
             }
-        });
+
+            mHandler.postDelayed(() -> swipeRefreshLayout.setRefreshing(false),
+                    500L);
+        } else if (rushState == UpdateState.LoadMore) {
+            adapter.onLoadMoreComplete(items, -1);
+        }
     }
 
     public int[] getColorSchemeResources() {
