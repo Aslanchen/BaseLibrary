@@ -58,7 +58,7 @@ public class CustomToolbar extends Toolbar {
         setShowBack(showBack);
 
         mTitleTextColor = typedArray.getColor(R.styleable.CustomToolbar_ct_color_title, 0xffffffff);
-        setTitleColor(mTitleTextColor);
+        setTitleTextColor(mTitleTextColor);
 
         typedArray.recycle();
     }
@@ -143,9 +143,5 @@ public class CustomToolbar extends Toolbar {
         } else {
             setNavigationIcon(null);
         }
-    }
-
-    public void setTitleColor(@ColorInt int color) {
-        tvTitle.setTextColor(color);
     }
 }
