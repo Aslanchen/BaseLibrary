@@ -172,9 +172,9 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     }
 
     /**
-     * ViewModelProviders.of 使用
+     * ViewModelProvider 使用
      */
-    protected ViewModelProvider ViewModelProvidersOf() {
+    protected ViewModelProvider getViewModelProvider() {
         if (fragment != null) {
             return new ViewModelProvider(fragment);
         } else {
@@ -183,9 +183,9 @@ public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBaseP
     }
 
     /**
-     * ViewModelProviders.of 使用
+     * ViewModelProvider 使用
      */
-    protected ViewModelProvider ViewModelProvidersOf(@Nullable Factory factory) {
+    protected ViewModelProvider getViewModelProvider(@Nullable Factory factory) {
         if (fragment != null) {
             return new ViewModelProvider(fragment, factory);
         } else {
