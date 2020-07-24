@@ -3,10 +3,15 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
+  <com.aslan.baselibrary.view.CustomToolbar
+    android:id="@id/titleBar"
+    style="@style/style_titlebar" />
+
   <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_below="@id/titleBar"
     android:enabled="false">
 
     <FrameLayout
@@ -16,9 +21,9 @@
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
-      <include layout="@layout/sticky_header_layout"/>
+      <include layout="@layout/sticky_header_layout" />
     </FrameLayout>
 
   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -26,5 +31,6 @@
   <com.aslan.baselibrary.view.EmptyView
     android:id="@+id/list_empty_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"
+    android:layout_below="@id/titleBar" />
 </RelativeLayout>
