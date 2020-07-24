@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/swipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:enabled="false">
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+      <include layout="@layout/sticky_header_layout" />
+    </FrameLayout>
+
+  </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+  <com.aslan.baselibrary.view.EmptyView
+    android:id="@+id/list_empty_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+</RelativeLayout>
