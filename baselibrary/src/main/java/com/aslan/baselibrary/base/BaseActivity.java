@@ -12,8 +12,8 @@ import com.aslan.baselibrary.R;
 import com.aslan.baselibrary.http.BaseError;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.view.CustomToolbar;
-import com.trello.lifecycle4.android.lifecycle.AndroidLifecycle;
-import com.trello.rxlifecycle4.LifecycleProvider;
+import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle;
+import com.trello.rxlifecycle3.LifecycleProvider;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;

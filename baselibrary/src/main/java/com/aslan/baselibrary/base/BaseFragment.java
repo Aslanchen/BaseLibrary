@@ -9,6 +9,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.aslan.baselibrary.R;
+import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.listener.IBaseView;
+import com.aslan.baselibrary.view.CustomToolbar;
+import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle;
+import com.trello.rxlifecycle3.LifecycleProvider;
+
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,14 +24,6 @@ import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
-
-import com.aslan.baselibrary.R;
-import com.aslan.baselibrary.http.BaseError;
-import com.aslan.baselibrary.listener.IBaseView;
-import com.aslan.baselibrary.view.CustomToolbar;
-import com.trello.lifecycle4.android.lifecycle.AndroidLifecycle;
-import com.trello.rxlifecycle4.LifecycleProvider;
-
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
 

@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.aslan.baselibrary.http.BaseError;
-import com.trello.rxlifecycle4.LifecycleProvider;
+import com.trello.rxlifecycle3.LifecycleProvider;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
