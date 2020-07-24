@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 ext {
-    VERSIONCODE = 20
-    VERSIONNAME = "1.4.4"
+    VERSIONCODE = 21
+    VERSIONNAME = "1.4.5"
 }
 
 buildscript {
