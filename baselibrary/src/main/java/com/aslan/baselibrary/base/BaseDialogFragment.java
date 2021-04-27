@@ -2,6 +2,9 @@ package com.aslan.baselibrary.base;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.aslan.baselibrary.R;
@@ -42,7 +45,34 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
         }
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(getLayoutId(), container);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        iniView();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        iniListener();
+        iniData();
+    }
+
     public abstract void iniBundle(@NonNull Bundle bundle);
+
+    public abstract int getLayoutId();
+
+    public abstract void iniView();
+
+    public abstract void iniListener();
+
+    public abstract void iniData();
 
     @UiThread
     @Override
