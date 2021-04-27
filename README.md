@@ -1,22 +1,9 @@
 # BaseLibrary
-[ ![Download](https://api.bintray.com/packages/aslanchen/AndroidLibrary/BaseLibrary/images/download.svg) ](https://bintray.com/aslanchen/AndroidLibrary/BaseLibrary/_latestVersion)
 平常开发的基础框架
 
 ## 使用
 ```
-implementation 'com.github.aslanchen:baselibrary:x.x.x'
-```
-
-## 上传
-local.properties中填写
-```
-bintray.user=
-bintray.apikey=
-```
-
-```
-gradlew install
-gradlew bintrayUpload
+implementation 'com.github.Aslanchen:BaseLibrary:1.4.5'
 ```
 
 ### 混淆(原始文件在工程下面)
