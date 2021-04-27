@@ -3,6 +3,8 @@
 
 ## 使用
 ```
+maven { url 'https://jitpack.io' }
+
 implementation 'com.github.Aslanchen:BaseLibrary:1.4.5'
 ```
 
