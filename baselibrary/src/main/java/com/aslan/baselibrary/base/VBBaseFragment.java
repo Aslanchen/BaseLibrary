@@ -16,7 +16,7 @@ import java.lang.reflect.ParameterizedType;
  * @author Aslan
  * @date 2018/4/11
  */
-public abstract class ViewBindBaseFragment<VB extends ViewBinding> extends BaseFragment {
+public abstract class VBBaseFragment<VB extends ViewBinding> extends BaseFragment {
 
   protected VB mViewBinding;
 

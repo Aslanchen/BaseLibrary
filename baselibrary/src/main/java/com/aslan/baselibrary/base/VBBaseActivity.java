@@ -12,7 +12,7 @@ import java.lang.reflect.ParameterizedType;
  * @author Aslan
  * @date 2018/4/11
  */
-public abstract class ViewBindBaseActivity<VB extends ViewBinding> extends BaseActivity {
+public abstract class VBBaseActivity<VB extends ViewBinding> extends BaseActivity {
 
   protected VB mViewBinding;
 

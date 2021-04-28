@@ -15,7 +15,7 @@ import com.aslan.baselibrary.listener.IMVPBasePresenter;
  * @date 2018/4/11
  */
 public abstract class MVPBaseActivity<VB extends ViewBinding, P extends IMVPBasePresenter> extends
-    ViewBindBaseActivity<VB> {
+    VBBaseActivity<VB> {
 
   protected P mPresenter;
 
