@@ -5,7 +5,7 @@
 ```
 maven { url 'https://jitpack.io' }
 
-implementation 'com.github.Aslanchen:BaseLibrary:1.4.5'
+implementation 'com.github.Aslanchen:BaseLibrary:x.x.x'
 ```
 
 ### 混淆(原始文件在工程下面)

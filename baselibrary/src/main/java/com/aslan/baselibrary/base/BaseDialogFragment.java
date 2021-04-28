@@ -6,13 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.aslan.baselibrary.R;
-import com.aslan.baselibrary.http.BaseError;
-import com.aslan.baselibrary.listener.IBaseView;
-import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle;
-import com.trello.rxlifecycle3.LifecycleProvider;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -20,6 +13,11 @@ import androidx.annotation.UiThread;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
+import com.aslan.baselibrary.R;
+import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.listener.IBaseView;
+import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle;
+import com.trello.rxlifecycle3.LifecycleProvider;
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
 
@@ -31,190 +29,191 @@ import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
  */
 public abstract class BaseDialogFragment extends DialogFragment implements IBaseView {
 
-    protected final LifecycleProvider<Lifecycle.Event> provider =
-            AndroidLifecycle.createLifecycleProvider(this);
+  protected final LifecycleProvider<Lifecycle.Event> provider =
+      AndroidLifecycle.createLifecycleProvider(this);
 
-    protected ProgressDialog progressDialog;
+  protected ProgressDialog progressDialog;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            iniBundle(bundle);
-        }
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    Bundle bundle = getArguments();
+    if (bundle != null) {
+      iniBundle(bundle);
+    }
+  }
+
+  @Nullable
+  @Override
+  public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
+    return inflater.inflate(getLayoutId(), container);
+  }
+
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    iniView(view);
+  }
+
+  @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    iniListener();
+    iniData();
+  }
+
+  public abstract void iniBundle(@NonNull Bundle bundle);
+
+  public abstract int getLayoutId();
+
+  public abstract void iniView(@NonNull View view);
+
+  public abstract void iniListener();
+
+  public abstract void iniData();
+
+  @UiThread
+  @Override
+  public void showProgressBar() {
+    showProgressBar(true);
+  }
+
+  @UiThread
+  @Override
+  public void showProgressBar(@NonNull String msg) {
+    showProgressBar(true, msg);
+  }
+
+  @UiThread
+  @Override
+  public void showProgressBar(@StringRes int msg) {
+    if (isAdd() == false) {
+      return;
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(getLayoutId(), container);
+    String message = getString(msg);
+    showProgressBar(message);
+  }
+
+  @UiThread
+  @Override
+  public void showProgressBar(boolean canCancel) {
+    showProgressBar(canCancel, R.string.progress_waiting);
+  }
+
+  @UiThread
+  @Override
+  public void showProgressBar(boolean canCancel, @StringRes int msg) {
+    if (isAdd() == false) {
+      return;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        iniView();
+    String message = getString(msg);
+    showProgressBar(canCancel, message);
+  }
+
+  @UiThread
+  @Override
+  public void showProgressBar(boolean canCancel, @NonNull String msg) {
+    if (isAdd() == false) {
+      return;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        iniListener();
-        iniData();
+    if (progressDialog == null) {
+      progressDialog = new ProgressDialog(getContext());
     }
 
-    public abstract void iniBundle(@NonNull Bundle bundle);
-
-    public abstract int getLayoutId();
-
-    public abstract void iniView();
-
-    public abstract void iniListener();
-
-    public abstract void iniData();
-
-    @UiThread
-    @Override
-    public void showProgressBar() {
-        showProgressBar(true);
+    if (progressDialog.isShowing()) {
+      return;
     }
 
-    @UiThread
-    @Override
-    public void showProgressBar(@NonNull String msg) {
-        showProgressBar(true, msg);
+    progressDialog.setMessage(msg);
+    progressDialog.setCancelable(canCancel);
+    progressDialog.setCanceledOnTouchOutside(canCancel);
+    try {
+      progressDialog.show();
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+
+  @UiThread
+  @Override
+  public void closeProgressBar() {
+    if (isAdd() == false) {
+      return;
     }
 
-    @UiThread
-    @Override
-    public void showProgressBar(@StringRes int msg) {
-        if (isAdd() == false) {
-            return;
-        }
+    if (progressDialog != null && progressDialog.isShowing()) {
+      try {
+        progressDialog.dismiss();
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
 
-        String message = getString(msg);
-        showProgressBar(message);
+  @UiThread
+  @Override
+  public void showToastMessage(@StringRes int resId) {
+    if (isAdd() == false) {
+      return;
     }
 
-    @UiThread
-    @Override
-    public void showProgressBar(boolean canCancel) {
-        showProgressBar(canCancel, R.string.progress_waiting);
+    Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+  }
+
+  @UiThread
+  @Override
+  public void showToastMessage(@NonNull CharSequence text) {
+    if (isAdd() == false) {
+      return;
     }
 
-    @UiThread
-    @Override
-    public void showProgressBar(boolean canCancel, @StringRes int msg) {
-        if (isAdd() == false) {
-            return;
-        }
+    Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+  }
 
-        String message = getString(msg);
-        showProgressBar(canCancel, message);
+  @UiThread
+  @Override
+  public void showToastMessage(@NonNull BaseError error) {
+    if (isAdd() == false) {
+      return;
     }
 
-    @UiThread
-    @Override
-    public void showProgressBar(boolean canCancel, @NonNull String msg) {
-        if (isAdd() == false) {
-            return;
-        }
+    Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+  }
 
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getContext());
-        }
+  @Override
+  public boolean isAdd() {
+    return this.isAdded();
+  }
 
-        if (progressDialog.isShowing()) {
-            return;
-        }
+  @Override
+  public void onDestroy() {
+    closeProgressBar();
+    super.onDestroy();
+  }
 
-        progressDialog.setMessage(msg);
-        progressDialog.setCancelable(canCancel);
-        progressDialog.setCanceledOnTouchOutside(canCancel);
-        try {
-            progressDialog.show();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+      @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    if (this instanceof PermissionCallbacks) {
+      EasyPermissions
+          .onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
+  }
 
-    @UiThread
-    @Override
-    public void closeProgressBar() {
-        if (isAdd() == false) {
-            return;
-        }
+  @NonNull
+  @Override
+  public LifecycleOwner getLifecycleOwner() {
+    return this;
+  }
 
-        if (progressDialog != null && progressDialog.isShowing()) {
-            try {
-                progressDialog.dismiss();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    @UiThread
-    @Override
-    public void showToastMessage(@StringRes int resId) {
-        if (isAdd() == false) {
-            return;
-        }
-
-        Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
-    }
-
-    @UiThread
-    @Override
-    public void showToastMessage(@NonNull CharSequence text) {
-        if (isAdd() == false) {
-            return;
-        }
-
-        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
-    }
-
-    @UiThread
-    @Override
-    public void showToastMessage(@NonNull BaseError error) {
-        if (isAdd() == false) {
-            return;
-        }
-
-        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public boolean isAdd() {
-        return this.isAdded();
-    }
-
-    @Override
-    public void onDestroy() {
-        closeProgressBar();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (this instanceof PermissionCallbacks) {
-            EasyPermissions
-                    .onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-        }
-    }
-
-    @NonNull
-    @Override
-    public LifecycleOwner getLifecycleOwner() {
-        return this;
-    }
-
-    @NonNull
-    @Override
-    public LifecycleProvider<Lifecycle.Event> getLifecycleProvider() {
-        return provider;
-    }
+  @NonNull
+  @Override
+  public LifecycleProvider<Lifecycle.Event> getLifecycleProvider() {
+    return provider;
+  }
 }
