@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.ViewDataBinding;
+import androidx.viewbinding.ViewBinding;
 import com.aslan.baselibrary.listener.IMVPBasePresenter;
 
 /**
@@ -14,8 +14,8 @@ import com.aslan.baselibrary.listener.IMVPBasePresenter;
  * @author Aslan
  * @date 2018/4/11
  */
-public abstract class MVPBaseFragment<V extends ViewDataBinding, P extends IMVPBasePresenter> extends
-    DataBindBaseFragment<V> {
+public abstract class MVPBaseFragment<VB extends ViewBinding, P extends IMVPBasePresenter> extends
+    ViewBindBaseFragment<VB> {
 
   public P mPresenter;
 
