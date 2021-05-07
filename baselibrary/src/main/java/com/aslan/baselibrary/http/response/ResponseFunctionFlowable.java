@@ -14,9 +14,9 @@ import io.reactivex.Flowable;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-public class FlowableResponseFunction<T> extends BaseResponseFunction<T, Flowable<T>> {
+public class ResponseFunctionFlowable<T> extends BaseResponseFunction<T, Flowable<T>> {
 
-    public FlowableResponseFunction(Context context) {
+    public ResponseFunctionFlowable(Context context) {
         super(context);
     }
 

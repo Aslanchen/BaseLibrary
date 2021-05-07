@@ -12,9 +12,9 @@ import io.reactivex.Single;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/10
  */
-public class SingleHttpErrorFunction<T> extends BaseHttpErrorFunction<Single<T>> {
+public class HttpErrorFunctionSingle<T> extends BaseHttpErrorFunction<Single<T>> {
 
-    public SingleHttpErrorFunction(Context context) {
+    public HttpErrorFunctionSingle(Context context) {
         super(context);
     }
 

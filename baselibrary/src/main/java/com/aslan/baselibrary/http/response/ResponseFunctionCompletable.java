@@ -14,9 +14,9 @@ import io.reactivex.Completable;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-public class CompletableResponseFunction<T> extends BaseResponseFunction<T, Completable> {
+public class ResponseFunctionCompletable<T> extends BaseResponseFunction<T, Completable> {
 
-    public CompletableResponseFunction(Context context) {
+    public ResponseFunctionCompletable(Context context) {
         super(context);
     }
 

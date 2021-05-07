@@ -6,7 +6,7 @@ import com.aslan.baselibrary.http.BaseError;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import io.reactivex.Single;
+import io.reactivex.Maybe;
 
 /**
  * 处理业务异常
@@ -14,23 +14,23 @@ import io.reactivex.Single;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-public class SingleResponseFunction<T> extends BaseResponseFunction<T, Single<T>> {
+public class ResponseFunctionMaybe<T> extends BaseResponseFunction<T, Maybe<T>> {
 
-    public SingleResponseFunction(Context context) {
+    public ResponseFunctionMaybe(Context context) {
         super(context);
     }
 
     @Override
-    Single<T> error(@NonNull BaseError ex) {
-        return Single.error(ex);
+    Maybe<T> error(@NonNull BaseError ex) {
+        return Maybe.error(ex);
     }
 
     @Override
-    Single<T> handleData(@Nullable T item) {
+    Maybe<T> handleData(@Nullable T item) {
         if (item == null) {
-            return Single.error(new NullPointerException("respone data is empty"));
+            return Maybe.empty();
         } else {
-            return Single.just(item);
+            return Maybe.just(item);
         }
     }
 }

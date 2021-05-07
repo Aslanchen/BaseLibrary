@@ -14,9 +14,9 @@ import io.reactivex.Observable;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-public class ObservableResponseFunction<T> extends BaseResponseFunction<T, Observable<T>> {
+public class ResponseFunctionObservable<T> extends BaseResponseFunction<T, Observable<T>> {
 
-    public ObservableResponseFunction(Context context) {
+    public ResponseFunctionObservable(Context context) {
         super(context);
     }
 
