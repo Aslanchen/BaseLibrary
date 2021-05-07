@@ -1,11 +1,9 @@
 package com.aslan.baselibrary.http.observer;
 
 import android.content.Context;
-
+import androidx.annotation.NonNull;
 import com.aslan.baselibrary.http.BaseError;
 import com.aslan.baselibrary.http.NetManager;
-
-import androidx.annotation.NonNull;
 import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.Disposable;
 
@@ -17,32 +15,32 @@ import io.reactivex.disposables.Disposable;
  */
 public abstract class DataCompletableObserver implements CompletableObserver {
 
-    private Context context;
+  private Context context;
 
-    public DataCompletableObserver(Context context) {
-        this.context = context;
+  public DataCompletableObserver(Context context) {
+    this.context = context;
+  }
+
+  @Override
+  public void onError(@NonNull Throwable e) {
+    if (e instanceof BaseError) {
+      handleError((BaseError) e);
+    } else {
+      handleError(new BaseError(NetManager.ERROR_OTHER, e.getMessage()));
     }
+  }
 
-    @Override
-    public void onError(Throwable e) {
-        if (e instanceof BaseError) {
-            handleError((BaseError) e);
-        } else {
-            handleError(new BaseError(NetManager.ERROR_OTHER, e.getMessage()));
-        }
-    }
+  @Override
+  public void onComplete() {
+    handleSuccess();
+  }
 
-    @Override
-    public void onComplete() {
-        handleSuccess();
-    }
+  @Override
+  public void onSubscribe(@NonNull Disposable d) {
 
-    @Override
-    public void onSubscribe(Disposable d) {
+  }
 
-    }
+  public abstract void handleError(@NonNull BaseError e);
 
-    public abstract void handleError(@NonNull BaseError e);
-
-    public abstract void handleSuccess();
+  public abstract void handleSuccess();
 }

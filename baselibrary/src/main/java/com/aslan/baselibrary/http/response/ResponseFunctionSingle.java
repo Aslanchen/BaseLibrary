@@ -1,11 +1,9 @@
 package com.aslan.baselibrary.http.response;
 
 import android.content.Context;
-
-import com.aslan.baselibrary.http.BaseError;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.aslan.baselibrary.http.BaseError;
 import io.reactivex.Single;
 
 /**
@@ -16,21 +14,21 @@ import io.reactivex.Single;
  */
 public class ResponseFunctionSingle<T> extends BaseResponseFunction<T, Single<T>> {
 
-    public ResponseFunctionSingle(Context context) {
-        super(context);
-    }
+  public ResponseFunctionSingle(Context context) {
+    super(context);
+  }
 
-    @Override
-    Single<T> error(@NonNull BaseError ex) {
-        return Single.error(ex);
-    }
+  @Override
+  Single<T> error(@NonNull BaseError ex) {
+    return Single.error(ex);
+  }
 
-    @Override
-    Single<T> handleData(@Nullable T item) {
-        if (item == null) {
-            return Single.error(new NullPointerException("respone data is empty"));
-        } else {
-            return Single.just(item);
-        }
+  @Override
+  Single<T> handleData(@Nullable T item) {
+    if (item == null) {
+      return Single.error(new NullPointerException("respone data is empty"));
+    } else {
+      return Single.just(item);
     }
+  }
 }

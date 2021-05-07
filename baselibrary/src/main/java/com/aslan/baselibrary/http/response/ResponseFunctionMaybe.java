@@ -1,11 +1,9 @@
 package com.aslan.baselibrary.http.response;
 
 import android.content.Context;
-
-import com.aslan.baselibrary.http.BaseError;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.aslan.baselibrary.http.BaseError;
 import io.reactivex.Maybe;
 
 /**
@@ -16,21 +14,21 @@ import io.reactivex.Maybe;
  */
 public class ResponseFunctionMaybe<T> extends BaseResponseFunction<T, Maybe<T>> {
 
-    public ResponseFunctionMaybe(Context context) {
-        super(context);
-    }
+  public ResponseFunctionMaybe(Context context) {
+    super(context);
+  }
 
-    @Override
-    Maybe<T> error(@NonNull BaseError ex) {
-        return Maybe.error(ex);
-    }
+  @Override
+  Maybe<T> error(@NonNull BaseError ex) {
+    return Maybe.error(ex);
+  }
 
-    @Override
-    Maybe<T> handleData(@Nullable T item) {
-        if (item == null) {
-            return Maybe.empty();
-        } else {
-            return Maybe.just(item);
-        }
+  @Override
+  Maybe<T> handleData(@Nullable T item) {
+    if (item == null) {
+      return Maybe.empty();
+    } else {
+      return Maybe.just(item);
     }
+  }
 }

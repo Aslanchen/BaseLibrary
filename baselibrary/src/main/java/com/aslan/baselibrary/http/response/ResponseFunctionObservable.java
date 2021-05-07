@@ -1,11 +1,9 @@
 package com.aslan.baselibrary.http.response;
 
 import android.content.Context;
-
-import com.aslan.baselibrary.http.BaseError;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.aslan.baselibrary.http.BaseError;
 import io.reactivex.Observable;
 
 /**
@@ -16,21 +14,21 @@ import io.reactivex.Observable;
  */
 public class ResponseFunctionObservable<T> extends BaseResponseFunction<T, Observable<T>> {
 
-    public ResponseFunctionObservable(Context context) {
-        super(context);
-    }
+  public ResponseFunctionObservable(Context context) {
+    super(context);
+  }
 
-    @Override
-    Observable<T> error(@NonNull BaseError ex) {
-        return Observable.error(ex);
-    }
+  @Override
+  Observable<T> error(@NonNull BaseError ex) {
+    return Observable.error(ex);
+  }
 
-    @Override
-    Observable<T> handleData(@Nullable T item) {
-        if (item == null) {
-            return Observable.error(new NullPointerException("respone data is empty"));
-        } else {
-            return Observable.just(item);
-        }
+  @Override
+  Observable<T> handleData(@Nullable T item) {
+    if (item == null) {
+      return Observable.error(new NullPointerException("respone data is empty"));
+    } else {
+      return Observable.just(item);
     }
+  }
 }

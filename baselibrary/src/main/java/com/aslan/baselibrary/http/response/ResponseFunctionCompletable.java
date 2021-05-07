@@ -1,11 +1,9 @@
 package com.aslan.baselibrary.http.response;
 
 import android.content.Context;
-
-import com.aslan.baselibrary.http.BaseError;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.aslan.baselibrary.http.BaseError;
 import io.reactivex.Completable;
 
 /**
@@ -16,17 +14,17 @@ import io.reactivex.Completable;
  */
 public class ResponseFunctionCompletable<T> extends BaseResponseFunction<T, Completable> {
 
-    public ResponseFunctionCompletable(Context context) {
-        super(context);
-    }
+  public ResponseFunctionCompletable(Context context) {
+    super(context);
+  }
 
-    @Override
-    Completable error(@NonNull BaseError ex) {
-        return Completable.error(ex);
-    }
+  @Override
+  Completable error(@NonNull BaseError ex) {
+    return Completable.error(ex);
+  }
 
-    @Override
-    Completable handleData(@Nullable T item) {
-        return Completable.complete();
-    }
+  @Override
+  Completable handleData(@Nullable T item) {
+    return Completable.complete();
+  }
 }

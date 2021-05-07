@@ -10,7 +10,7 @@ import io.reactivex.Completable;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/10
  */
-public class HttpErrorFunctionCompletable<T> extends BaseHttpErrorFunction<Completable> {
+public class HttpErrorFunctionCompletable extends BaseHttpErrorFunction<Completable> {
 
   public HttpErrorFunctionCompletable(Context context) {
     super(context);
