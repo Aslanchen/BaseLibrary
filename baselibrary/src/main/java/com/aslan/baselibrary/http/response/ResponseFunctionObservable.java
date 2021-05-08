@@ -19,12 +19,12 @@ public class ResponseFunctionObservable<T> extends BaseResponseFunction<T, Obser
   }
 
   @Override
-  Observable<T> error(@NonNull BaseError ex) {
+  public Observable<T> error(@NonNull BaseError ex) {
     return Observable.error(ex);
   }
 
   @Override
-  Observable<T> handleData(@Nullable T item) {
+  public Observable<T> handleData(@Nullable T item) {
     if (item == null) {
       return Observable.error(new NullPointerException("respone data is empty"));
     } else {

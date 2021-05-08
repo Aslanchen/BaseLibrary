@@ -17,7 +17,7 @@ public class HttpErrorFunctionSingle<T> extends BaseHttpErrorFunction<Single<T>>
   }
 
   @Override
-  Single<T> error(BaseError ex) {
+  public Single<T> error(BaseError ex) {
     return Single.error(ex);
   }
 }

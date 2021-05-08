@@ -59,5 +59,5 @@ public abstract class BaseHttpErrorFunction<T> implements Function<Throwable, T>
     return error(ex);
   }
 
-  abstract T error(BaseError ex);
+  public abstract T error(BaseError ex);
 }

@@ -19,12 +19,12 @@ public class ResponseFunctionFlowable<T> extends BaseResponseFunction<T, Flowabl
   }
 
   @Override
-  Flowable<T> error(@NonNull BaseError ex) {
+  public Flowable<T> error(@NonNull BaseError ex) {
     return Flowable.error(ex);
   }
 
   @Override
-  Flowable<T> handleData(@Nullable T item) {
+  public Flowable<T> handleData(@Nullable T item) {
     if (item == null) {
       return Flowable.error(new NullPointerException("respone data is empty"));
     } else {

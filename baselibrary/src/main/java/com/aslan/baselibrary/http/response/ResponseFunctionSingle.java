@@ -19,12 +19,12 @@ public class ResponseFunctionSingle<T> extends BaseResponseFunction<T, Single<T>
   }
 
   @Override
-  Single<T> error(@NonNull BaseError ex) {
+  public Single<T> error(@NonNull BaseError ex) {
     return Single.error(ex);
   }
 
   @Override
-  Single<T> handleData(@Nullable T item) {
+  public Single<T> handleData(@Nullable T item) {
     if (item == null) {
       return Single.error(new NullPointerException("respone data is empty"));
     } else {

@@ -17,7 +17,7 @@ public class HttpErrorFunctionCompletable extends BaseHttpErrorFunction<Completa
   }
 
   @Override
-  Completable error(BaseError ex) {
+  public Completable error(BaseError ex) {
     return Completable.error(ex);
   }
 }

@@ -19,12 +19,12 @@ public class ResponseFunctionCompletable<T> extends BaseResponseFunction<T, Comp
   }
 
   @Override
-  Completable error(@NonNull BaseError ex) {
+  public Completable error(@NonNull BaseError ex) {
     return Completable.error(ex);
   }
 
   @Override
-  Completable handleData(@Nullable T item) {
+  public Completable handleData(@Nullable T item) {
     return Completable.complete();
   }
 }

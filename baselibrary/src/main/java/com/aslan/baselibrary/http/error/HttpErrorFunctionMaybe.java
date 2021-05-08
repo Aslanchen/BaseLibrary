@@ -17,7 +17,7 @@ public class HttpErrorFunctionMaybe<T> extends BaseHttpErrorFunction<Maybe<T>> {
   }
 
   @Override
-  Maybe<T> error(BaseError ex) {
+  public Maybe<T> error(BaseError ex) {
     return Maybe.error(ex);
   }
 }

@@ -39,7 +39,7 @@ public abstract class BaseResponseFunction<T, R> implements Function<IHttpBean<T
     }
   }
 
-  abstract R error(@NonNull BaseError ex);
+  public abstract R error(@NonNull BaseError ex);
 
-  abstract R handleData(@Nullable T item);
+  public abstract R handleData(@Nullable T item);
 }

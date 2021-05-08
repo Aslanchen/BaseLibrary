@@ -17,7 +17,7 @@ public class HttpErrorFunctionFlowable<T> extends BaseHttpErrorFunction<Flowable
   }
 
   @Override
-  Flowable<T> error(BaseError ex) {
+  public Flowable<T> error(BaseError ex) {
     return Flowable.error(ex);
   }
 }

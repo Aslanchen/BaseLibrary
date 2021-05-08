@@ -19,12 +19,12 @@ public class ResponseFunctionMaybe<T> extends BaseResponseFunction<T, Maybe<T>> 
   }
 
   @Override
-  Maybe<T> error(@NonNull BaseError ex) {
+  public Maybe<T> error(@NonNull BaseError ex) {
     return Maybe.error(ex);
   }
 
   @Override
-  Maybe<T> handleData(@Nullable T item) {
+  public Maybe<T> handleData(@Nullable T item) {
     if (item == null) {
       return Maybe.empty();
     } else {

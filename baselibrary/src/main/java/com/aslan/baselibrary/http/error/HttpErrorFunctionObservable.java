@@ -17,7 +17,7 @@ public class HttpErrorFunctionObservable<T> extends BaseHttpErrorFunction<Observ
   }
 
   @Override
-  Observable<T> error(BaseError ex) {
+  public Observable<T> error(BaseError ex) {
     return Observable.error(ex);
   }
 }
