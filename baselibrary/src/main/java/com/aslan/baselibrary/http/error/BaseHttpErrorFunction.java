@@ -53,6 +53,8 @@ public abstract class BaseHttpErrorFunction<T> implements Function<Throwable, T>
     } else if (throwable instanceof SQLException) {
       ex = new BaseError(NetManager.ERROR_DB,
           context.getString(R.string.error_local_database_default));
+    } else if (throwable instanceof BaseError) {
+      ex = (BaseError) throwable;
     } else {
       ex = new BaseError(NetManager.ERROR_OTHER, context.getString(R.string.error_net));
     }

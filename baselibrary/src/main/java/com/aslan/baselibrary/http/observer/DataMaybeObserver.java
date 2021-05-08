@@ -4,7 +4,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.aslan.baselibrary.http.BaseError;
-import com.aslan.baselibrary.http.NetManager;
 import io.reactivex.MaybeObserver;
 import io.reactivex.disposables.Disposable;
 
@@ -24,11 +23,7 @@ public abstract class DataMaybeObserver<T> implements MaybeObserver<T> {
 
   @Override
   public void onError(@NonNull Throwable e) {
-    if (e instanceof BaseError) {
-      handleError((BaseError) e);
-    } else {
-      handleError(new BaseError(NetManager.ERROR_OTHER, e.getMessage()));
-    }
+    handleError((BaseError) e);
   }
 
   @Override

@@ -3,7 +3,6 @@ package com.aslan.baselibrary.http.observer;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import com.aslan.baselibrary.http.BaseError;
-import com.aslan.baselibrary.http.NetManager;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -23,11 +22,7 @@ public abstract class DataObserver<T> implements Observer<T> {
 
   @Override
   public void onError(@NonNull Throwable e) {
-    if (e instanceof BaseError) {
-      handleError((BaseError) e);
-    } else {
-      handleError(new BaseError(NetManager.ERROR_OTHER, e.getMessage()));
-    }
+    handleError((BaseError) e);
   }
 
   @Override
