@@ -2,6 +2,7 @@ package com.aslan.baselibrary.http.error;
 
 import android.content.Context;
 import android.net.ParseException;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import com.aslan.baselibrary.R;
 import com.aslan.baselibrary.http.BaseError;
@@ -58,6 +59,8 @@ public abstract class BaseHttpErrorFunction<T> implements Function<Throwable, T>
     } else {
       ex = new BaseError(NetManager.ERROR_OTHER, context.getString(R.string.error_net));
     }
+
+    Log.e(NetManager.TAG_LOG, "Http Error", throwable);
     return error(ex);
   }
 
