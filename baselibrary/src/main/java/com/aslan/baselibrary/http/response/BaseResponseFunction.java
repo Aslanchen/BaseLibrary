@@ -16,7 +16,7 @@ import org.greenrobot.eventbus.EventBus;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-abstract class BaseResponseFunction<T, R> implements Function<IHttpBean<T>, R> {
+public abstract class BaseResponseFunction<T, R> implements Function<IHttpBean<T>, R> {
 
   private Context context;
 

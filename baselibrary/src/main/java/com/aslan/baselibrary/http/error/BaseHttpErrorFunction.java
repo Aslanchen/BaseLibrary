@@ -22,7 +22,7 @@ import retrofit2.HttpException;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-abstract class BaseHttpErrorFunction<T> implements Function<Throwable, T> {
+public abstract class BaseHttpErrorFunction<T> implements Function<Throwable, T> {
 
   private Context context;
 
