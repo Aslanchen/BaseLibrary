@@ -43,7 +43,7 @@ public abstract class DataCompletableObserver implements CompletableObserver {
 
   }
 
-  public abstract void handleError(@NonNull Throwable e);
+  public abstract void handleError(@NonNull DataError e);
 
   public abstract void handleSuccess();
 }
