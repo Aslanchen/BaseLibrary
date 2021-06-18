@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.base.DataError;
 import com.trello.rxlifecycle3.LifecycleProvider;
 
 import androidx.annotation.NonNull;
@@ -51,7 +51,7 @@ public interface IBaseView {
 
     void showToastMessage(@NonNull CharSequence text);
 
-    void showToastMessage(@NonNull BaseError error);
+    void showToastMessage(@NonNull DataError error);
 
     boolean isAdd();
 

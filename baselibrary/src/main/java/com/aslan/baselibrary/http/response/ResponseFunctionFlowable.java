@@ -3,7 +3,7 @@ package com.aslan.baselibrary.http.response;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.base.DataError;
 import io.reactivex.Flowable;
 
 /**
@@ -19,7 +19,7 @@ public class ResponseFunctionFlowable<T> extends BaseResponseFunction<T, Flowabl
   }
 
   @Override
-  public Flowable<T> error(@NonNull BaseError ex) {
+  public Flowable<T> error(@NonNull DataError ex) {
     return Flowable.error(ex);
   }
 

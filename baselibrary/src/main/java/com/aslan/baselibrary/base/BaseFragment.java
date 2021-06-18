@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.aslan.baselibrary.R;
-import com.aslan.baselibrary.http.BaseError;
 import com.aslan.baselibrary.listener.IBaseView;
 import com.aslan.baselibrary.view.CustomToolbar;
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle;
@@ -207,7 +206,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
 
     @UiThread
     @Override
-    public void showToastMessage(@NonNull BaseError error) {
+    public void showToastMessage(@NonNull DataError error) {
         if (isAdd() == false) {
             return;
         }

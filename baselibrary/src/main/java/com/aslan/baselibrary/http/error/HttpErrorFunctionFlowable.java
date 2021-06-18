@@ -1,7 +1,7 @@
 package com.aslan.baselibrary.http.error;
 
 import android.content.Context;
-import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.base.DataError;
 import io.reactivex.Flowable;
 
 /**
@@ -17,7 +17,7 @@ public class HttpErrorFunctionFlowable<T> extends BaseHttpErrorFunction<Flowable
   }
 
   @Override
-  public Flowable<T> error(BaseError ex) {
+  public Flowable<T> error(DataError ex) {
     return Flowable.error(ex);
   }
 }

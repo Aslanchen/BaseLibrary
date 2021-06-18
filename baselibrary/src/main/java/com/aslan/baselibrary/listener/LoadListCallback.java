@@ -1,12 +1,12 @@
 package com.aslan.baselibrary.listener;
 
 import androidx.annotation.NonNull;
-import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.base.DataError;
 import java.util.List;
 
 public interface LoadListCallback<T> {
 
   void onLoaded(@NonNull List<T> responses);
 
-  void onDataNotAvailable(@NonNull BaseError error);
+  void onDataNotAvailable(@NonNull DataError error);
 }

@@ -5,7 +5,7 @@ import android.net.ParseException;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import com.aslan.baselibrary.R;
-import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.base.DataError;
 import com.aslan.baselibrary.http.NetManager;
 import com.google.gson.JsonParseException;
 import io.reactivex.functions.Function;
@@ -33,36 +33,36 @@ public abstract class BaseHttpErrorFunction<T> implements Function<Throwable, T>
 
   @Override
   public T apply(@NonNull Throwable throwable) throws Exception {
-    BaseError ex;
+    DataError ex;
     if (throwable instanceof UnknownHostException) {
-      ex = new BaseError(NetManager.ERROR_NET_UNKNOWHOST,
+      ex = new DataError(DataError.ERROR_HTTP_NET_UNKNOWHOST,
           context.getString(R.string.error_net_no_net));
     } else if (throwable instanceof ConnectException
         || throwable instanceof ConnectTimeoutException) {
-      ex = new BaseError(NetManager.ERROR_NET_CONNECT_TIMEOUT,
+      ex = new DataError(DataError.ERROR_HTTP_NET_CONNECT_TIMEOUT,
           context.getString(R.string.error_net_connect_timeout));
     } else if (throwable instanceof SocketTimeoutException) {
-      ex = new BaseError(NetManager.ERROR_NET_SOCKET_TIMEOUT,
+      ex = new DataError(DataError.ERROR_HTTP_NET_SOCKET_TIMEOUT,
           context.getString(R.string.error_net_socket_timeout));
     } else if (throwable instanceof HttpException) {
-      ex = new BaseError(NetManager.ERROR_NET_SERVER, context.getString(R.string.error_net));
+      ex = new DataError(DataError.ERROR_HTTP_NET_SERVER, context.getString(R.string.error_net));
     } else if (throwable instanceof JsonParseException
         || throwable instanceof JSONException
         || throwable instanceof ParseException) {
-      ex = new BaseError(NetManager.ERROR_PARSE_DATA_ERROR,
+      ex = new DataError(DataError.ERROR_HTTP_PARSE_DATA_ERROR,
           context.getString(R.string.error_net));
     } else if (throwable instanceof SQLException) {
-      ex = new BaseError(NetManager.ERROR_DB,
+      ex = new DataError(DataError.ERROR_DB,
           context.getString(R.string.error_local_database_default));
-    } else if (throwable instanceof BaseError) {
-      ex = (BaseError) throwable;
+    } else if (throwable instanceof DataError) {
+      ex = (DataError) throwable;
     } else {
-      ex = new BaseError(NetManager.ERROR_OTHER, context.getString(R.string.error_net));
+      ex = new DataError(DataError.ERROR_HTTP_OTHER, context.getString(R.string.error_net));
     }
 
     Log.e(NetManager.TAG_LOG, "Http Error", throwable);
     return error(ex);
   }
 
-  public abstract T error(BaseError ex);
+  public abstract T error(DataError ex);
 }

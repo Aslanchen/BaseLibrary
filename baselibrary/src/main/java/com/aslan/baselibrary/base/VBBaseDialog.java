@@ -45,8 +45,8 @@ public abstract class VBBaseDialog<VB extends ViewBinding> extends BaseDialogFra
   public abstract void iniView();
 
   @Override
-  public void onDestroyView() {
-    super.onDestroyView();
+  public void onDestroy() {
+    super.onDestroy();
     mViewBinding = null;
   }
 }

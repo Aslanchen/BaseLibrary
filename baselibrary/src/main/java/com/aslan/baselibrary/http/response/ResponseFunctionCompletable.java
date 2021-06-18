@@ -3,7 +3,7 @@ package com.aslan.baselibrary.http.response;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.aslan.baselibrary.http.BaseError;
+import com.aslan.baselibrary.base.DataError;
 import io.reactivex.Completable;
 
 /**
@@ -19,7 +19,7 @@ public class ResponseFunctionCompletable<T> extends BaseResponseFunction<T, Comp
   }
 
   @Override
-  public Completable error(@NonNull BaseError ex) {
+  public Completable error(@NonNull DataError ex) {
     return Completable.error(ex);
   }
 

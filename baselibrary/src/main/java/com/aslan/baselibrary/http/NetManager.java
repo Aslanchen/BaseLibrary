@@ -3,14 +3,11 @@ package com.aslan.baselibrary.http;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-
+import androidx.annotation.NonNull;
 import com.elvishew.xlog.Logger;
 import com.elvishew.xlog.XLog;
-
-import java.util.concurrent.TimeUnit;
-
-import androidx.annotation.NonNull;
 import io.reactivex.schedulers.Schedulers;
+import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -25,81 +22,71 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public final class NetManager {
 
-    public static final int ERROR_DB = -200;//SQLException
-    public static final int ERROR_NET_SERVER = -100;//HttpException
-    public static final int ERROR_NO_NET = -101;//没有网络
-    public static final int ERROR_NET_UNKNOWHOST = -103;//UnknownHostException
-    public static final int ERROR_NET_CONNECT_TIMEOUT = -104;//ERROR_NET_CONNECT_TIMEOUT
-    public static final int ERROR_NET_SOCKET_TIMEOUT = -105;//ERROR_NET_SOCKET_TIMEOUT
-    public static final int ERROR_PARSE_DATA_ERROR = -106;//JsonParseException
-    public static final int ERROR_OTHER = -107;//服务器异常
-    public static final int ERROR_TOKEN_ERROR = -108;//Token异常
+  /**
+   * 网络是否可用
+   */
+  public static boolean isNetworkAvailable(Context context) {
+    ConnectivityManager connectivityManager = (ConnectivityManager) context
+        .getSystemService(Context.CONNECTIVITY_SERVICE);
 
-    /**
-     * 网络是否可用
-     */
-    public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (null == connectivityManager) {
-            return false;
-        } else {
-            NetworkInfo[] networkInfos = connectivityManager.getAllNetworkInfo();
-            if (networkInfos == null) {
-                return false;
-            } else {
-                for (int i = 0; i < networkInfos.length; i++) {
-                    if (NetworkInfo.State.CONNECTED == networkInfos[i].getState()) {
-                        return true;
-                    }
-                }
-            }
-        }
-
+    if (null == connectivityManager) {
+      return false;
+    } else {
+      NetworkInfo[] networkInfos = connectivityManager.getAllNetworkInfo();
+      if (networkInfos == null) {
         return false;
-    }
-
-    /**
-     * 是否为wifi网络
-     */
-    public final boolean isWifiConnection(Context context) {
-        final ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (null == connectivityManager) {
-            return false;
+      } else {
+        for (int i = 0; i < networkInfos.length; i++) {
+          if (NetworkInfo.State.CONNECTED == networkInfos[i].getState()) {
+            return true;
+          }
         }
-
-        final NetworkInfo networkInfo = connectivityManager
-                .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        return (networkInfo != null && networkInfo.isConnectedOrConnecting());
+      }
     }
 
-    public static final String TAG_LOG = "OkHttp";
-    private static final Logger mLogger = XLog.tag(TAG_LOG).build();
+    return false;
+  }
 
-    public static <T> T create(@NonNull String url, Class<T> service) {
-        HttpLoggingInterceptor.Logger logger = new HttpLoggingInterceptor.Logger() {
-            @Override
-            public void log(String message) {
-                mLogger.d(message);
-            }
-        };
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(logger);
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .addInterceptor(logging)
-                .build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .client(okHttpClient)
-                .addCallAdapterFactory(
-                        RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        return retrofit.create(service);
+  /**
+   * 是否为wifi网络
+   */
+  public final boolean isWifiConnection(Context context) {
+    final ConnectivityManager connectivityManager = (ConnectivityManager) context
+        .getSystemService(Context.CONNECTIVITY_SERVICE);
+    if (null == connectivityManager) {
+      return false;
     }
+
+    final NetworkInfo networkInfo = connectivityManager
+        .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+    return (networkInfo != null && networkInfo.isConnectedOrConnecting());
+  }
+
+  public static final String TAG_LOG = "OkHttp";
+  private static final Logger mLogger = XLog.tag(TAG_LOG).build();
+
+  public static <T> T create(@NonNull String url, Class<T> service) {
+    HttpLoggingInterceptor.Logger logger = new HttpLoggingInterceptor.Logger() {
+      @Override
+      public void log(String message) {
+        mLogger.d(message);
+      }
+    };
+    HttpLoggingInterceptor logging = new HttpLoggingInterceptor(logger);
+    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS)
+        .addInterceptor(logging)
+        .build();
+    Retrofit retrofit = new Retrofit.Builder()
+        .baseUrl(url)
+        .client(okHttpClient)
+        .addCallAdapterFactory(
+            RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+        .addConverterFactory(GsonConverterFactory.create())
+        .build();
+    return retrofit.create(service);
+  }
 }

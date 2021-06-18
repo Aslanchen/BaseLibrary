@@ -42,8 +42,8 @@ public abstract class VBBaseFragment<VB extends ViewBinding> extends BaseFragmen
   public abstract void iniView();
 
   @Override
-  public void onDestroyView() {
-    super.onDestroyView();
+  public void onDestroy() {
+    super.onDestroy();
     mViewBinding = null;
   }
 }
