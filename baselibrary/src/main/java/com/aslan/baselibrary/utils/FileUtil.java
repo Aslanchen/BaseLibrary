@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Environment;
-import android.text.TextUtils;
 import androidx.core.content.ContextCompat;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,45 +22,20 @@ public final class FileUtil {
 
   private static final String LOG = "Logs";
 
-  private static String log;
-  private static String download;
-  private static String document;
-  private static String photo;
-
-  public static String getLog(Context context) {
-    if (!TextUtils.isEmpty(log)) {
-      return log;
-    }
-
-    log = getFilesDir(context, LOG).getAbsolutePath();
-    return log;
+  public static File getLog(Context context) {
+    return getFilesDir(context, LOG);
   }
 
-  public static String getDownload(Context context) {
-    if (!TextUtils.isEmpty(download)) {
-      return download;
-    }
-
-    download = getFilesDir(context, Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-    return download;
+  public static File getDownload(Context context) {
+    return getFilesDir(context, Environment.DIRECTORY_DOWNLOADS);
   }
 
-  public static String getDocument(Context context) {
-    if (!TextUtils.isEmpty(document)) {
-      return document;
-    }
-
-    document = getFilesDir(context, Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
-    return document;
+  public static File getDocument(Context context) {
+    return getFilesDir(context, Environment.DIRECTORY_DOCUMENTS);
   }
 
-  public static String getPhoto(Context context) {
-    if (!TextUtils.isEmpty(photo)) {
-      return photo;
-    }
-
-    photo = getFilesDir(context, Environment.DIRECTORY_PICTURES).getAbsolutePath();
-    return photo;
+  public static File getPhoto(Context context) {
+    return getFilesDir(context, Environment.DIRECTORY_PICTURES);
   }
 
   /**
@@ -105,7 +79,7 @@ public final class FileUtil {
   /**
    * 批量删除文件
    *
-   * @param file 文件夹
+   * @param file           文件夹
    * @param isDeleteDirect 是否需要删除文件夹
    */
   private void deleteFile(File file, boolean isDeleteDirect) {
@@ -130,9 +104,9 @@ public final class FileUtil {
   /**
    * 把asset下文件copy到SD卡
    *
-   * @param context 上下文
+   * @param context   上下文
    * @param assetName 资源文件名称，完整路径
-   * @param output 目标文件
+   * @param output    目标文件
    */
   public static void copyAssetFile(Context context, String assetName, File output)
       throws IOException {
