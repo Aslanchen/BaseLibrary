@@ -2,10 +2,10 @@ package com.aslan.baselibrary.items;
 
 import android.animation.Animator;
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import com.aslan.baselibrary.R;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.Payload;
@@ -15,7 +15,9 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 import java.util.List;
 
 /**
- * Created by Aslanchen on 2017/4/13.
+ * 加载效果，配合 FlexibleAdapter 使用。
+ *
+ * <p>Created by Aslanchen on 2017/4/13.
  */
 public class ProgressItem extends AbstractFlexibleItem<ProgressItem.ProgressViewHolder> {
 

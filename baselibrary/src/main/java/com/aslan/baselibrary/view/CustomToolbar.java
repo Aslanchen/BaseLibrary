@@ -1,6 +1,7 @@
 package com.aslan.baselibrary.view;
 
 import android.content.Context;
+import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import com.aslan.baselibrary.R;
 
 /**
@@ -135,7 +137,8 @@ public class CustomToolbar extends Toolbar {
   public void setShowBack(boolean isShow) {
     if (isShow) {
       if (iconBack == null) {
-        iconBack = AppCompatResources.getDrawable(getContext(), R.mipmap.back);
+        Theme theme = getContext().getTheme();
+        iconBack = VectorDrawableCompat.create(getResources(), R.drawable.icon_back, theme);
       }
       setNavigationIcon(iconBack);
     } else {

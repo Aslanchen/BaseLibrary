@@ -9,19 +9,21 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.provider.Settings;
+import android.text.TextUtils;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.Builder;
 import androidx.core.app.NotificationManagerCompat;
-import android.text.TextUtils;
+import androidx.fragment.app.Fragment;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * 通知栏通知帮助类
@@ -30,6 +32,27 @@ import android.text.TextUtils;
  * @date 2017/4/27
  */
 public final class NotificationHelp {
+
+  /**
+   * <p>IMPORTANCE_NONE 关闭通知。
+   * <p>IMPORTANCE_MIN 开启通知，不会弹出，但没有提示音，状态栏中无显示。
+   * <p>IMPORTANCE_LOW 开启通知，不会弹出，不发出提示音，状态栏中显示。
+   * <p>IMPORTANCE_DEFAULT 开启通知，不会弹出，发出提示音，状态栏中显示。
+   * <p>IMPORTANCE_HIGH 开启通知，会弹出，发出提示音，状态栏中显示。
+   * <p>IMPORTANCE_MAX 开启通知，会弹出，发出提示音，状态栏中显示，允许full screen intents。
+   */
+  @Retention(RetentionPolicy.SOURCE)
+  @IntDef({
+      NotificationManagerCompat.IMPORTANCE_NONE,
+      NotificationManagerCompat.IMPORTANCE_MIN,
+      NotificationManagerCompat.IMPORTANCE_LOW,
+      NotificationManagerCompat.IMPORTANCE_DEFAULT,
+      NotificationManagerCompat.IMPORTANCE_HIGH,
+      NotificationManagerCompat.IMPORTANCE_MAX,
+  })
+  public @interface Importance {
+
+  }
 
   private NotificationManagerCompat mNotificationManager;
   private Builder builder;
@@ -40,35 +63,25 @@ public final class NotificationHelp {
     this.context = context;
   }
 
-  public Builder creatBuilder(@DrawableRes int icon,
-      @NonNull String channelId) {
+  public Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId) {
     return creatBuilder(icon, channelId, null, NotificationManagerCompat.IMPORTANCE_DEFAULT);
   }
 
   public Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
-      int importance) {
+      @Importance int importance) {
     return creatBuilder(icon, channelId, null, importance);
   }
 
   public Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
-      @NonNull String channelName) {
+      @Nullable String channelName) {
     return creatBuilder(icon, channelId, channelName, NotificationManagerCompat.IMPORTANCE_DEFAULT);
   }
 
-  /**
-   *
-   * @param importance {@link NotificationManagerCompat#IMPORTANCE_DEFAULT}
-   * Oreo不用Priority了，用importance
-   * IMPORTANCE_NONE 关闭通知
-   * IMPORTANCE_MIN 开启通知，不会弹出，但没有提示音，状态栏中无显示
-   * IMPORTANCE_LOW 开启通知，不会弹出，不发出提示音，状态栏中显示
-   * IMPORTANCE_DEFAULT 开启通知，不会弹出，发出提示音，状态栏中显示
-   * IMPORTANCE_HIGH 开启通知，会弹出，发出提示音，状态栏中显示
-   */
   public Builder creatBuilder(@DrawableRes int icon, @NonNull String channelId,
-      @NonNull String channelName, int importance) {
-    if (TextUtils.isEmpty(channelName) == false) {
+      @Nullable String channelName, @Importance int importance) {
+    if (!TextUtils.isEmpty(channelName)) {
       if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        assert channelName != null;
         createNotificationChannel(context, channelId, channelName, importance);
       }
     }
@@ -92,21 +105,16 @@ public final class NotificationHelp {
     return builder;
   }
 
-  /**
-   * @param importance {@link NotificationManagerCompat#IMPORTANCE_DEFAULT}
-   */
   @RequiresApi(api = VERSION_CODES.O)
   public static void createNotificationChannel(Context context, @NonNull String channelId,
-      @NonNull String channelName, int importance) {
+      @NonNull String channelName, @Importance int importance) {
     createNotificationChannel(context, channelId, channelName, importance, null);
   }
 
-  /**
-   * @param importance {@link NotificationManagerCompat#IMPORTANCE_DEFAULT}
-   */
   @RequiresApi(api = VERSION_CODES.O)
   public static void createNotificationChannel(Context context, @NonNull String channelId,
-      @NonNull String channelName, int importance, @Nullable IChannelSetting iChannelSetting) {
+      @NonNull String channelName, @Importance int importance,
+      @Nullable IChannelSetting iChannelSetting) {
     NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
     NotificationManager notificationManager = (NotificationManager) context
         .getSystemService(Context.NOTIFICATION_SERVICE);
