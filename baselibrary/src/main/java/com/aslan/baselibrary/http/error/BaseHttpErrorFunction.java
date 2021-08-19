@@ -60,7 +60,12 @@ public abstract class BaseHttpErrorFunction<T> implements Function<Throwable, T>
       ex = new DataError(DataError.ERROR_HTTP_OTHER, context.getString(R.string.error_net));
     }
 
-    Log.e(NetManager.TAG_LOG, "Http Error", throwable);
+    if (throwable instanceof DataError) {
+      Log.e(NetManager.TAG_LOG, "Http Error, code= " + ex.getCode() + ", msg= " + ex.getMessage());
+    } else {
+      Log.e(NetManager.TAG_LOG, "Http Error, ", throwable);
+    }
+
     return error(ex);
   }
 
