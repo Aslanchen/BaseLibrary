@@ -1,7 +1,6 @@
 package com.aslan.baselibrary.http.error;
 
 import android.content.Context;
-import com.aslan.baselibrary.base.DataError;
 import io.reactivex.Completable;
 
 /**
@@ -17,7 +16,7 @@ public class HttpErrorFunctionCompletable extends BaseHttpErrorFunction<Completa
   }
 
   @Override
-  public Completable error(DataError ex) {
+  public Completable error(Exception ex) {
     return Completable.error(ex);
   }
 }

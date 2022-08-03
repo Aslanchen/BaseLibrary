@@ -1,7 +1,6 @@
 package com.aslan.baselibrary.http.error;
 
 import android.content.Context;
-import com.aslan.baselibrary.base.DataError;
 import io.reactivex.Observable;
 
 /**
@@ -17,7 +16,7 @@ public class HttpErrorFunctionObservable<T> extends BaseHttpErrorFunction<Observ
   }
 
   @Override
-  public Observable<T> error(DataError ex) {
+  public Observable<T> error(Exception ex) {
     return Observable.error(ex);
   }
 }

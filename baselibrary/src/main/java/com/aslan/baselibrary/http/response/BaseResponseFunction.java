@@ -3,11 +3,10 @@ package com.aslan.baselibrary.http.response;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.aslan.baselibrary.base.DataError;
-import com.aslan.baselibrary.http.EventTokenError;
+import com.aslan.baselibrary.error.RemoteException;
+import com.aslan.baselibrary.error.TokenException;
 import com.aslan.baselibrary.http.IHttpBean;
 import io.reactivex.functions.Function;
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * 处理业务异常
@@ -26,19 +25,17 @@ public abstract class BaseResponseFunction<T, R> implements Function<IHttpBean<T
   @Override
   public R apply(IHttpBean<T> respone) throws Exception {
     if (respone.isTokenError()) {
-      EventBus.getDefault().post(new EventTokenError(respone.getCode()));
-      return error(new DataError(DataError.ERROR_HTTP_TOKEN_ERROR,
-          context.getString(com.aslan.baselibrary.R.string.error_net_token_error)));
+      return error(new TokenException());
     }
 
     if (respone.isSuccessful()) {
       return handleData(respone.getData());
     } else {
-      return error(new DataError(respone.getCode(), respone.getMessage()));
+      return error(new RemoteException(respone.getCode(), respone.getMessage()));
     }
   }
 
-  public abstract R error(@NonNull DataError ex);
+  public abstract R error(@NonNull Exception ex);
 
   public abstract R handleData(@Nullable T item);
 }

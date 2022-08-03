@@ -3,7 +3,6 @@ package com.aslan.baselibrary.http.response;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.aslan.baselibrary.base.DataError;
 import io.reactivex.Maybe;
 
 /**
@@ -19,7 +18,7 @@ public class ResponseFunctionMaybe<T> extends BaseResponseFunction<T, Maybe<T>> 
   }
 
   @Override
-  public Maybe<T> error(@NonNull DataError ex) {
+  public Maybe<T> error(@NonNull Exception ex) {
     return Maybe.error(ex);
   }
 

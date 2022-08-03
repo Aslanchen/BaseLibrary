@@ -18,6 +18,7 @@ import java.lang.reflect.ParameterizedType;
  */
 public abstract class VBBaseFragment<VB extends ViewBinding> extends BaseFragment {
 
+  @NonNull
   protected VB mViewBinding;
 
   @Override
@@ -28,10 +29,11 @@ public abstract class VBBaseFragment<VB extends ViewBinding> extends BaseFragmen
       Method inflate = cls
           .getDeclaredMethod("inflate", LayoutInflater.class, ViewGroup.class, boolean.class);
       mViewBinding = (VB) inflate.invoke(null, inflater, container, false);
+      return mViewBinding.getRoot();
     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
       e.printStackTrace();
     }
-    return mViewBinding.getRoot();
+    return null;
   }
 
   @Override

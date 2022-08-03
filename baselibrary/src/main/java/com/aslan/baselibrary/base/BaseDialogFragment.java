@@ -173,16 +173,6 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
     Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
   }
 
-  @UiThread
-  @Override
-  public void showToastMessage(@NonNull DataError error) {
-    if (isAdd() == false) {
-      return;
-    }
-
-    Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-  }
-
   @Override
   public boolean isAdd() {
     return this.isAdded();

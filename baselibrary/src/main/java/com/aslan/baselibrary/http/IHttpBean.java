@@ -7,13 +7,14 @@ package com.aslan.baselibrary.http;
  * @date 2019/9/23
  */
 public interface IHttpBean<T> {
-    int getCode();
 
-    String getMessage();
+  String getCode();
 
-    boolean isSuccessful();
+  String getMessage();
 
-    boolean isTokenError();
+  boolean isSuccessful();
 
-    T getData();
+  boolean isTokenError();
+
+  T getData();
 }

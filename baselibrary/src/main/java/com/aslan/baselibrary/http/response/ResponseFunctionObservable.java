@@ -3,7 +3,6 @@ package com.aslan.baselibrary.http.response;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.aslan.baselibrary.base.DataError;
 import io.reactivex.Observable;
 
 /**
@@ -19,7 +18,7 @@ public class ResponseFunctionObservable<T> extends BaseResponseFunction<T, Obser
   }
 
   @Override
-  public Observable<T> error(@NonNull DataError ex) {
+  public Observable<T> error(@NonNull Exception ex) {
     return Observable.error(ex);
   }
 

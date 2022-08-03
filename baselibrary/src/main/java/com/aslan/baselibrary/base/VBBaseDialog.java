@@ -19,6 +19,7 @@ import java.lang.reflect.ParameterizedType;
  */
 public abstract class VBBaseDialog<VB extends ViewBinding> extends BaseDialogFragment {
 
+  @NonNull
   protected VB mViewBinding;
 
   @Nullable
@@ -31,10 +32,11 @@ public abstract class VBBaseDialog<VB extends ViewBinding> extends BaseDialogFra
       Method inflate = cls
           .getDeclaredMethod("inflate", LayoutInflater.class, ViewGroup.class, boolean.class);
       mViewBinding = (VB) inflate.invoke(null, inflater, container, false);
+      return mViewBinding.getRoot();
     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
       e.printStackTrace();
     }
-    return mViewBinding.getRoot();
+    return null;
   }
 
   @Override

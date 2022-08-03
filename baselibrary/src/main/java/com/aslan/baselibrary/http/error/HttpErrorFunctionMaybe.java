@@ -1,7 +1,6 @@
 package com.aslan.baselibrary.http.error;
 
 import android.content.Context;
-import com.aslan.baselibrary.base.DataError;
 import io.reactivex.Maybe;
 
 /**
@@ -17,7 +16,7 @@ public class HttpErrorFunctionMaybe<T> extends BaseHttpErrorFunction<Maybe<T>> {
   }
 
   @Override
-  public Maybe<T> error(DataError ex) {
+  public Maybe<T> error(Exception ex) {
     return Maybe.error(ex);
   }
 }

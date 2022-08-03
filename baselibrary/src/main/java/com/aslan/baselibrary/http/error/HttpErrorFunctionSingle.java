@@ -1,7 +1,6 @@
 package com.aslan.baselibrary.http.error;
 
 import android.content.Context;
-import com.aslan.baselibrary.base.DataError;
 import io.reactivex.Single;
 
 /**
@@ -17,7 +16,7 @@ public class HttpErrorFunctionSingle<T> extends BaseHttpErrorFunction<Single<T>>
   }
 
   @Override
-  public Single<T> error(DataError ex) {
+  public Single<T> error(Exception ex) {
     return Single.error(ex);
   }
 }

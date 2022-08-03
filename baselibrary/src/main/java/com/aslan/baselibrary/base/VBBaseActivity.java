@@ -1,6 +1,7 @@
 package com.aslan.baselibrary.base;
 
 import android.view.LayoutInflater;
+import androidx.annotation.NonNull;
 import androidx.viewbinding.ViewBinding;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,6 +15,7 @@ import java.lang.reflect.ParameterizedType;
  */
 public abstract class VBBaseActivity<VB extends ViewBinding> extends BaseActivity {
 
+  @NonNull
   protected VB mViewBinding;
 
   @Override
@@ -27,7 +29,11 @@ public abstract class VBBaseActivity<VB extends ViewBinding> extends BaseActivit
     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
       e.printStackTrace();
     }
+  }
 
-    setContentView(mViewBinding.getRoot());
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    mViewBinding = null;
   }
 }

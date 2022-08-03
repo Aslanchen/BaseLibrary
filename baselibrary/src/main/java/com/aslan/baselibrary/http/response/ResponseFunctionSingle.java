@@ -3,7 +3,6 @@ package com.aslan.baselibrary.http.response;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.aslan.baselibrary.base.DataError;
 import io.reactivex.Single;
 
 /**
@@ -19,7 +18,7 @@ public class ResponseFunctionSingle<T> extends BaseResponseFunction<T, Single<T>
   }
 
   @Override
-  public Single<T> error(@NonNull DataError ex) {
+  public Single<T> error(@NonNull Exception ex) {
     return Single.error(ex);
   }
 
