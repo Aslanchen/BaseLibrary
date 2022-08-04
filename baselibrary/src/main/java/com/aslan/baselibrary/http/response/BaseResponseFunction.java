@@ -3,8 +3,8 @@ package com.aslan.baselibrary.http.response;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.aslan.baselibrary.error.RemoteException;
-import com.aslan.baselibrary.error.TokenException;
+import com.aslan.baselibrary.exception.RemoteException;
+import com.aslan.baselibrary.exception.TokenException;
 import com.aslan.baselibrary.http.IHttpBean;
 import io.reactivex.functions.Function;
 

@@ -1,4 +1,4 @@
-package com.aslan.baselibrary.error;
+package com.aslan.baselibrary.exception;
 
 /**
  * 客户端本地异常

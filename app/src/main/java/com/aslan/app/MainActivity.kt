@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.aslan.app.databinding.ActivityMainBinding
 import com.aslan.baselibrary.base.DataCompletableTransformer
 import com.aslan.baselibrary.base.VBBaseActivity
-import com.aslan.baselibrary.error.RemoteException
+import com.aslan.baselibrary.exception.RemoteException
 import com.aslan.baselibrary.http.observer.DataCompletableObserver
 import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import io.reactivex.Completable

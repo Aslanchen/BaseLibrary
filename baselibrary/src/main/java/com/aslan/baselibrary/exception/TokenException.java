@@ -1,4 +1,4 @@
-package com.aslan.baselibrary.error;
+package com.aslan.baselibrary.exception;
 
 /**
  * token异常

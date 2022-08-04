@@ -1,4 +1,4 @@
-package com.aslan.baselibrary.error;
+package com.aslan.baselibrary.exception;
 
 /**
  * 业务服务器异常

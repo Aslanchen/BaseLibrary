@@ -1,7 +1,7 @@
 package com.aslan.baselibrary.base
 
 import android.view.View
-import com.aslan.baselibrary.error.TokenException
+import com.aslan.baselibrary.exception.TokenException
 import com.aslan.baselibrary.listener.IBaseView
 import io.reactivex.Completable
 import io.reactivex.CompletableSource
