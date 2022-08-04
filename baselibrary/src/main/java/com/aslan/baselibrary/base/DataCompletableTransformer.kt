@@ -3,17 +3,17 @@ package com.aslan.baselibrary.base
 import android.view.View
 import com.aslan.baselibrary.error.TokenException
 import com.aslan.baselibrary.listener.IBaseView
-import io.reactivex.*
-import org.reactivestreams.Publisher
+import io.reactivex.Completable
+import io.reactivex.CompletableSource
+import io.reactivex.CompletableTransformer
 import java.util.concurrent.CancellationException
 
-class DataTransformer<T>(
+class DataCompletableTransformer(
     private val mBaseView: IBaseView,
     private val clickView: View? = null,
     private val isShowProgressbar: Boolean = true,
 ) :
-    ObservableTransformer<T, T>, FlowableTransformer<T, T>, SingleTransformer<T, T>,
-    MaybeTransformer<T, T> {
+    CompletableTransformer {
 
     private fun doOnSubscribe() {
         if (isShowProgressbar) {
@@ -47,46 +47,7 @@ class DataTransformer<T>(
         clickView?.isEnabled = true
     }
 
-    override fun apply(upstream: Observable<T>): ObservableSource<T> {
-        return upstream
-            .doOnSubscribe {
-                doOnSubscribe()
-            }
-            .doOnError { error ->
-                doOnError(error)
-            }
-            .doFinally {
-                doFinally()
-            }
-    }
-
-    override fun apply(upstream: Flowable<T>): Publisher<T> {
-        return upstream
-            .doOnSubscribe {
-                doOnSubscribe()
-            }
-            .doOnError { error ->
-                doOnError(error)
-            }
-            .doFinally {
-                doFinally()
-            }
-    }
-
-    override fun apply(upstream: Single<T>): SingleSource<T> {
-        return upstream
-            .doOnSubscribe {
-                doOnSubscribe()
-            }
-            .doOnError { error ->
-                doOnError(error)
-            }
-            .doFinally {
-                doFinally()
-            }
-    }
-
-    override fun apply(upstream: Maybe<T>): MaybeSource<T> {
+    override fun apply(upstream: Completable): CompletableSource {
         return upstream
             .doOnSubscribe {
                 doOnSubscribe()

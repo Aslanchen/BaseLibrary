@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.viewbinding.ViewBinding
 import com.aslan.baselibrary.listener.IMVPBasePresenter
+import com.aslan.baselibrary.utils.InflateActivity
 
 /**
  * MPV基础类
@@ -12,7 +13,7 @@ import com.aslan.baselibrary.listener.IMVPBasePresenter
  * @author Aslan
  * @date 2018/4/11
  */
-abstract class MVPBaseActivity<VB : ViewBinding, P : IMVPBasePresenter>(inflate: Inflate2<VB>) :
+abstract class MVPBaseActivity<VB : ViewBinding, P : IMVPBasePresenter>(inflate: InflateActivity<VB>) :
     VBBaseActivity<VB>(inflate) {
     abstract fun iniPresenter(): P
 

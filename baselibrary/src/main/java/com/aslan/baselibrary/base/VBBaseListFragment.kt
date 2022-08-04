@@ -10,6 +10,7 @@ import androidx.viewbinding.ViewBinding
 import com.aslan.baselibrary.R
 import com.aslan.baselibrary.http.observer.DataObserver
 import com.aslan.baselibrary.items.ProgressItem
+import com.aslan.baselibrary.utils.InflateFragment
 import com.aslan.baselibrary.view.EmptyView
 import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -19,7 +20,7 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: Inflate<VB>) :
+abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFragment<VB>) :
     VBBaseFragment<VB>(inflate), FlexibleAdapter.OnItemClickListener,
     SwipeRefreshLayout.OnRefreshListener, FlexibleAdapter.EndlessScrollListener {
 

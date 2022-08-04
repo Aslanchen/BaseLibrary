@@ -1,7 +1,7 @@
 package com.aslan.baselibrary.base
 
-import android.view.LayoutInflater
 import androidx.viewbinding.ViewBinding
+import com.aslan.baselibrary.utils.InflateActivity
 
 /**
  * 基础类
@@ -9,9 +9,7 @@ import androidx.viewbinding.ViewBinding
  * @author Aslan
  * @date 2018/4/11
  */
-typealias Inflate2<T> = (LayoutInflater) -> T
-
-abstract class VBBaseActivity<VB : ViewBinding?>(private val inflate: Inflate2<VB>) :
+abstract class VBBaseActivity<VB : ViewBinding>(private val inflate: InflateActivity<VB>) :
     BaseActivity() {
     private var _binding: VB? = null
     protected val mViewBinding get() = _binding!!

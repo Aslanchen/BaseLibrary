@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.viewbinding.ViewBinding
+import com.aslan.baselibrary.utils.InflateFragment
 
 /**
  * 基础类
@@ -12,9 +13,8 @@ import androidx.viewbinding.ViewBinding
  * @author Aslan
  * @date 2018/4/11
  */
-typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
-
-abstract class VBBaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) : BaseFragment() {
+abstract class VBBaseFragment<VB : ViewBinding>(private val inflate: InflateFragment<VB>) :
+    BaseFragment() {
     private var _binding: VB? = null
     protected val mViewBinding get() = _binding!!
 
