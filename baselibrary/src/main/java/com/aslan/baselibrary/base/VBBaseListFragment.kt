@@ -10,7 +10,6 @@ import androidx.viewbinding.ViewBinding
 import com.aslan.baselibrary.R
 import com.aslan.baselibrary.http.observer.DataObserver
 import com.aslan.baselibrary.items.ProgressItem
-import com.aslan.baselibrary.listener.LoadListCallback
 import com.aslan.baselibrary.view.EmptyView
 import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -31,32 +30,6 @@ abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: Inflate<VB>) :
     protected var swipeRefreshLayout: SwipeRefreshLayout? = null
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var listEmptyView: EmptyView
-
-    protected var callbackRefresh = object : LoadListCallback<M> {
-        override fun onLoaded(datas: List<M>) {
-            swipeRefreshLayout?.setRefreshing(false)
-            if (datas.isEmpty()) {
-                adapter.setEndlessProgressItem(null)
-            } else {
-                adapter.setEndlessProgressItem(progressItem)
-            }
-            addToListView(VBBaseListActivity.UpdateState.Refresh, datas)
-        }
-
-        override fun onDataNotAvailable(error: Throwable) {
-            swipeRefreshLayout?.setRefreshing(false)
-        }
-    }
-
-    protected var callbackLoad = object : LoadListCallback<M> {
-        override fun onLoaded(datas: List<M>) {
-            addToListView(VBBaseListActivity.UpdateState.LoadMore, datas)
-        }
-
-        override fun onDataNotAvailable(error: Throwable) {
-            progressItem.status = ProgressItem.StatusEnum.ON_ERROR
-        }
-    }
 
     @CallSuper
     override fun iniView(view: View) {
@@ -127,20 +100,23 @@ abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: Inflate<VB>) :
         }
     }
 
-    override fun onRefresh() {
+    open override fun onRefresh() {
         adapter.setEndlessProgressItem(progressItem)
         getDataFromNet(VBBaseListActivity.UpdateState.Refresh, 1)
             .observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
+            .doFinally {
+                swipeRefreshLayout?.setRefreshing(false)
+            }
             .subscribe(object : DataObserver<List<M>>(requireContext()) {
-                override fun onError(e: Throwable) {
-                    super.onError(e)
-                    callbackRefresh.onDataNotAvailable(e)
-                }
-
                 override fun handleSuccess(t: List<M>) {
-                    callbackRefresh.onLoaded(t)
+                    if (t.isEmpty()) {
+                        adapter.setEndlessProgressItem(null)
+                    } else {
+                        adapter.setEndlessProgressItem(progressItem)
+                    }
+                    addToListView(VBBaseListActivity.UpdateState.Refresh, t)
                 }
             })
     }
@@ -149,22 +125,21 @@ abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: Inflate<VB>) :
         progressItem.status = ProgressItem.StatusEnum.NO_MORE_LOAD
     }
 
-    override fun onLoadMore(lastPosition: Int, currentPage: Int) {
+    open override fun onLoadMore(lastPosition: Int, currentPage: Int) {
         progressItem.status = ProgressItem.StatusEnum.MORE_TO_LOAD
         getDataFromNet(
             VBBaseListActivity.UpdateState.LoadMore,
             currentPage + 1,
         )
             .observeOn(AndroidSchedulers.mainThread())
+            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
             .bindToLifecycle(this)
+            .doOnError {
+                progressItem.status = ProgressItem.StatusEnum.ON_ERROR
+            }
             .subscribe(object : DataObserver<List<M>>(requireContext()) {
-                override fun onError(e: Throwable) {
-                    super.onError(e)
-                    callbackLoad.onDataNotAvailable(e)
-                }
-
                 override fun handleSuccess(t: List<M>) {
-                    callbackLoad.onLoaded(t)
+                    addToListView(VBBaseListActivity.UpdateState.LoadMore, t)
                 }
             })
     }

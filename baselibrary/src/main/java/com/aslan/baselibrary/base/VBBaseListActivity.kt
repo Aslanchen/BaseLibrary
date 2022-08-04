@@ -105,7 +105,7 @@ abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: Inflate2<VB>) :
         }
     }
 
-    override fun onRefresh() {
+    open override fun onRefresh() {
         adapter.setEndlessProgressItem(progressItem)
         getDataFromNet(UpdateState.Refresh, 1)
             .observeOn(AndroidSchedulers.mainThread())
@@ -130,13 +130,14 @@ abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: Inflate2<VB>) :
         progressItem.status = ProgressItem.StatusEnum.NO_MORE_LOAD
     }
 
-    override fun onLoadMore(lastPosition: Int, currentPage: Int) {
+    open override fun onLoadMore(lastPosition: Int, currentPage: Int) {
         progressItem.status = ProgressItem.StatusEnum.MORE_TO_LOAD
         getDataFromNet(
             UpdateState.LoadMore,
             currentPage + 1
         ).observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
+            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
             .doOnError {
                 progressItem.status = ProgressItem.StatusEnum.ON_ERROR
             }

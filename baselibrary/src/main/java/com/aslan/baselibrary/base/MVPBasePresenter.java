@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.Size;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.Factory;
@@ -25,8 +24,7 @@ import pub.devrel.easypermissions.PermissionRequest;
  * @author Aslan
  * @date 2018/4/11
  */
-public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBasePresenter,
-    DefaultLifecycleObserver {
+public abstract class MVPBasePresenter<V extends IBaseView> implements IMVPBasePresenter {
 
   public V mView;
   public Context context;

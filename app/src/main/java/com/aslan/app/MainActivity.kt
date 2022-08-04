@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.aslan.app.databinding.ActivityMainBinding
 import com.aslan.baselibrary.base.VBBaseActivity
 
-class MainActivity : VBBaseActivity<ActivityMainBinding>() {
+class MainActivity : VBBaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
     override fun iniBundle(bundle: Bundle) {
     }
 
