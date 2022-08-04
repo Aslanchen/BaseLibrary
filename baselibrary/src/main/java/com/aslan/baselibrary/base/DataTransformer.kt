@@ -7,12 +7,18 @@ import io.reactivex.*
 import org.reactivestreams.Publisher
 import java.util.concurrent.CancellationException
 
-class DataTransformer<T>(private val mBaseView: IBaseView, private val clickView: View? = null) :
+class DataTransformer<T>(
+    private val mBaseView: IBaseView,
+    private val clickView: View? = null,
+    private val isShowProgressbar: Boolean = true,
+) :
     ObservableTransformer<T, T>, FlowableTransformer<T, T>, SingleTransformer<T, T>,
     MaybeTransformer<T, T>, CompletableTransformer {
 
     private fun doOnSubscribe() {
-        mBaseView.showProgressBar()
+        if (isShowProgressbar) {
+            mBaseView.showProgressBar()
+        }
         clickView?.isEnabled = false
     }
 
@@ -35,7 +41,9 @@ class DataTransformer<T>(private val mBaseView: IBaseView, private val clickView
     }
 
     private fun doFinally() {
-        mBaseView.closeProgressBar()
+        if (isShowProgressbar) {
+            mBaseView.closeProgressBar()
+        }
         clickView?.isEnabled = true
     }
 

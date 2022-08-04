@@ -1,11 +1,7 @@
-package com.aslan.baselibrary.base;
+package com.aslan.baselibrary.base
 
-import android.view.LayoutInflater;
-import androidx.annotation.NonNull;
-import androidx.viewbinding.ViewBinding;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
+import android.view.LayoutInflater
+import androidx.viewbinding.ViewBinding
 
 /**
  * 基础类
@@ -13,27 +9,22 @@ import java.lang.reflect.ParameterizedType;
  * @author Aslan
  * @date 2018/4/11
  */
-public abstract class VBBaseActivity<VB extends ViewBinding> extends BaseActivity {
+typealias Inflate2<T> = (LayoutInflater) -> T
 
-  @NonNull
-  protected VB mViewBinding;
+abstract class VBBaseActivity<VB : ViewBinding?>(private val inflate: Inflate2<VB>) :
+    BaseActivity() {
+    private var _binding: VB? = null
+    protected val mViewBinding get() = _binding!!
 
-  @Override
-  public void setCusContentView() {
-    ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
-    Class cls = (Class) type.getActualTypeArguments()[0];
-    try {
-      Method inflate = cls.getDeclaredMethod("inflate", LayoutInflater.class);
-      mViewBinding = (VB) inflate.invoke(null, getLayoutInflater());
-      setContentView(mViewBinding.getRoot());
-    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-      e.printStackTrace();
+    override fun getLayoutId() = 0
+
+    override fun setCusContentView() {
+        _binding = inflate.invoke(layoutInflater)
+        setContentView(mViewBinding!!.root)
     }
-  }
 
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    mViewBinding = null;
-  }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }

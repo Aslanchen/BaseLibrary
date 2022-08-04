@@ -1,14 +1,10 @@
-package com.aslan.baselibrary.base;
+package com.aslan.baselibrary.base
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.viewbinding.ViewBinding;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.CallSuper
+import androidx.viewbinding.ViewBinding
 
 /**
  * 基础类
@@ -16,36 +12,28 @@ import java.lang.reflect.ParameterizedType;
  * @author Aslan
  * @date 2018/4/11
  */
-public abstract class VBBaseFragment<VB extends ViewBinding> extends BaseFragment {
+typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
-  @NonNull
-  protected VB mViewBinding;
+abstract class VBBaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) : BaseFragment() {
+    private var _binding: VB? = null
+    protected val mViewBinding get() = _binding!!
 
-  @Override
-  public View setCusContentView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
-    ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
-    Class cls = (Class) type.getActualTypeArguments()[0];
-    try {
-      Method inflate = cls
-          .getDeclaredMethod("inflate", LayoutInflater.class, ViewGroup.class, boolean.class);
-      mViewBinding = (VB) inflate.invoke(null, inflater, container, false);
-      return mViewBinding.getRoot();
-    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-      e.printStackTrace();
+    override fun getLayoutId() = 0
+
+    override fun setCusContentView(inflater: LayoutInflater, container: ViewGroup?): View {
+        _binding = inflate.invoke(inflater, container, false)
+        return mViewBinding.root
     }
-    return null;
-  }
 
-  @Override
-  public final void iniView(View view) {
-    iniView();
-  }
+    override fun iniView(view: View) {
+        iniView()
+    }
 
-  public abstract void iniView();
+    abstract fun iniView()
 
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    mViewBinding = null;
-  }
+    @CallSuper
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

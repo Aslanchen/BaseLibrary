@@ -77,11 +77,6 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
     super.onViewCreated(view, savedInstanceState);
     iniView(view);
     iniListener();
-  }
-
-  @Override
-  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
     iniData();
   }
 

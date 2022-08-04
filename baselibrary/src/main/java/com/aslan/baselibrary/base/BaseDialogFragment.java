@@ -53,11 +53,6 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     iniView(view);
-  }
-
-  @Override
-  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
     iniListener();
     iniData();
   }

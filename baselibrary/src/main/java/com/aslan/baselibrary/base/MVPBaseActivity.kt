@@ -1,12 +1,10 @@
-package com.aslan.baselibrary.base;
+package com.aslan.baselibrary.base
 
-import android.content.Intent;
-import android.os.Bundle;
-import androidx.annotation.CallSuper;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.viewbinding.ViewBinding;
-import com.aslan.baselibrary.listener.IMVPBasePresenter;
+import android.content.Intent
+import android.os.Bundle
+import androidx.annotation.CallSuper
+import androidx.viewbinding.ViewBinding
+import com.aslan.baselibrary.listener.IMVPBasePresenter
 
 /**
  * MPV基础类
@@ -14,44 +12,40 @@ import com.aslan.baselibrary.listener.IMVPBasePresenter;
  * @author Aslan
  * @date 2018/4/11
  */
-public abstract class MVPBaseActivity<VB extends ViewBinding, P extends IMVPBasePresenter> extends
-    VBBaseActivity<VB> {
+abstract class MVPBaseActivity<VB : ViewBinding, P : IMVPBasePresenter>(inflate: Inflate2<VB>) :
+    VBBaseActivity<VB>(inflate) {
+    abstract fun iniPresenter(): P
 
-  protected P mPresenter;
+    protected var mPresenter = this.iniPresenter()
 
-  public abstract P iniPresenter();
+    @CallSuper
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(mPresenter)
+    }
 
-  @CallSuper
-  @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
-    mPresenter = iniPresenter();
-    super.onCreate(savedInstanceState);
-    getLifecycle().addObserver(mPresenter);
-  }
+    @CallSuper
+    override fun iniData() {
+        mPresenter.iniData()
+    }
 
-  @CallSuper
-  public void iniData() {
-    mPresenter.iniData();
-  }
+    @CallSuper
+    override fun iniBundle(bundle: Bundle) {
+        mPresenter.iniBundle(bundle)
+    }
 
-  @CallSuper
-  @Override
-  public void iniBundle(@NonNull Bundle bundle) {
-    mPresenter.iniBundle(bundle);
-  }
+    @CallSuper
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        mPresenter.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 
-  @CallSuper
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    mPresenter.onActivityResult(requestCode, resultCode, data);
-    super.onActivityResult(requestCode, resultCode, data);
-  }
-
-  @CallSuper
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-      @NonNull int[] grantResults) {
-    mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-  }
+    @CallSuper
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 }

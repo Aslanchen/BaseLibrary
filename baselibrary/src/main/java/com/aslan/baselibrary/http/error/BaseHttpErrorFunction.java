@@ -58,7 +58,16 @@ public abstract class BaseHttpErrorFunction<T> implements Function<Throwable, T>
       ex = new ClientException(context.getString(R.string.error_net), throwable);
     }
 
-    Log.e(NetManager.TAG_LOG, "Http Error, ", throwable);
+    if (ex instanceof ClientException) {
+      Log.e(NetManager.TAG_LOG, "ClientException", ex);
+    } else if (ex instanceof RemoteException) {
+      RemoteException mRex = (RemoteException) ex;
+      Log.e(NetManager.TAG_LOG,
+          String.format("code= [%s] msg= [%s]", mRex.getCode(), mRex.getMessage()));
+    } else {
+      Log.e(NetManager.TAG_LOG, throwable.getMessage());
+    }
+
     return error(ex);
   }
 
