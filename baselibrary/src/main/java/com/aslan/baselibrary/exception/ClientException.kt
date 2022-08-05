@@ -1,4 +1,4 @@
-package com.aslan.baselibrary.exception;
+package com.aslan.baselibrary.exception
 
 /**
  * 客户端本地异常
@@ -6,9 +6,4 @@ package com.aslan.baselibrary.exception;
  * @author Aslan
  * @date 2019/9/23
  */
-public class ClientException extends Exception {
-
-  public ClientException(String message, Throwable cause) {
-    super(message, cause);
-  }
-}
+open class ClientException(message: String, cause: Throwable) : Exception(message, cause)

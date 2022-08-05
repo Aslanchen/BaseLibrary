@@ -25,7 +25,7 @@ public abstract class BaseResponseFunction<T, R> implements Function<IHttpBean<T
   @Override
   public R apply(IHttpBean<T> respone) throws Exception {
     if (respone.isTokenError()) {
-      return error(new TokenException());
+      return error(new TokenException(respone.getCode(), respone.getMessage()));
     }
 
     if (respone.isSuccessful()) {

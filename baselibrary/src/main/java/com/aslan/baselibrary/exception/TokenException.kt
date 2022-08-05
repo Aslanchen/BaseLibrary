@@ -1,4 +1,4 @@
-package com.aslan.baselibrary.exception;
+package com.aslan.baselibrary.exception
 
 /**
  * token异常
@@ -6,6 +6,4 @@ package com.aslan.baselibrary.exception;
  * @author Aslan
  * @date 2019/9/23
  */
-public class TokenException extends Exception {
-
-}
+class TokenException(code: String, message: String) : RemoteException(code, message)

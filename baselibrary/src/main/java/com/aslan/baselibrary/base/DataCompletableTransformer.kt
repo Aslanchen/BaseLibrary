@@ -8,7 +8,7 @@ import io.reactivex.CompletableSource
 import io.reactivex.CompletableTransformer
 import java.util.concurrent.CancellationException
 
-class DataCompletableTransformer(
+open class DataCompletableTransformer(
     private val mBaseView: IBaseView,
     private val clickView: View? = null,
     private val isShowProgressbar: Boolean = true,
@@ -25,12 +25,12 @@ class DataCompletableTransformer(
     private fun doOnError(error: Throwable) {
         if (error is CancellationException) {
             //Rxjava绑定生命周期后，会触发此异常
-            return@doOnError
+            return
         }
 
         if (error is TokenException) {
             //token异常，走统一处理
-            return@doOnError
+            return
         }
 
         if (error.message.isNullOrEmpty()) {
