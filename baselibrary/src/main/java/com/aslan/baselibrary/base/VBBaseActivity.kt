@@ -18,7 +18,7 @@ abstract class VBBaseActivity<VB : ViewBinding>(private val inflate: InflateActi
 
     override fun setCusContentView() {
         _binding = inflate.invoke(layoutInflater)
-        setContentView(mViewBinding!!.root)
+        setContentView(mViewBinding.root)
     }
 
     override fun onDestroy() {
