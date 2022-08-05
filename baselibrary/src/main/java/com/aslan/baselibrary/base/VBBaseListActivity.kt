@@ -133,11 +133,8 @@ abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActivity<
 
     open override fun onLoadMore(lastPosition: Int, currentPage: Int) {
         progressItem.status = ProgressItem.StatusEnum.MORE_TO_LOAD
-        getDataFromNet(
-            UpdateState.LoadMore,
-            currentPage + 1
-        ).observeOn(AndroidSchedulers.mainThread())
-            .bindToLifecycle(this)
+        getDataFromNet(UpdateState.LoadMore, currentPage + 1)
+            .observeOn(AndroidSchedulers.mainThread()).bindToLifecycle(this)
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
             .doOnError {
                 progressItem.status = ProgressItem.StatusEnum.ON_ERROR

@@ -128,10 +128,7 @@ abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFragment<
 
     open override fun onLoadMore(lastPosition: Int, currentPage: Int) {
         progressItem.status = ProgressItem.StatusEnum.MORE_TO_LOAD
-        getDataFromNet(
-            VBBaseListActivity.UpdateState.LoadMore,
-            currentPage + 1,
-        )
+        getDataFromNet(VBBaseListActivity.UpdateState.LoadMore, currentPage + 1)
             .observeOn(AndroidSchedulers.mainThread())
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
             .bindToLifecycle(this)
