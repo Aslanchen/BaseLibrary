@@ -3,7 +3,7 @@ package com.aslan.baselibrary.http.response;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.aslan.baselibrary.exception.RemoteException;
+import com.aslan.baselibrary.exception.BusinessException;
 import com.aslan.baselibrary.exception.TokenException;
 import com.aslan.baselibrary.http.IHttpBean;
 import io.reactivex.functions.Function;
@@ -31,7 +31,7 @@ public abstract class BaseResponseFunction<T, R> implements Function<IHttpBean<T
     if (respone.isSuccessful()) {
       return handleData(respone.getData());
     } else {
-      return error(new RemoteException(respone.getCode(), respone.getMessage()));
+      return error(new BusinessException(respone.getCode(), respone.getMessage()));
     }
   }
 

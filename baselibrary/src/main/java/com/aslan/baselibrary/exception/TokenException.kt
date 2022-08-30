@@ -6,4 +6,4 @@ package com.aslan.baselibrary.exception
  * @author Aslan
  * @date 2019/9/23
  */
-class TokenException(code: String, message: String) : RemoteException(code, message)
+class TokenException(code: String, message: String) : BusinessException(code, message)

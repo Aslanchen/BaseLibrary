@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.aslan.app.databinding.ActivityMainBinding
 import com.aslan.baselibrary.base.DataCompletableTransformer
 import com.aslan.baselibrary.base.VBBaseActivity
-import com.aslan.baselibrary.exception.RemoteException
+import com.aslan.baselibrary.exception.BusinessException
 import com.aslan.baselibrary.http.observer.DataCompletableObserver
 import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import io.reactivex.Completable
@@ -22,7 +22,7 @@ class MainActivity : VBBaseActivity<ActivityMainBinding>(ActivityMainBinding::in
         mViewBinding.bt.setOnClickListener {
             Completable.create {
                 Thread.sleep(1000)
-                it.tryOnError(RemoteException("12121", "12121"))
+                it.tryOnError(BusinessException("12121", "12121"))
             }
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -6,7 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import com.aslan.baselibrary.R;
 import com.aslan.baselibrary.exception.ClientException;
-import com.aslan.baselibrary.exception.RemoteException;
+import com.aslan.baselibrary.exception.BusinessException;
 import com.aslan.baselibrary.http.NetManager;
 import com.google.gson.JsonParseException;
 import io.reactivex.functions.Function;
@@ -52,16 +52,16 @@ public abstract class BaseHttpErrorFunction<T> implements Function<Throwable, T>
       ex = new ClientException(context.getString(R.string.error_local_database_default), throwable);
     } else if (throwable instanceof ClientException) {
       ex = (ClientException) throwable;
-    } else if (throwable instanceof RemoteException) {
-      ex = (RemoteException) throwable;
+    } else if (throwable instanceof BusinessException) {
+      ex = (BusinessException) throwable;
     } else {
       ex = new ClientException(context.getString(R.string.error_net), throwable);
     }
 
     if (ex instanceof ClientException) {
       Log.e(NetManager.TAG_LOG, "ClientException", ex);
-    } else if (ex instanceof RemoteException) {
-      RemoteException mRex = (RemoteException) ex;
+    } else if (ex instanceof BusinessException) {
+      BusinessException mRex = (BusinessException) ex;
       Log.e(NetManager.TAG_LOG,
           String.format("code= [%s] msg= [%s]", mRex.getCode(), mRex.getMessage()));
     } else {

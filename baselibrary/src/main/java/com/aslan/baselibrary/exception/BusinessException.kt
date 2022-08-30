@@ -6,4 +6,4 @@ package com.aslan.baselibrary.exception
  * @author Aslan
  * @date 2019/9/23
  */
-open class RemoteException(val code: String, message: String) : Exception(message)
+open class BusinessException(val code: String, message: String) : Exception(message)
