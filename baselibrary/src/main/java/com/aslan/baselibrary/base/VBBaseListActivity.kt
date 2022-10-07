@@ -20,7 +20,7 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActivity<VB>) :
+open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActivity<VB>) :
     VBBaseActivity<VB>(inflate), FlexibleAdapter.OnItemClickListener,
     SwipeRefreshLayout.OnRefreshListener, FlexibleAdapter.EndlessScrollListener {
 

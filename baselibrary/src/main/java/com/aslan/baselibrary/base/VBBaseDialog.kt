@@ -13,12 +13,12 @@ import com.aslan.baselibrary.utils.InflateFragment
  * @author Aslan
  * @date 2018/4/11
  */
-abstract class VBBaseDialog<VB : ViewBinding>(private val inflate: InflateFragment<VB>) :
+open abstract class VBBaseDialog<VB : ViewBinding>(private val inflate: InflateFragment<VB>) :
     BaseDialogFragment() {
     private var _binding: VB? = null
     protected val mViewBinding get() = _binding!!
 
-    override fun getLayoutId() = 0
+    final override fun getLayoutId() = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -9,12 +9,12 @@ import com.aslan.baselibrary.utils.InflateActivity
  * @author Aslan
  * @date 2018/4/11
  */
-abstract class VBBaseActivity<VB : ViewBinding>(private val inflate: InflateActivity<VB>) :
+open abstract class VBBaseActivity<VB : ViewBinding>(private val inflate: InflateActivity<VB>) :
     BaseActivity() {
     private var _binding: VB? = null
     protected val mViewBinding get() = _binding!!
 
-    override fun getLayoutId() = 0
+    final override fun getLayoutId() = 0
 
     override fun setCusContentView() {
         _binding = inflate.invoke(layoutInflater)

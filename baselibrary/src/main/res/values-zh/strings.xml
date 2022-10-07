@@ -1,10 +1,12 @@
 <resources>
-  <string name="error_net">服务器异常，请稍后再试</string>
+  <string name="error_unknow">发生异常，请稍后再试</string>
+  <string name="error_net">网络异常，请稍后再试</string>
+  <string name="error_net_remote">服务器异常，请稍后再试</string>
   <string name="error_net_no_net">网络不可用，请检查网络连接</string>
   <string name="error_net_connect_timeout">连接超时，请重试</string>
   <string name="error_net_socket_timeout">操作超时，请重试</string>
   <string name="error_net_token_error">登录异常</string>
-
+  <string name="error_data_parse">数据格式异常，请稍后再试</string>
   <string name="error_local_database_default">本地数据库操作异常，请重试</string>
 
   <string name="no_items">暂时没有数据</string>
