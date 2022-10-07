@@ -2,7 +2,7 @@ package com.aslan.app
 
 import android.os.Bundle
 import com.aslan.app.databinding.ActivityMainBinding
-import com.aslan.baselibrary.base.DataCompletableTransformer
+import com.aslan.baselibrary.base.DataTransformerCompletable
 import com.aslan.baselibrary.base.VBBaseActivity
 import com.aslan.baselibrary.exception.BusinessException
 import com.aslan.baselibrary.http.observer.DataCompletableObserver
@@ -27,7 +27,7 @@ class MainActivity : VBBaseActivity<ActivityMainBinding>(ActivityMainBinding::in
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .bindToLifecycle(this)
-                .compose(DataCompletableTransformer(mBaseView = this))
+                .compose(DataTransformerCompletable(mBaseView = this))
                 .subscribe(object : DataCompletableObserver(this) {
                     override fun handleSuccess() {
                         showToastMessage("hello")

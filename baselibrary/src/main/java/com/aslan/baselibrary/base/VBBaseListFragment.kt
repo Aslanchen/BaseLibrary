@@ -30,7 +30,7 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
 
     protected var swipeRefreshLayout: SwipeRefreshLayout? = null
     protected lateinit var recyclerView: RecyclerView
-    protected lateinit var listEmptyView: EmptyView
+    protected var listEmptyView: EmptyView? = null
 
     @CallSuper
     override fun iniView(view: View) {
@@ -124,16 +124,20 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
 
     override fun noMoreLoad(newItemsSize: Int) {
         progressItem.status = ProgressItem.StatusEnum.NO_MORE_LOAD
+        adapter.updateItem(progressItem)
     }
 
     open override fun onLoadMore(lastPosition: Int, currentPage: Int) {
         progressItem.status = ProgressItem.StatusEnum.MORE_TO_LOAD
+        adapter.updateItem(progressItem)
+
         getDataFromNet(VBBaseListActivity.UpdateState.LoadMore, currentPage + 1)
             .observeOn(AndroidSchedulers.mainThread())
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
             .bindToLifecycle(this)
             .doOnError {
                 progressItem.status = ProgressItem.StatusEnum.ON_ERROR
+                adapter.updateItem(progressItem)
             }
             .subscribe(object : DataObserver<List<M>>(requireContext()) {
                 override fun handleSuccess(t: List<M>) {

@@ -8,7 +8,7 @@ import io.reactivex.CompletableSource
 import io.reactivex.CompletableTransformer
 import java.util.concurrent.CancellationException
 
-open class DataCompletableTransformer(
+open class DataTransformerCompletable(
     private val mBaseView: IBaseView,
     private val clickView: View? = null,
     private val isShowProgressbar: Boolean = true,
