@@ -2,7 +2,7 @@
 
 ext {
     VERSIONCODE = 38
-    VERSIONNAME = "1.7.0"
+    VERSIONNAME = "1.5.0"
 }
 
 buildscript {
