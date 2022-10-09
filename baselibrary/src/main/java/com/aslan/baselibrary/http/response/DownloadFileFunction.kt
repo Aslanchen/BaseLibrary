@@ -7,7 +7,7 @@ import okio.buffer
 import okio.sink
 import java.io.File
 import java.io.IOException
-import java.util.regex.Pattern
+import java.net.URLDecoder
 
 
 /**
@@ -26,14 +26,34 @@ class DownloadFileFunction(val root: File, val filename: String? = null) :
             if (contentDisposition.isNullOrEmpty()) {
                 return Single.error(Exception("文件名称未指定"))
             } else {
-                val pattern = Pattern.compile("filename=(.+);")
-                val matcher = pattern.matcher(contentDisposition)
-                if (matcher.find()) {
-                    val name = matcher.group(1)
-                    File(root, name)
+                val arrays = contentDisposition.split(";")
+                val maps = hashMapOf<String, String>()
+                arrays.forEach {
+                    if ("=" in it) {
+                        val values = it.split("=")
+                        if (values.size == 2) {
+                            maps[values[0].trim()] = values[1].trim()
+                        }
+                    }
+                }
+
+                val name = if (maps.containsKey("filename*")) {
+                    val values = maps["filename*"]?.split("''")
+                    if (values.isNullOrEmpty() || values.size < 2) {
+                        null
+                    } else {
+                        URLDecoder.decode(values[1].trim(), values[0].trim())
+                    }
+                } else if (maps.containsKey("filename")) {
+                    maps["filename"]?.replace("\"", "")?.replace("'", "")
                 } else {
+                    null
+                }
+
+                if (name.isNullOrEmpty()) {
                     return Single.error(Exception("文件名称未指定"))
                 }
+                File(root, name)
             }
         } else {
             File(root, filename)
