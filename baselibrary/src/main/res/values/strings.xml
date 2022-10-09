@@ -16,4 +16,5 @@
   <string name="endless_error">Load error ~</string>
 
   <string name="progress_waiting">Waiting</string>
+  <string name="base_data_error_unknow">Unknow error</string>
 </resources>

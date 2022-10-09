@@ -1,6 +1,7 @@
 package com.aslan.baselibrary.base
 
 import android.view.View
+import com.aslan.baselibrary.R
 import com.aslan.baselibrary.exception.TokenException
 import com.aslan.baselibrary.listener.IBaseView
 import io.reactivex.*
@@ -34,7 +35,7 @@ open class DataTransformer<T>(
         }
 
         if (error.message.isNullOrEmpty()) {
-            mBaseView.showToastMessage("出现未知错误")
+            mBaseView.showToastMessage(R.string.base_data_error_unknow)
         } else {
             mBaseView.showToastMessage(error.message!!)
         }
