@@ -25,12 +25,6 @@ open abstract class VBBaseFragment<VB : ViewBinding>(private val inflate: Inflat
         return mViewBinding.root
     }
 
-    override fun iniView(view: View) {
-        iniView()
-    }
-
-    abstract fun iniView()
-
     @CallSuper
     override fun onDestroyView() {
         super.onDestroyView()
