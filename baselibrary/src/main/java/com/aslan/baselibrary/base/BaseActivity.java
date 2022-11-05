@@ -159,10 +159,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   @UiThread
   @Override
   public void closeProgressBar() {
-    if (isAdd() == false) {
-      return;
-    }
-
     if (progressDialog != null && progressDialog.isShowing()) {
       try {
         progressDialog.dismiss();

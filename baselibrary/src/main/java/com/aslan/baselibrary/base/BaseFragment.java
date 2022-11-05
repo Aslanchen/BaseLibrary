@@ -164,10 +164,6 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   @UiThread
   @Override
   public void closeProgressBar() {
-    if (isAdd() == false) {
-      return;
-    }
-
     if (progressDialog != null && progressDialog.isShowing()) {
       try {
         progressDialog.dismiss();

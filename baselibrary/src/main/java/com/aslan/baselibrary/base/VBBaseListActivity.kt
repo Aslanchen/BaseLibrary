@@ -125,9 +125,9 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
 
     open override fun onRefresh() {
         getDataFromNet(UpdateState.Refresh, 1)
-            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
-            .bindToLifecycle(this)
             .observeOn(AndroidSchedulers.mainThread())
+            .bindToLifecycle(this)
+            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
             .doFinally {
                 swipeRefreshLayout?.setRefreshing(false)
             }
@@ -148,9 +148,9 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
 
     open override fun onLoadMore(lastPosition: Int, currentPage: Int) {
         getDataFromNet(UpdateState.LoadMore, currentPage + 1)
-            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
-            .bindToLifecycle(this)
             .observeOn(AndroidSchedulers.mainThread())
+            .bindToLifecycle(this)
+            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
             .subscribe(object : DataObserver<List<M>>(this) {
                 override fun handleSuccess(t: List<M>) {
                     addToListView(UpdateState.LoadMore, t)

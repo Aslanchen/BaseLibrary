@@ -135,10 +135,6 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
   @UiThread
   @Override
   public void closeProgressBar() {
-    if (isAdd() == false) {
-      return;
-    }
-
     if (progressDialog != null && progressDialog.isShowing()) {
       try {
         progressDialog.dismiss();
