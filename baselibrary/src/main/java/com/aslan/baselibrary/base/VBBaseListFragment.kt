@@ -128,11 +128,6 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
             }
             .subscribe(object : DataObserver<List<M>>(requireContext()) {
                 override fun handleSuccess(t: List<M>) {
-                    if (t.isEmpty()) {
-                        adapter.updateDataSet(null)
-                        adapter.onLoadMoreComplete(null)
-                        return
-                    }
                     addToListView(VBBaseListActivity.UpdateState.Refresh, t)
                 }
             })
@@ -164,6 +159,12 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
     ): Observable<List<M>>
 
     protected open fun addToListView(rushState: VBBaseListActivity.UpdateState, datas: List<M>) {
+        if (rushState == VBBaseListActivity.UpdateState.Refresh && datas.isEmpty()) {
+            adapter.updateDataSet(null)
+            adapter.onLoadMoreComplete(null)
+            return
+        }
+
         val items = ArrayList<IFlexible<*>>()
         for (model in datas) {
             val item = getItem(model)

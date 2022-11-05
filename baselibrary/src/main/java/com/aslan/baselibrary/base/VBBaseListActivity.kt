@@ -133,11 +133,6 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
             }
             .subscribe(object : DataObserver<List<M>>(this) {
                 override fun handleSuccess(t: List<M>) {
-                    if (t.isEmpty()) {
-                        adapter.updateDataSet(null)
-                        adapter.onLoadMoreComplete(null)
-                        return
-                    }
                     addToListView(UpdateState.Refresh, t)
                 }
             })
@@ -169,6 +164,12 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
     ): Observable<List<M>>
 
     protected open fun addToListView(rushState: UpdateState, datas: List<M>) {
+        if (rushState == UpdateState.Refresh && datas.isEmpty()) {
+            adapter.updateDataSet(null)
+            adapter.onLoadMoreComplete(null)
+            return
+        }
+
         val items = ArrayList<IFlexible<*>>()
         for (model in datas) {
             val item = getItem(model)
