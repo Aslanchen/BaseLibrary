@@ -13,7 +13,7 @@
   <string name="no_more_load_retry">没有更多数据</string>
   <string name="endless_disabled">没有更多数据</string>
   <string name="endless_cancel">取消加载</string>
-  <string name="endless_error">加载失败</string>
+  <string name="endless_error">加载异常</string>
 
   <string name="progress_waiting">等待中...</string>
   <string name="base_data_error_unknow">未知错误</string>

@@ -25,8 +25,7 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
     SwipeRefreshLayout.OnRefreshListener, FlexibleAdapter.EndlessScrollListener {
 
     protected lateinit var adapter: FlexibleAdapter<IFlexible<*>>
-
-    protected var progressItem = ProgressItem()
+    protected var mProgressItem: IFlexible<*>? = null
 
     protected var swipeRefreshLayout: SwipeRefreshLayout? = null
     protected lateinit var recyclerView: RecyclerView
@@ -39,18 +38,33 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
         listEmptyView = view.findViewById(R.id.list_empty_view)
 
         swipeRefreshLayout?.isEnabled = true
+        initRecyclerView()
+        initApater()
+    }
 
+    protected open fun getProgressItem(): IFlexible<*>? {
+        if (mProgressItem == null) {
+            mProgressItem = ProgressItem()
+        }
+        return mProgressItem
+    }
+
+    protected open fun initRecyclerView() {
         recyclerView.layoutManager = SmoothScrollLinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
         recyclerView.itemAnimator = DefaultItemAnimator()
         addItemDecoration(recyclerView)
+    }
 
+    protected open fun initApater() {
         adapter = FlexibleAdapter(null, this)
-        adapter.setEndlessScrollListener(this, progressItem)
-            .setEndlessPageSize(getPageSize())
-            .isTopEndless = false
+        val progressItem = getProgressItem()
+        if (progressItem != null) {
+            adapter.setEndlessScrollListener(this, progressItem)
+                .setEndlessPageSize(getPageSize())
+                .isTopEndless = false
+        }
         adapter.mode = SelectableAdapter.Mode.IDLE
-
         recyclerView.adapter = adapter
     }
 
@@ -83,7 +97,7 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
         return false
     }
 
-    protected open fun onItemClick(abstractFlexibleItem: IFlexible<*>, position: Int): Boolean {
+    protected open fun onItemClick(item: IFlexible<*>, position: Int): Boolean {
         return false
     }
 
@@ -96,26 +110,28 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
     }
 
     protected fun onLoadMoreItemClick() {
-        if (progressItem.status == ProgressItem.StatusEnum.ON_ERROR) {
-            onLoadMore(adapter.mainItemCount - 1, adapter.endlessCurrentPage)
+        if (mProgressItem is ProgressItem) {
+            if ((mProgressItem as ProgressItem).status == ProgressItem.StatusEnum.ON_ERROR
+            ) {
+                onLoadMore(adapter.mainItemCount - 1, adapter.endlessCurrentPage)
+            }
         }
     }
 
     open override fun onRefresh() {
-        adapter.setEndlessProgressItem(progressItem)
         getDataFromNet(VBBaseListActivity.UpdateState.Refresh, 1)
-            .observeOn(AndroidSchedulers.mainThread())
-            .bindToLifecycle(this)
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
+            .bindToLifecycle(this)
+            .observeOn(AndroidSchedulers.mainThread())
             .doFinally {
                 swipeRefreshLayout?.setRefreshing(false)
             }
             .subscribe(object : DataObserver<List<M>>(requireContext()) {
                 override fun handleSuccess(t: List<M>) {
                     if (t.isEmpty()) {
-                        adapter.setEndlessProgressItem(null)
-                    } else {
-                        adapter.setEndlessProgressItem(progressItem)
+                        adapter.updateDataSet(null)
+                        adapter.onLoadMoreComplete(null)
+                        return
                     }
                     addToListView(VBBaseListActivity.UpdateState.Refresh, t)
                 }
@@ -123,22 +139,13 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
     }
 
     override fun noMoreLoad(newItemsSize: Int) {
-        progressItem.status = ProgressItem.StatusEnum.NO_MORE_LOAD
-        adapter.updateItem(progressItem)
     }
 
     open override fun onLoadMore(lastPosition: Int, currentPage: Int) {
-        progressItem.status = ProgressItem.StatusEnum.MORE_TO_LOAD
-        adapter.updateItem(progressItem)
-
         getDataFromNet(VBBaseListActivity.UpdateState.LoadMore, currentPage + 1)
-            .observeOn(AndroidSchedulers.mainThread())
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
             .bindToLifecycle(this)
-            .doOnError {
-                progressItem.status = ProgressItem.StatusEnum.ON_ERROR
-                adapter.updateItem(progressItem)
-            }
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : DataObserver<List<M>>(requireContext()) {
                 override fun handleSuccess(t: List<M>) {
                     addToListView(VBBaseListActivity.UpdateState.LoadMore, t)
@@ -165,6 +172,11 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
 
         if (rushState == VBBaseListActivity.UpdateState.Refresh) {
             adapter.updateDataSet(items)
+            if (items.size < getPageSize()) {
+                adapter.onLoadMoreComplete(null)
+            } else {
+                adapter.setEndlessProgressItem(getProgressItem())
+            }
         } else if (rushState == VBBaseListActivity.UpdateState.LoadMore) {
             adapter.onLoadMoreComplete(items, -1)
         }

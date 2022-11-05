@@ -9,11 +9,11 @@
   <string name="error_data_parse">Abnormal data format, please try again later</string>
   <string name="error_local_database_default">Local database error, Please try again</string>
 
-  <string name="no_items">No data ~</string>
-  <string name="no_more_load_retry">No more data, refresh try ~</string>
-  <string name="endless_disabled">No more data</string>
-  <string name="endless_cancel">Cancel loading ~</string>
-  <string name="endless_error">Load error ~</string>
+  <string name="no_items">Empty data</string>
+  <string name="no_more_load_retry">No more items to load</string>
+  <string name="endless_disabled">No more items to load (max reached)</string>
+  <string name="endless_cancel">Cancelled by the user</string>
+  <string name="endless_error">An error occurred while loading more items.</string>
 
   <string name="progress_waiting">Waiting</string>
   <string name="base_data_error_unknow">Unknow error</string>

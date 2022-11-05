@@ -25,7 +25,7 @@ public class ProgressItem extends AbstractFlexibleItem<ProgressItem.ProgressView
 
   @Override
   public boolean equals(Object o) {
-    return this == o;
+    return this == o;//The default implementation
   }
 
   public StatusEnum getStatus() {
@@ -87,10 +87,10 @@ public class ProgressItem extends AbstractFlexibleItem<ProgressItem.ProgressView
     }
   }
 
-  class ProgressViewHolder extends FlexibleViewHolder {
+  static class ProgressViewHolder extends FlexibleViewHolder {
 
-    private ProgressBar progressBar;
-    private TextView progressMessage;
+    private final ProgressBar progressBar;
+    private final TextView progressMessage;
 
     ProgressViewHolder(View view, FlexibleAdapter adapter) {
       super(view, adapter);
