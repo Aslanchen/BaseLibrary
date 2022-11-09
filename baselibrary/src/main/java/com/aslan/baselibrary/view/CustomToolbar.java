@@ -1,9 +1,9 @@
 package com.aslan.baselibrary.view;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
@@ -30,13 +31,13 @@ import com.aslan.baselibrary.R;
  */
 public class CustomToolbar extends Toolbar {
 
-  private TextView tvTitle;
+  private int mTitleTextAppearance;
+  private TextView mTitleTextView;
   private CharSequence mTitleText;
 
   private Drawable iconBack;
 
-  @ColorInt
-  private int mTitleTextColor = Color.BLACK;
+  private ColorStateList mTitleTextColor;
 
   public CustomToolbar(Context context) {
     this(context, null);
@@ -50,6 +51,9 @@ public class CustomToolbar extends Toolbar {
     super(context, attrs, defStyleAttr);
 
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomToolbar);
+    mTitleTextAppearance = typedArray.getResourceId(
+        R.styleable.CustomToolbar_ct_titleTextAppearance, 0);
+
     CharSequence title = typedArray.getText(R.styleable.CustomToolbar_ct_title);
     setTitle(title);
 
@@ -57,8 +61,9 @@ public class CustomToolbar extends Toolbar {
     boolean showBack = typedArray.getBoolean(R.styleable.CustomToolbar_ct_showback, true);
     setShowBack(showBack);
 
-    mTitleTextColor = typedArray.getColor(R.styleable.CustomToolbar_ct_color_title, 0xffffffff);
-    setTitleTextColor(mTitleTextColor);
+    if (typedArray.hasValue(R.styleable.CustomToolbar_ct_titleTextColor)) {
+      setTitleTextColor(typedArray.getColorStateList(R.styleable.CustomToolbar_ct_titleTextColor));
+    }
 
     typedArray.recycle();
   }
@@ -71,28 +76,38 @@ public class CustomToolbar extends Toolbar {
   @Override
   public void setTitle(CharSequence title) {
     if (!TextUtils.isEmpty(title)) {
-      if (tvTitle == null) {
-        tvTitle = new AppCompatTextView(getContext());
-        tvTitle.setSingleLine();
-        tvTitle.setEllipsize(TextUtils.TruncateAt.END);
-        tvTitle.setGravity(Gravity.CENTER);
-        tvTitle.setTextColor(mTitleTextColor);
-        tvTitle.setTextSize(20);
+      if (mTitleTextView == null) {
+        mTitleTextView = new AppCompatTextView(getContext());
+        mTitleTextView.setSingleLine();
+        mTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
+        mTitleTextView.setGravity(Gravity.CENTER);
+        if (mTitleTextAppearance != 0) {
+          mTitleTextView.setTextAppearance(getContext(), mTitleTextAppearance);
+        }
+
+        if (mTitleTextColor != null) {
+          mTitleTextView.setTextColor(mTitleTextColor);
+        }
       }
 
-      if (indexOfChild(tvTitle) < 0) {
-        addSystemView(tvTitle);
+      if (indexOfChild(mTitleTextView) < 0) {
+        addSystemView(mTitleTextView);
       }
     } else {
-      if (tvTitle != null) {
-        removeView(tvTitle);
+      if (mTitleTextView != null) {
+        removeView(mTitleTextView);
       }
     }
 
-    if (tvTitle != null) {
-      tvTitle.setText(title);
+    if (mTitleTextView != null) {
+      mTitleTextView.setText(title);
     }
     mTitleText = title;
+  }
+
+  @Override
+  public CharSequence getTitle() {
+    return mTitleText;
   }
 
   private void addSystemView(View v) {
@@ -123,9 +138,13 @@ public class CustomToolbar extends Toolbar {
   }
 
   public void setTitleTextColor(@ColorInt int color) {
+    setTitleTextColor(ColorStateList.valueOf(color));
+  }
+
+  public void setTitleTextColor(@NonNull ColorStateList color) {
     mTitleTextColor = color;
-    if (tvTitle != null) {
-      tvTitle.setTextColor(color);
+    if (mTitleTextView != null) {
+      mTitleTextView.setTextColor(color);
     }
   }
 
