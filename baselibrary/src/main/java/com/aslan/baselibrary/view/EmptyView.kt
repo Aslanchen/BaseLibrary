@@ -1,82 +1,74 @@
-package com.aslan.baselibrary.view;
+package com.aslan.baselibrary.view
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewStub;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.aslan.baselibrary.R;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.StringRes;
+import android.content.Context
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.aslan.baselibrary.databinding.EmptyViewBinding
 
 /**
  * 空页面 Aslanchen
  */
-public class EmptyView extends LinearLayout {
+class EmptyView : ConstraintLayout {
 
-    private ImageView iv_empty;
-    private TextView tv_empty;
-    private ViewStub viewStub;
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
-    public EmptyView(Context context) {
-        super(context);
-        init();
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    protected val mViewBinding = EmptyViewBinding.inflate(LayoutInflater.from(context), this)
+
+    fun setLayoutResource(@LayoutRes id: Int): View {
+        mViewBinding.iv.visibility = GONE
+        mViewBinding.tv.visibility = GONE
+        mViewBinding.vs.layoutResource = id
+        return mViewBinding.vs.inflate()
     }
 
-    public EmptyView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+    fun setImageResource(@DrawableRes resId: Int) {
+        mViewBinding.iv.setImageResource(resId)
     }
 
-    public EmptyView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
+    fun setImageVisibility(visibility: Int) {
+        mViewBinding.iv.visibility = visibility
     }
 
-    public void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.empty_view, this, true);
-        iv_empty = view.findViewById(R.id.iv_empty);
-        tv_empty = view.findViewById(R.id.tv_empty);
-        viewStub = view.findViewById(R.id.vs);
-        setVisibility(View.GONE);
+    fun setTextVisibility(visibility: Int) {
+        mViewBinding.tv.visibility = visibility
     }
 
-    public View initViewStub(@LayoutRes int id) {
-        iv_empty.setVisibility(View.GONE);
-        tv_empty.setVisibility(View.GONE);
-
-        viewStub.setLayoutResource(id);
-        return viewStub.inflate();
+    fun setText(text: CharSequence?) {
+        mViewBinding.tv.text = text
     }
 
-    public void setEmptyImageResource(@DrawableRes int resId) {
-        iv_empty.setImageResource(resId);
+    fun setText(@StringRes resid: Int) {
+        mViewBinding.tv.setText(resid)
     }
 
-    public void setEmptyImageVisibility(int visibility) {
-        iv_empty.setVisibility(visibility);
+    fun setTextColor(@ColorInt color: Int) {
+        mViewBinding.tv.setTextColor(color)
     }
 
-    public void setEmptyTextVisibility(int visibility) {
-        tv_empty.setVisibility(visibility);
+    fun setTextSize(size: Float) {
+        mViewBinding.tv.setTextSize(size)
     }
 
-    public void setEmptyText(CharSequence text) {
-        tv_empty.setText(text);
-    }
-
-    public void setEmptyText(@StringRes int resid) {
-        tv_empty.setText(resid);
-    }
-
-    public void setEmptyTextColor(@ColorInt int color) {
-        tv_empty.setTextColor(color);
+    fun setTextSize(unit: Int, size: Float) {
+        mViewBinding.tv.setTextSize(unit, size)
     }
 }

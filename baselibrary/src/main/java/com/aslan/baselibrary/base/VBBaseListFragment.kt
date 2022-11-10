@@ -16,6 +16,7 @@ import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
+import eu.davidea.flexibleadapter.helpers.EmptyViewHelper
 import eu.davidea.flexibleadapter.items.IFlexible
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -29,17 +30,14 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
 
     protected var swipeRefreshLayout: SwipeRefreshLayout? = null
     protected lateinit var recyclerView: RecyclerView
-    protected var listEmptyView: EmptyView? = null
+    protected var mEmptyView: EmptyView? = null
 
     @CallSuper
     override fun iniView(view: View) {
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        recyclerView = view.findViewById(R.id.recycler_view)
-        listEmptyView = view.findViewById(R.id.list_empty_view)
-
-        swipeRefreshLayout?.isEnabled = true
-        initRecyclerView()
+        initSwipeRefreshView(view)
+        initRecyclerView(view)
         initApater()
+        initEmptyView(view)
     }
 
     protected open fun getProgressItem(): IFlexible<*>? {
@@ -49,11 +47,17 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
         return mProgressItem
     }
 
-    protected open fun initRecyclerView() {
+    protected open fun initSwipeRefreshView(view: View) {
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout?.isEnabled = true
+    }
+
+    protected open fun initRecyclerView(view: View) {
+        recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = SmoothScrollLinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
         recyclerView.itemAnimator = DefaultItemAnimator()
-        addItemDecoration(recyclerView)
+//        recyclerView.addItemDecoration(FlexibleItemDecoration(requireContext()))
     }
 
     protected open fun initApater() {
@@ -68,7 +72,11 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
         recyclerView.adapter = adapter
     }
 
-    protected open fun addItemDecoration(recyclerView: RecyclerView) {
+    protected open fun initEmptyView(view: View) {
+        mEmptyView = view.findViewById(R.id.list_empty_view)
+        if (mEmptyView != null) {
+            EmptyViewHelper.create(adapter, mEmptyView, null)
+        }
     }
 
     @CallSuper
