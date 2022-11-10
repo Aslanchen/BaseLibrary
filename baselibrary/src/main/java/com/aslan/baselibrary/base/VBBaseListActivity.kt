@@ -77,9 +77,13 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
         recyclerView.adapter = adapter
     }
 
+    protected open fun getEmptyLayoutResource() = -1
     protected open fun initEmptyView() {
         mEmptyView = findViewById(R.id.list_empty_view)
         if (mEmptyView != null) {
+            if (getEmptyLayoutResource() != -1) {
+                mEmptyView!!.setLayoutResource(getEmptyLayoutResource())
+            }
             EmptyViewHelper.create(adapter, mEmptyView, null)
         }
     }

@@ -72,9 +72,13 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
         recyclerView.adapter = adapter
     }
 
+    protected open fun getEmptyLayoutResource() = -1
     protected open fun initEmptyView(view: View) {
         mEmptyView = view.findViewById(R.id.list_empty_view)
         if (mEmptyView != null) {
+            if (getEmptyLayoutResource() != -1) {
+                mEmptyView!!.setLayoutResource(getEmptyLayoutResource())
+            }
             EmptyViewHelper.create(adapter, mEmptyView, null)
         }
     }
