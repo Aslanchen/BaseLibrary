@@ -18,6 +18,9 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:minHeight">?attr/actionBarSize</item>
-    <item name="ct_color_title">@android:color/black</item>
+    <item name="ct_showback">true</item>
+    <item name="ct_icon_back">@drawable/icon_back</item>
+    <item name="ct_titleTextColor">@android:color/black</item>
+    <item name="ct_titleTextAppearance">?android:attr/textAppearanceMedium</item>
   </style>
 </resources>

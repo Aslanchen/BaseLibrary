@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <item name="titleBar" type="id"/>
+  <item name="swipeRefreshLayout" type="id"/>
+  <item name="recycler_view" type="id"/>
+  <item name="sticky_header_container" type="id"/>
+  <item name="list_empty_view" type="id"/>
 </resources>
