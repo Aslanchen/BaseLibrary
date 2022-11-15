@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.DrawableRes;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import androidx.annotation.DrawableRes;
 import java.util.UUID;
 
 /**

@@ -1,5 +1,6 @@
 package com.aslan.baselibrary.base
 
+import android.os.SystemClock
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.Size
@@ -90,7 +91,22 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
         onRefresh()
     }
 
+    protected var DEFAULTINTERVAL = 1500
+    private var mLastClickTime = 0L
+    protected fun isSafeClick(): Boolean {
+        val now = SystemClock.elapsedRealtime()
+        if (now - mLastClickTime < DEFAULTINTERVAL) {
+            return false
+        }
+        mLastClickTime = now
+        return true
+    }
+
     override fun onItemClick(view: View, position: Int): Boolean {
+        if (!isSafeClick()) {
+            return false
+        }
+
         val abstractFlexibleItem = adapter.getItem(position) ?: return false
         if (abstractFlexibleItem is ProgressItem) {
             onLoadMoreItemClick()
