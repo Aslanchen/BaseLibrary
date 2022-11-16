@@ -103,7 +103,7 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
         onRefresh()
     }
 
-    protected var DEFAULTINTERVAL = 1500
+    protected var DEFAULTINTERVAL = 1000
     private var mLastClickTime = 0L
     protected fun isSafeClick(): Boolean {
         val now = SystemClock.elapsedRealtime()

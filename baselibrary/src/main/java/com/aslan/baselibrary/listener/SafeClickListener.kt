@@ -11,7 +11,7 @@ fun View.setSafeOnClickListener(onSafeClick: (View) -> Unit) {
 }
 
 class SafeClickListener(
-    private var defaultInterval: Int = 1500,
+    private var defaultInterval: Int = 1000,
     private val onSafeCLick: (View) -> Unit
 ) : View.OnClickListener {
     private var lastTimeClicked = 0L
