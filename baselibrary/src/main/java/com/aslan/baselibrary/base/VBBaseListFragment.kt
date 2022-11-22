@@ -147,7 +147,7 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
     }
 
     open override fun onRefresh() {
-        getDataFromNet(VBBaseListActivity.UpdateState.Refresh, 1)
+        getDatas(VBBaseListActivity.UpdateState.Refresh, 1)
             .observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
@@ -165,7 +165,7 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
     }
 
     open override fun onLoadMore(lastPosition: Int, currentPage: Int) {
-        getDataFromNet(VBBaseListActivity.UpdateState.LoadMore, currentPage + 1)
+        getDatas(VBBaseListActivity.UpdateState.LoadMore, currentPage + 1)
             .observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
@@ -181,7 +181,7 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
     /**
      * @param curPage 当前页数，从1开始
      */
-    protected abstract fun getDataFromNet(
+    protected abstract fun getDatas(
         rushState: VBBaseListActivity.UpdateState,
         @Size(min = 1) curPage: Int
     ): Observable<List<M>>

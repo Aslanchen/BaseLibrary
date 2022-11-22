@@ -152,7 +152,7 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
     }
 
     open override fun onRefresh() {
-        getDataFromNet(UpdateState.Refresh, 1)
+        getDatas(UpdateState.Refresh, 1)
             .observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
@@ -170,7 +170,7 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
     }
 
     open override fun onLoadMore(lastPosition: Int, currentPage: Int) {
-        getDataFromNet(UpdateState.LoadMore, currentPage + 1)
+        getDatas(UpdateState.LoadMore, currentPage + 1)
             .observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
@@ -186,7 +186,7 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
     /**
      * @param curPage 当前页数，从1开始
      */
-    protected abstract fun getDataFromNet(
+    protected abstract fun getDatas(
         rushState: UpdateState,
         @Size(min = 1) curPage: Int
     ): Observable<List<M>>

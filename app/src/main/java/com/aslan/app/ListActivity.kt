@@ -15,7 +15,7 @@ class ListActivity :
 
     override fun getItem(model: Menu) = ItemMenu(model)
 
-    override fun getDataFromNet(rushState: UpdateState, curPage: Int): Observable<List<Menu>> {
+    override fun getDatas(rushState: UpdateState, curPage: Int): Observable<List<Menu>> {
         val list = mutableListOf<Menu>()
         if (rushState == UpdateState.Refresh) {
             for (i in 0 until 22) {
