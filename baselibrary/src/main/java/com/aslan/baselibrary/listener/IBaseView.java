@@ -27,8 +27,8 @@ public interface IBaseView {
   @NonNull
   LifecycleOwner getLifecycleOwner();
 
-  @Nullable
-  Context getContext();
+  @NonNull
+  Context requireContext();
 
   void showProgressBar();
 

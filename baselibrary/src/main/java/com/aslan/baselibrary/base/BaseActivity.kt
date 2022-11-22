@@ -1,27 +1,22 @@
-package com.aslan.baselibrary.base;
+package com.aslan.baselibrary.base
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Toast;
-import androidx.annotation.MainThread;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.annotation.UiThread;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
-import com.aslan.baselibrary.R;
-import com.aslan.baselibrary.listener.IBaseView;
-import com.aslan.baselibrary.view.CustomToolbar;
-import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle;
-import com.trello.rxlifecycle3.LifecycleProvider;
-import pub.devrel.easypermissions.EasyPermissions;
-import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
+import android.app.ProgressDialog
+import android.content.Context
+import android.os.Bundle
+import android.widget.Toast
+import androidx.annotation.MainThread
+import androidx.annotation.StringRes
+import androidx.annotation.UiThread
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import com.aslan.baselibrary.R
+import com.aslan.baselibrary.listener.IBaseView
+import com.aslan.baselibrary.view.CustomToolbar
+import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
+import com.trello.rxlifecycle3.LifecycleProvider
+import pub.devrel.easypermissions.EasyPermissions
+import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks
 
 /**
  * 基础类
@@ -29,211 +24,159 @@ import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks;
  * @author Aslan
  * @date 2018/4/11
  */
-public abstract class BaseActivity extends AppCompatActivity implements IBaseView {
-
-  protected final LifecycleProvider<Lifecycle.Event> provider =
-      AndroidLifecycle.createLifecycleProvider(this);
-
-  protected ProgressDialog progressDialog;
-  protected CustomToolbar titleBar;
-
-  @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    Intent intent = getIntent();
-    if (savedInstanceState != null) {
-      intent.putExtras(savedInstanceState);
-    }
-
-    Bundle bundle = intent.getExtras();
-    if (bundle != null) {
-      iniBundle(bundle);
-    }
-
-    setCusContentView();
-
-    titleBar = findViewById(R.id.titleBar);
-    if (titleBar != null) {
-      titleBar.setNavigationOnClickListener(new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          navigationOnClickListener();
+abstract class BaseActivity : AppCompatActivity(), IBaseView {
+    protected val provider = AndroidLifecycle.createLifecycleProvider(this)
+    protected var progressDialog: ProgressDialog? = null
+    protected var titleBar: CustomToolbar? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        intent.extras?.let { iniBundle(it) }
+        setCusContentView()
+        titleBar = findViewById(R.id.titleBar)
+        if (titleBar != null) {
+            titleBar!!.setNavigationOnClickListener { navigationOnClickListener() }
         }
-      });
+        iniView()
+        iniListener()
+        iniData()
     }
 
-    iniView();
-    iniListener();
-    iniData();
-  }
-
-  public void setCusContentView() {
-    setContentView(getLayoutId());
-  }
-
-  public abstract void iniBundle(@NonNull Bundle bundle);
-
-  public abstract int getLayoutId();
-
-  public abstract void iniView();
-
-  public abstract void iniListener();
-
-  public abstract void iniData();
-
-  @Override
-  public void setTitle(CharSequence title) {
-    titleBar.setTitle(title);
-  }
-
-  @Override
-  public void setTitle(@StringRes int titleId) {
-    titleBar.setTitle(titleId);
-  }
-
-  @UiThread
-  @Override
-  public void showProgressBar() {
-    showProgressBar(true);
-  }
-
-  @UiThread
-  @Override
-  public void showProgressBar(@NonNull String msg) {
-    showProgressBar(true, msg);
-  }
-
-  @UiThread
-  @Override
-  public void showProgressBar(@StringRes int msg) {
-    if (isAdd() == false) {
-      return;
+    open fun setCusContentView() {
+        setContentView(getLayoutId())
     }
 
-    String message = getString(msg);
-    showProgressBar(message);
-  }
-
-  @UiThread
-  @Override
-  public void showProgressBar(boolean canCancel) {
-    showProgressBar(canCancel, R.string.progress_waiting);
-  }
-
-  @UiThread
-  @Override
-  public void showProgressBar(boolean canCancel, @StringRes int msg) {
-    if (isAdd() == false) {
-      return;
+    abstract fun iniBundle(bundle: Bundle)
+    abstract fun getLayoutId(): Int
+    abstract fun iniView()
+    abstract fun iniListener()
+    abstract fun iniData()
+    override fun setTitle(title: CharSequence) {
+        titleBar?.title = title
     }
 
-    String message = getString(msg);
-    showProgressBar(canCancel, message);
-  }
-
-  @UiThread
-  @Override
-  public void showProgressBar(boolean canCancel, @NonNull String msg) {
-    if (isAdd() == false) {
-      return;
+    override fun setTitle(@StringRes titleId: Int) {
+        titleBar?.setTitle(titleId)
     }
 
-    if (progressDialog == null) {
-      progressDialog = new ProgressDialog(this);
+    @UiThread
+    override fun showProgressBar() {
+        showProgressBar(true)
     }
 
-    if (progressDialog.isShowing()) {
-      return;
+    @UiThread
+    override fun showProgressBar(msg: String) {
+        showProgressBar(true, msg)
     }
 
-    progressDialog.setMessage(msg);
-    progressDialog.setCancelable(canCancel);
-    progressDialog.setCanceledOnTouchOutside(canCancel);
-    try {
-      progressDialog.show();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
-
-  @UiThread
-  @Override
-  public void closeProgressBar() {
-    if (progressDialog != null && progressDialog.isShowing()) {
-      try {
-        progressDialog.dismiss();
-      } catch (Exception ex) {
-        ex.printStackTrace();
-      }
-    }
-  }
-
-  @UiThread
-  @Override
-  public void showToastMessage(@StringRes int resId) {
-    if (isAdd() == false) {
-      return;
+    @UiThread
+    override fun showProgressBar(@StringRes msg: Int) {
+        if (isAdd == false) {
+            return
+        }
+        val message = getString(msg)
+        showProgressBar(message)
     }
 
-    Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
-  }
-
-  @UiThread
-  @Override
-  public void showToastMessage(@NonNull CharSequence text) {
-    if (isAdd() == false) {
-      return;
+    @UiThread
+    override fun showProgressBar(canCancel: Boolean) {
+        showProgressBar(canCancel, R.string.progress_waiting)
     }
 
-    Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-  }
-
-  public void navigationOnClickListener() {
-    thisFinish();
-  }
-
-  @MainThread
-  @Override
-  public void thisFinish() {
-    this.finish();
-  }
-
-  @Override
-  public boolean isAdd() {
-    return !isFinishing();
-  }
-
-  @Override
-  protected void onDestroy() {
-    closeProgressBar();
-    super.onDestroy();
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-      @NonNull int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (this instanceof PermissionCallbacks) {
-      EasyPermissions
-          .onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    @UiThread
+    override fun showProgressBar(canCancel: Boolean, @StringRes msg: Int) {
+        if (isAdd == false) {
+            return
+        }
+        val message = getString(msg)
+        showProgressBar(canCancel, message)
     }
-  }
 
-  @Nullable
-  @Override
-  public Context getContext() {
-    return this;
-  }
+    @UiThread
+    override fun showProgressBar(canCancel: Boolean, msg: String) {
+        if (isAdd == false) {
+            return
+        }
+        if (progressDialog == null) {
+            progressDialog = ProgressDialog(this)
+        }
+        if (progressDialog!!.isShowing) {
+            return
+        }
+        progressDialog!!.setMessage(msg)
+        progressDialog!!.setCancelable(canCancel)
+        progressDialog!!.setCanceledOnTouchOutside(canCancel)
+        try {
+            progressDialog!!.show()
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
 
-  @NonNull
-  @Override
-  public LifecycleOwner getLifecycleOwner() {
-    return this;
-  }
+    @UiThread
+    override fun closeProgressBar() {
+        if (progressDialog != null && progressDialog!!.isShowing) {
+            try {
+                progressDialog!!.dismiss()
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+        }
+    }
 
-  @NonNull
-  @Override
-  public LifecycleProvider<Lifecycle.Event> getLifecycleProvider() {
-    return provider;
-  }
+    @UiThread
+    override fun showToastMessage(@StringRes resId: Int) {
+        if (isAdd == false) {
+            return
+        }
+        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show()
+    }
+
+    @UiThread
+    override fun showToastMessage(text: CharSequence) {
+        if (isAdd == false) {
+            return
+        }
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+    }
+
+    fun navigationOnClickListener() {
+        thisFinish()
+    }
+
+    @MainThread
+    override fun thisFinish() {
+        finish()
+    }
+
+    override fun isAdd(): Boolean {
+        return !isFinishing
+    }
+
+    override fun onDestroy() {
+        closeProgressBar()
+        super.onDestroy()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (this is PermissionCallbacks) {
+            EasyPermissions
+                .onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+        }
+    }
+
+    override fun requireContext(): Context {
+        return this
+    }
+
+    override fun getLifecycleOwner(): LifecycleOwner {
+        return this
+    }
+
+    override fun getLifecycleProvider(): LifecycleProvider<Lifecycle.Event> {
+        return provider
+    }
 }
