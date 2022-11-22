@@ -1,4 +1,4 @@
-package com.aslan.baselibrary.http;
+package com.aslan.baselibrary.http
 
 /**
  * 基础错误类
@@ -6,15 +6,10 @@ package com.aslan.baselibrary.http;
  * @author Aslan
  * @date 2019/9/23
  */
-public interface IHttpBean<T> {
-
-  String getCode();
-
-  String getMessage();
-
-  boolean isSuccessful();
-
-  boolean isTokenError();
-
-  T getData();
+interface IHttpBean<T> {
+    val code: String
+    val message: String
+    val isSuccessful: Boolean
+    val isTokenError: Boolean
+    val data: T
 }
