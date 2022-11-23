@@ -134,11 +134,7 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
         return false
     }
 
-    protected open fun onSubItemClick(
-        abstractFlexibleItem: IFlexible<*>,
-        view: View,
-        position: Int
-    ): Boolean {
+    protected open fun onSubItemClick(item: IFlexible<*>, view: View, position: Int): Boolean {
         return false
     }
 
