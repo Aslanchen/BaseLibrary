@@ -1,9 +1,7 @@
-package com.aslan.baselibrary.http.response;
+package com.aslan.baselibrary.http.response
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import io.reactivex.Observable;
+import android.content.Context
+import io.reactivex.Observable
 
 /**
  * 处理业务异常
@@ -11,23 +9,18 @@ import io.reactivex.Observable;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-public class ResponseFunctionObservable<T> extends BaseResponseFunction<T, Observable<T>> {
-
-  public ResponseFunctionObservable(Context context) {
-    super(context);
-  }
-
-  @Override
-  public Observable<T> error(@NonNull Exception ex) {
-    return Observable.error(ex);
-  }
-
-  @Override
-  public Observable<T> handleData(@Nullable T item) {
-    if (item == null) {
-      return Observable.error(new NullPointerException("respone data is empty"));
-    } else {
-      return Observable.just(item);
+class ResponseFunctionObservable<T>(context: Context?) : BaseResponseFunction<T, Observable<T>?>(
+    context!!
+) {
+    override fun error(ex: Exception): Observable<T> {
+        return Observable.error(ex)
     }
-  }
+
+    override fun handleData(item: T?): Observable<T> {
+        return if (item == null) {
+            Observable.error(NullPointerException("respone data is empty"))
+        } else {
+            Observable.just(item)
+        }
+    }
 }

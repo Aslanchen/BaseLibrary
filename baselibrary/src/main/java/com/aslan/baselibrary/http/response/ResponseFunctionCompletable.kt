@@ -1,9 +1,7 @@
-package com.aslan.baselibrary.http.response;
+package com.aslan.baselibrary.http.response
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import io.reactivex.Completable;
+import android.content.Context
+import io.reactivex.Completable
 
 /**
  * 处理业务异常
@@ -11,19 +9,14 @@ import io.reactivex.Completable;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-public class ResponseFunctionCompletable<T> extends BaseResponseFunction<T, Completable> {
+class ResponseFunctionCompletable<T>(context: Context?) : BaseResponseFunction<T, Completable?>(
+    context!!
+) {
+    override fun error(ex: Exception): Completable {
+        return Completable.error(ex)
+    }
 
-  public ResponseFunctionCompletable(Context context) {
-    super(context);
-  }
-
-  @Override
-  public Completable error(@NonNull Exception ex) {
-    return Completable.error(ex);
-  }
-
-  @Override
-  public Completable handleData(@Nullable T item) {
-    return Completable.complete();
-  }
+    override fun handleData(item: T?): Completable {
+        return Completable.complete()
+    }
 }

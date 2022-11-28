@@ -1,12 +1,10 @@
-package com.aslan.baselibrary.http.response;
+package com.aslan.baselibrary.http.response
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.aslan.baselibrary.exception.BusinessException;
-import com.aslan.baselibrary.exception.TokenException;
-import com.aslan.baselibrary.http.IHttpBean;
-import io.reactivex.functions.Function;
+import android.content.Context
+import com.aslan.baselibrary.exception.BusinessException
+import com.aslan.baselibrary.exception.TokenException
+import com.aslan.baselibrary.http.IHttpBean
+import io.reactivex.functions.Function
 
 /**
  * 处理业务异常
@@ -14,28 +12,21 @@ import io.reactivex.functions.Function;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-public abstract class BaseResponseFunction<T, R> implements Function<IHttpBean<T>, R> {
+abstract class BaseResponseFunction<T, R>(private val context: Context) :
+    Function<IHttpBean<T>, R> {
 
-  private Context context;
-
-  public BaseResponseFunction(Context context) {
-    this.context = context;
-  }
-
-  @Override
-  public R apply(IHttpBean<T> respone) throws Exception {
-    if (respone.isTokenError()) {
-      return error(new TokenException(respone.getCode(), respone.getMessage()));
+    @Throws(Exception::class)
+    override fun apply(respone: IHttpBean<T>): R {
+        if (respone.isTokenError()) {
+            return error(TokenException(respone.getCode(), respone.getMessage()))
+        }
+        return if (respone.isSuccessful()) {
+            handleData(respone.getData())
+        } else {
+            error(BusinessException(respone.getCode(), respone.getMessage()))
+        }
     }
 
-    if (respone.isSuccessful()) {
-      return handleData(respone.getData());
-    } else {
-      return error(new BusinessException(respone.getCode(), respone.getMessage()));
-    }
-  }
-
-  public abstract R error(@NonNull Exception ex);
-
-  public abstract R handleData(@Nullable T item);
+    abstract fun error(ex: Exception): R
+    abstract fun handleData(item: T?): R
 }

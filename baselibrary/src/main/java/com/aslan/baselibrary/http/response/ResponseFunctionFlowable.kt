@@ -1,9 +1,7 @@
-package com.aslan.baselibrary.http.response;
+package com.aslan.baselibrary.http.response
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import io.reactivex.Flowable;
+import android.content.Context
+import io.reactivex.Flowable
 
 /**
  * 处理业务异常
@@ -11,23 +9,18 @@ import io.reactivex.Flowable;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-public class ResponseFunctionFlowable<T> extends BaseResponseFunction<T, Flowable<T>> {
-
-  public ResponseFunctionFlowable(Context context) {
-    super(context);
-  }
-
-  @Override
-  public Flowable<T> error(@NonNull Exception ex) {
-    return Flowable.error(ex);
-  }
-
-  @Override
-  public Flowable<T> handleData(@Nullable T item) {
-    if (item == null) {
-      return Flowable.error(new NullPointerException("respone data is empty"));
-    } else {
-      return Flowable.just(item);
+class ResponseFunctionFlowable<T>(context: Context?) : BaseResponseFunction<T, Flowable<T>?>(
+    context!!
+) {
+    override fun error(ex: Exception): Flowable<T> {
+        return Flowable.error(ex)
     }
-  }
+
+    override fun handleData(item: T?): Flowable<T> {
+        return if (item == null) {
+            Flowable.error(NullPointerException("respone data is empty"))
+        } else {
+            Flowable.just(item)
+        }
+    }
 }

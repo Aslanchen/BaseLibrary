@@ -7,9 +7,9 @@ package com.aslan.baselibrary.http
  * @date 2019/9/23
  */
 interface IHttpBean<T> {
-    open val code: String
-    open val message: String
-    open val isSuccessful: Boolean
-    open val isTokenError: Boolean
-    open val data: T
+    fun getCode(): String
+    fun getMessage(): String
+    fun isSuccessful(): Boolean
+    fun isTokenError(): Boolean
+    fun getData(): T?
 }

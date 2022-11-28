@@ -1,9 +1,7 @@
-package com.aslan.baselibrary.http.response;
+package com.aslan.baselibrary.http.response
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import io.reactivex.Maybe;
+import android.content.Context
+import io.reactivex.Maybe
 
 /**
  * 处理业务异常
@@ -11,23 +9,18 @@ import io.reactivex.Maybe;
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-public class ResponseFunctionMaybe<T> extends BaseResponseFunction<T, Maybe<T>> {
-
-  public ResponseFunctionMaybe(Context context) {
-    super(context);
-  }
-
-  @Override
-  public Maybe<T> error(@NonNull Exception ex) {
-    return Maybe.error(ex);
-  }
-
-  @Override
-  public Maybe<T> handleData(@Nullable T item) {
-    if (item == null) {
-      return Maybe.empty();
-    } else {
-      return Maybe.just(item);
+class ResponseFunctionMaybe<T>(context: Context?) : BaseResponseFunction<T, Maybe<T>?>(
+    context!!
+) {
+    override fun error(ex: Exception): Maybe<T> {
+        return Maybe.error(ex)
     }
-  }
+
+    override fun handleData(item: T?): Maybe<T> {
+        return if (item == null) {
+            Maybe.empty()
+        } else {
+            Maybe.just(item)
+        }
+    }
 }
