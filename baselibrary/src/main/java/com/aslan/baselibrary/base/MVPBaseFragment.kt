@@ -17,11 +17,12 @@ abstract class MVPBaseFragment<VB : ViewBinding, P : IMVPBasePresenter>(inflate:
     VBBaseFragment<VB>(inflate) {
     abstract fun iniPresenter(): P
 
-    var mPresenter = this.iniPresenter()
+    lateinit var mPresenter: P
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mPresenter = this.iniPresenter()
         lifecycle.addObserver(mPresenter)
     }
 
