@@ -39,6 +39,8 @@ public class CustomToolbar extends Toolbar {
 
   private ColorStateList mTitleTextColor;
 
+  private int mGravity = Gravity.CENTER;
+
   public CustomToolbar(Context context) {
     this(context, null);
   }
@@ -53,6 +55,7 @@ public class CustomToolbar extends Toolbar {
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomToolbar);
     mTitleTextAppearance = typedArray.getResourceId(
         R.styleable.CustomToolbar_ct_titleTextAppearance, 0);
+    mGravity = typedArray.getInt(R.styleable.CustomToolbar_ct_gravity, Gravity.CENTER);
 
     CharSequence title = typedArray.getText(R.styleable.CustomToolbar_ct_title);
     setTitle(title);
@@ -64,7 +67,6 @@ public class CustomToolbar extends Toolbar {
     if (typedArray.hasValue(R.styleable.CustomToolbar_ct_titleTextColor)) {
       setTitleTextColor(typedArray.getColorStateList(R.styleable.CustomToolbar_ct_titleTextColor));
     }
-
     typedArray.recycle();
   }
 
@@ -80,7 +82,6 @@ public class CustomToolbar extends Toolbar {
         mTitleTextView = new AppCompatTextView(getContext());
         mTitleTextView.setSingleLine();
         mTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
-        mTitleTextView.setGravity(Gravity.CENTER);
         if (mTitleTextAppearance != 0) {
           mTitleTextView.setTextAppearance(getContext(), mTitleTextAppearance);
         }
@@ -121,7 +122,7 @@ public class CustomToolbar extends Toolbar {
       lp = (LayoutParams) vlp;
     }
 
-    lp.gravity = Gravity.CENTER;
+    lp.gravity = mGravity;
     addView(v, lp);
   }
 
@@ -151,6 +152,11 @@ public class CustomToolbar extends Toolbar {
   public void setBackIcon(@DrawableRes int resId) {
     iconBack = AppCompatResources.getDrawable(getContext(), resId);
     setNavigationIcon(iconBack);
+  }
+
+  public void setGravity(int gravity) {
+    Toolbar.LayoutParams vlp = (LayoutParams) mTitleTextView.getLayoutParams();
+    vlp.gravity = gravity;
   }
 
   public void setShowBack(boolean isShow) {
