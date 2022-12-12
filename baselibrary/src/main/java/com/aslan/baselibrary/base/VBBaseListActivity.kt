@@ -4,6 +4,7 @@ import android.os.SystemClock
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.Size
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -95,7 +96,9 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
     }
 
     override fun iniData() {
-        autoRefresh()
+        lifecycleScope.launchWhenResumed {
+            autoRefresh()
+        }
     }
 
     protected fun autoRefresh() {
