@@ -6,14 +6,12 @@ import android.os.Bundle
 import androidx.annotation.Size
 import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.aslan.baselibrary.listener.IBaseView
 import com.aslan.baselibrary.listener.IMVPBasePresenter
-import pub.devrel.easypermissions.AppSettingsDialog
-import pub.devrel.easypermissions.EasyPermissions
-import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks
-import pub.devrel.easypermissions.PermissionRequest
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
+import com.vmadalin.easypermissions.models.PermissionRequest
 
 /**
  * MPV基础类
@@ -23,18 +21,15 @@ import pub.devrel.easypermissions.PermissionRequest
  */
 abstract class MVPBasePresenter<V : IBaseView> : IMVPBasePresenter {
     var mView: V
-    var lifecycleOwner: LifecycleOwner
     var activity: BaseActivity
     var fragment: BaseFragment? = null
 
     constructor(activity: BaseActivity) {
-        lifecycleOwner = activity
         mView = activity as V
         this.activity = activity
     }
 
     constructor(fragment: BaseFragment) {
-        lifecycleOwner = fragment
         mView = fragment as V
         this.fragment = fragment
         activity = fragment.activity as BaseActivity
@@ -58,13 +53,13 @@ abstract class MVPBasePresenter<V : IBaseView> : IMVPBasePresenter {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        if (this is PermissionCallbacks) {
+        if (this is EasyPermissions.PermissionCallbacks) {
             EasyPermissions
                 .onRequestPermissionsResult(requestCode, permissions, grantResults, this)
         }
     }
 
-    override fun getFragmentManager(): FragmentManager? {
+    override fun getFragmentManager(): FragmentManager {
         return if (fragment != null) {
             fragment!!.parentFragmentManager
         } else {
@@ -114,22 +109,16 @@ abstract class MVPBasePresenter<V : IBaseView> : IMVPBasePresenter {
         requestCode: Int,
         @Size(min = 1) vararg perms: String
     ): PermissionRequest.Builder {
-        return if (fragment == null) {
-            PermissionRequest.Builder(activity, requestCode, *perms)
-        } else {
-            PermissionRequest.Builder(fragment!!, requestCode, *perms)
-        }
+        return PermissionRequest.Builder(requireContext())
+            .code(requestCode)
+            .perms(perms)
     }
 
     /**
      * EasyPermissions 使用,进入设置界面
      */
-    protected fun newAppSettingsDialogBuilder(): AppSettingsDialog.Builder {
-        return if (fragment == null) {
-            AppSettingsDialog.Builder(activity)
-        } else {
-            AppSettingsDialog.Builder(fragment!!)
-        }
+    protected fun newAppSettingsDialogBuilder(): SettingsDialog.Builder {
+        return SettingsDialog.Builder(requireContext())
     }
 
     /**
@@ -152,4 +141,13 @@ abstract class MVPBasePresenter<V : IBaseView> : IMVPBasePresenter {
             ViewModelProvider(activity, factory)
         }
     }
+
+    val lifecycleOwner: LifecycleOwner
+        get() = mView.getLifecycleOwner()
+
+    val lifecycle: Lifecycle
+        get() = lifecycleOwner.lifecycle
+
+    val lifecycleScope: LifecycleCoroutineScope
+        get() = lifecycle.coroutineScope
 }

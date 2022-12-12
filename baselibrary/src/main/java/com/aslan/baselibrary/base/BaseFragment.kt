@@ -1,6 +1,5 @@
 package com.aslan.baselibrary.base
 
-import android.app.Activity
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +18,7 @@ import com.aslan.baselibrary.view.CustomToolbar
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import com.trello.rxlifecycle3.LifecycleProvider
 import com.vmadalin.easypermissions.EasyPermissions
+import java.lang.Deprecated
 
 /**
  * 基础类
@@ -27,7 +27,7 @@ import com.vmadalin.easypermissions.EasyPermissions
  * @date 2018/4/11
  */
 abstract class BaseFragment : Fragment(), IBaseView {
-    protected val provider = AndroidLifecycle.createLifecycleProvider(this)
+    protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
     protected var progressDialog: ProgressDialog? = null
     protected var titleBar: CustomToolbar? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,9 +86,10 @@ abstract class BaseFragment : Fragment(), IBaseView {
 
     @UiThread
     override fun showProgressBar(@StringRes msg: Int) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         val message = getString(msg)
         showProgressBar(message)
     }
@@ -100,18 +101,20 @@ abstract class BaseFragment : Fragment(), IBaseView {
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, @StringRes msg: Int) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         val message = getString(msg)
         showProgressBar(canCancel, message)
     }
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, msg: String) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         if (progressDialog == null) {
             progressDialog = ProgressDialog(context)
         }
@@ -141,34 +144,32 @@ abstract class BaseFragment : Fragment(), IBaseView {
 
     @UiThread
     override fun showToastMessage(@StringRes resId: Int) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         Toast.makeText(context, resId, Toast.LENGTH_SHORT).show()
     }
 
     @UiThread
     override fun showToastMessage(text: CharSequence) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 
-    fun navigationOnClickListener() {
+    @MainThread
+    open fun navigationOnClickListener() {
         (activity as BaseActivity?)!!.thisFinish()
     }
 
     @MainThread
     override fun thisFinish() {
-        val activity: Activity? = activity
-        if (activity != null && activity is BaseActivity) {
-            activity.thisFinish()
+        if (activity is BaseActivity) {
+            (activity as BaseActivity).thisFinish()
         }
-    }
-
-    override fun isAdd(): Boolean {
-        return this.isAdded
     }
 
     override fun onDestroy() {
@@ -176,6 +177,7 @@ abstract class BaseFragment : Fragment(), IBaseView {
         super.onDestroy()
     }
 
+    @Deprecated
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>,
         grantResults: IntArray
@@ -192,6 +194,6 @@ abstract class BaseFragment : Fragment(), IBaseView {
     }
 
     override fun getLifecycleProvider(): LifecycleProvider<Lifecycle.Event> {
-        return provider
+        return mLifecycleProvider
     }
 }

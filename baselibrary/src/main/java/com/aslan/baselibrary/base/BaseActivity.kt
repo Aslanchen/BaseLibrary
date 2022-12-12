@@ -24,7 +24,7 @@ import com.vmadalin.easypermissions.EasyPermissions
  * @date 2018/4/11
  */
 abstract class BaseActivity : AppCompatActivity(), IBaseView {
-    protected val provider = AndroidLifecycle.createLifecycleProvider(this)
+    protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
     protected var progressDialog: ProgressDialog? = null
     protected var titleBar: CustomToolbar? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,9 +69,10 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
 
     @UiThread
     override fun showProgressBar(@StringRes msg: Int) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         val message = getString(msg)
         showProgressBar(message)
     }
@@ -83,18 +84,20 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, @StringRes msg: Int) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         val message = getString(msg)
         showProgressBar(canCancel, message)
     }
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, msg: String) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         if (progressDialog == null) {
             progressDialog = ProgressDialog(this)
         }
@@ -124,31 +127,30 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
 
     @UiThread
     override fun showToastMessage(@StringRes resId: Int) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         Toast.makeText(this, resId, Toast.LENGTH_SHORT).show()
     }
 
     @UiThread
     override fun showToastMessage(text: CharSequence) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
-    fun navigationOnClickListener() {
+    @MainThread
+    open fun navigationOnClickListener() {
         thisFinish()
     }
 
     @MainThread
     override fun thisFinish() {
         finish()
-    }
-
-    override fun isAdd(): Boolean {
-        return !isFinishing
     }
 
     override fun onDestroy() {
@@ -176,6 +178,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
     }
 
     override fun getLifecycleProvider(): LifecycleProvider<Lifecycle.Event> {
-        return provider
+        return mLifecycleProvider
     }
 }

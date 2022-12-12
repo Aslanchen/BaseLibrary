@@ -63,9 +63,10 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
 
     @UiThread
     override fun showProgressBar(@StringRes msg: Int) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         val message = getString(msg)
         showProgressBar(message)
     }
@@ -77,18 +78,20 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, @StringRes msg: Int) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         val message = getString(msg)
         showProgressBar(canCancel, message)
     }
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, msg: String) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         if (progressDialog == null) {
             progressDialog = ProgressDialog(context)
         }
@@ -118,22 +121,20 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
 
     @UiThread
     override fun showToastMessage(@StringRes resId: Int) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
+
         Toast.makeText(context, resId, Toast.LENGTH_SHORT).show()
     }
 
     @UiThread
     override fun showToastMessage(text: CharSequence) {
-        if (isAdd == false) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-    }
 
-    override fun isAdd(): Boolean {
-        return this.isAdded
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {
