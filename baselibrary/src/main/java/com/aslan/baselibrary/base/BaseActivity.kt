@@ -15,8 +15,7 @@ import com.aslan.baselibrary.listener.IBaseView
 import com.aslan.baselibrary.view.CustomToolbar
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import com.trello.rxlifecycle3.LifecycleProvider
-import pub.devrel.easypermissions.EasyPermissions
-import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks
+import com.vmadalin.easypermissions.EasyPermissions
 
 /**
  * 基础类
@@ -162,7 +161,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (this is PermissionCallbacks) {
+        if (this is EasyPermissions.PermissionCallbacks) {
             EasyPermissions
                 .onRequestPermissionsResult(requestCode, permissions, grantResults, this)
         }
