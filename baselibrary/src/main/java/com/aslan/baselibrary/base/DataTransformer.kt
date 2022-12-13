@@ -12,6 +12,7 @@ open class DataTransformer<T>(
     private val mBaseView: IBaseView,
     private val clickView: View? = null,
     private val isShowProgressbar: Boolean = true,
+    private val isShowToast: Boolean = true,
 ) :
     ObservableTransformer<T, T>, FlowableTransformer<T, T>, SingleTransformer<T, T>,
     MaybeTransformer<T, T> {
@@ -34,10 +35,12 @@ open class DataTransformer<T>(
             return
         }
 
-        if (error.message.isNullOrEmpty()) {
-            mBaseView.showToastMessage(R.string.base_data_error_unknow)
-        } else {
-            mBaseView.showToastMessage(error.message!!)
+        if (isShowToast) {
+            if (error.message.isNullOrEmpty()) {
+                mBaseView.showToastMessage(R.string.base_data_error_unknow)
+            } else {
+                mBaseView.showToastMessage(error.message!!)
+            }
         }
     }
 
