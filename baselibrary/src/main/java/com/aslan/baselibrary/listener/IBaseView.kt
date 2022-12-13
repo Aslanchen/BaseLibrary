@@ -30,6 +30,8 @@ interface IBaseView {
     fun closeProgressBar()
     fun showToastMessage(@StringRes resId: Int)
     fun showToastMessage(text: CharSequence)
+    fun showToastMessage(@StringRes resId: Int, duration: Int)
+    fun showToastMessage(text: CharSequence, duration: Int)
     fun startActivity(intent: Intent)
     fun startActivityForResult(@RequiresPermission intent: Intent, requestCode: Int)
     fun startActivityForResult(

@@ -27,6 +27,8 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
     protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
     protected var progressDialog: ProgressDialog? = null
     protected var titleBar: CustomToolbar? = null
+    protected var mToast: Toast? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         intent.extras?.let { iniBundle(it) }
@@ -126,21 +128,35 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
     }
 
     @UiThread
-    override fun showToastMessage(@StringRes resId: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
-
-        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show()
+    override fun showToastMessage(resId: Int) {
+        showToastMessage(resId, Toast.LENGTH_SHORT)
     }
 
     @UiThread
     override fun showToastMessage(text: CharSequence) {
+        showToastMessage(text, Toast.LENGTH_SHORT)
+    }
+
+    @UiThread
+    override fun showToastMessage(@StringRes resId: Int, duration: Int) {
         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
 
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+        mToast?.cancel()
+        mToast = Toast.makeText(this, resId, duration)
+        mToast!!.show()
+    }
+
+    @UiThread
+    override fun showToastMessage(text: CharSequence, duration: Int) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            return
+        }
+
+        mToast?.cancel()
+        mToast = Toast.makeText(this, text, duration)
+        mToast!!.show()
     }
 
     @MainThread
@@ -154,6 +170,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
     }
 
     override fun onDestroy() {
+        mToast = null
         closeProgressBar()
         super.onDestroy()
     }

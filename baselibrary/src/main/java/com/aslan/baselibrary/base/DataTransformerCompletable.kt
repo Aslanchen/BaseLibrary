@@ -14,13 +14,23 @@ open class DataTransformerCompletable(
     private val clickView: View? = null,
     private val isShowProgressbar: Boolean = true,
     private val isShowToast: Boolean = true,
+    private val progressbarMsg: String? = null,
+    private val progressbarMsgResId: Int? = null,
+    private val progressbarCanCancel: Boolean = false,
 ) :
     CompletableTransformer {
 
     private fun doOnSubscribe() {
         if (isShowProgressbar) {
-            mBaseView.showProgressBar()
+            if (progressbarMsg != null) {
+                mBaseView.showProgressBar(progressbarCanCancel, progressbarMsg)
+            } else if (progressbarMsgResId != null) {
+                mBaseView.showProgressBar(progressbarCanCancel, progressbarMsgResId)
+            } else {
+                mBaseView.showProgressBar(progressbarCanCancel)
+            }
         }
+
         clickView?.isEnabled = false
     }
 

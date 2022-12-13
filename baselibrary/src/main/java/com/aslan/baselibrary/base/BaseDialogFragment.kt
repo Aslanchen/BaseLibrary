@@ -26,6 +26,8 @@ import com.vmadalin.easypermissions.EasyPermissions
 abstract class BaseDialogFragment : DialogFragment(), IBaseView {
     protected val provider = AndroidLifecycle.createLifecycleProvider(this)
     protected var progressDialog: ProgressDialog? = null
+    protected var mToast: Toast? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let { iniBundle(it) }
@@ -120,24 +122,39 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
     }
 
     @UiThread
-    override fun showToastMessage(@StringRes resId: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
-
-        Toast.makeText(context, resId, Toast.LENGTH_SHORT).show()
+    override fun showToastMessage(resId: Int) {
+        showToastMessage(resId, Toast.LENGTH_SHORT)
     }
 
     @UiThread
     override fun showToastMessage(text: CharSequence) {
+        showToastMessage(text, Toast.LENGTH_SHORT)
+    }
+
+    @UiThread
+    override fun showToastMessage(@StringRes resId: Int, duration: Int) {
         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
 
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+        mToast?.cancel()
+        mToast = Toast.makeText(requireContext(), resId, duration)
+        mToast!!.show()
+    }
+
+    @UiThread
+    override fun showToastMessage(text: CharSequence, duration: Int) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            return
+        }
+
+        mToast?.cancel()
+        mToast = Toast.makeText(requireContext(), text, duration)
+        mToast!!.show()
     }
 
     override fun onDestroy() {
+        mToast = null
         closeProgressBar()
         super.onDestroy()
     }
