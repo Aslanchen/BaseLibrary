@@ -33,6 +33,8 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
         super.onCreate(savedInstanceState)
         intent.extras?.let { iniBundle(it) }
         setCusContentView()
+        setStatusBar()
+
         titleBar = findViewById(R.id.titleBar)
         if (titleBar != null) {
             titleBar!!.setNavigationOnClickListener { navigationOnClickListener() }
@@ -41,6 +43,8 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
         iniListener()
         iniData()
     }
+
+    open fun setStatusBar() {}
 
     open fun setCusContentView() {
         setContentView(getLayoutId())

@@ -50,6 +50,7 @@ abstract class BaseFragment : Fragment(), IBaseView {
     }
 
     abstract fun iniBundle(bundle: Bundle)
+    open fun setStatusBar() {}
     open fun setCusContentView(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -59,6 +60,7 @@ abstract class BaseFragment : Fragment(), IBaseView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setStatusBar()
         iniView(view)
         iniListener()
         iniData()
