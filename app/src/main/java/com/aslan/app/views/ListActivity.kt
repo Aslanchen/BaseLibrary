@@ -1,8 +1,8 @@
-package com.aslan.app
+package com.aslan.app.views
 
 import android.os.Bundle
 import com.aslan.app.databinding.ActivityMenusBinding
-import com.aslan.app.items.ItemMenu
+import com.aslan.app.views.items.ItemMenu
 import com.aslan.baselibrary.base.VBBaseListActivity
 import eu.davidea.flexibleadapter.items.IFlexible
 import io.reactivex.Observable
@@ -10,8 +10,7 @@ import io.reactivex.Observable
 class ListActivity :
     VBBaseListActivity<ListActivity.Menu, ActivityMenusBinding>(ActivityMenusBinding::inflate) {
 
-    override fun iniBundle(bundle: Bundle) {
-    }
+    override fun iniBundle(bundle: Bundle) {}
 
     override fun getItem(model: Menu) = ItemMenu(model)
 

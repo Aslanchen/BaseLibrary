@@ -1,7 +1,7 @@
-package com.aslan.app.items
+package com.aslan.app.views.items
 
 import android.view.View
-import com.aslan.app.ListActivity
+import com.aslan.app.views.ListActivity
 import com.aslan.app.R
 import com.aslan.app.databinding.ItemMenuBinding
 import com.aslan.baselibrary.base.VBBaseViewHolder
@@ -35,7 +35,7 @@ class ItemMenu(val data: ListActivity.Menu) : AbstractFlexibleItem<ItemMenu.View
 
     override fun bindViewHolder(
         adapter: FlexibleAdapter<IFlexible<*>>,
-        holder: ItemMenu.ViewHolder,
+        holder: ViewHolder,
         position: Int,
         payloads: MutableList<Any?>
     ) {

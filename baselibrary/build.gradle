@@ -1,16 +1,15 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'maven-publish'
-
-apply plugin: 'com.github.dcendents.android-maven'
-group = 'github.com.aslanchen'
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'maven-publish'
+}
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 32
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 32
         versionCode VERSIONCODE
         versionName VERSIONNAME
 
@@ -41,27 +40,35 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test:runner:1.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    //androidX
     api 'androidx.core:core-ktx:1.8.0'
     api "androidx.collection:collection-ktx:1.2.0"
     api "androidx.activity:activity-ktx:1.5.1"
-    api "androidx.fragment:fragment-ktx:1.5.1"
+    api "androidx.fragment:fragment-ktx:1.5.5"
     api "androidx.preference:preference-ktx:1.2.0"
-    api 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
     api 'androidx.constraintlayout:constraintlayout:2.1.4'
     api 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    api 'androidx.annotation:annotation:1.4.0'
-    api 'androidx.appcompat:appcompat:1.4.2'
-    api 'com.google.android.material:material:1.6.1'
+    api 'androidx.annotation:annotation:1.5.0'
+    api 'androidx.appcompat:appcompat:1.5.1'
+    api "androidx.appcompat:appcompat-resources:1.5.1"
     api 'androidx.cardview:cardview:1.0.0'
-    api 'com.google.code.gson:gson:2.8.7'
+    api 'com.google.android.material:material:1.6.1'
+
+    //json
+    api 'com.google.code.gson:gson:2.8.9'
+
+    //本地数据库
     api 'com.j256.ormlite:ormlite-android:5.1'
+
+    //事件通知
     api 'org.greenrobot:eventbus:3.2.0'
-    api 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    //图片
+    api 'com.github.bumptech.glide:glide:4.14.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
     //对象存储
     api 'com.tencent:mmkv-static:1.2.11'
@@ -73,7 +80,8 @@ dependencies {
     //权限
     api 'com.vmadalin:easypermissions-ktx:1.0.0'
 
-    //网络
+    //RxJava2+Rxlifecycle3+retrofit2+okhttp+okio
+    //Android 19需要3.12.X版本
     api 'com.squareup.okhttp3:okhttp:3.12.13'
     api 'com.squareup.okhttp3:logging-interceptor:3.12.13'
     api 'com.squareup.okio:okio:2.6.0'
@@ -81,11 +89,26 @@ dependencies {
     api 'com.squareup.retrofit2:converter-gson:2.9.0'
     api 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
     api 'io.reactivex.rxjava2:rxandroid:2.1.1'
-
-    //生命周期
     api 'com.trello.rxlifecycle3:rxlifecycle-kotlin:3.1.0'
     api 'com.trello.rxlifecycle3:rxlifecycle-android-lifecycle-kotlin:3.1.0'
 
     //日志
     api 'com.elvishew:xlog:1.6.1'
+
+    //状态栏
+    api 'com.jaeger.statusbarutil:library:1.5.1'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.release
+
+                groupId = 'com.github.Aslanchen'
+                artifactId = 'BaseLibrary'
+                version = VERSIONNAME
+            }
+        }
+    }
 }
