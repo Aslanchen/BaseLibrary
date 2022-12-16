@@ -96,8 +96,14 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
         }
     }
 
+    private var isRefreshing = false
     protected fun autoRefresh() {
+        if (isRefreshing) {
+            return
+        }
+
         swipeRefreshLayout?.isRefreshing = true
+        isRefreshing = true
         onRefresh()
     }
 
@@ -151,7 +157,8 @@ open abstract class VBBaseListFragment<M, VB : ViewBinding>(inflate: InflateFrag
             .bindToLifecycle(this)
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
             .doFinally {
-                swipeRefreshLayout?.setRefreshing(false)
+                swipeRefreshLayout?.isRefreshing = false
+                isRefreshing = false
             }
             .subscribe(object : DataObserver<List<M>>(requireContext()) {
                 override fun handleSuccess(t: List<M>) {
