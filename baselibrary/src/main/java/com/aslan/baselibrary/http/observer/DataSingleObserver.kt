@@ -1,9 +1,8 @@
-package com.aslan.baselibrary.http.observer;
+package com.aslan.baselibrary.http.observer
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
+import android.content.Context
+import io.reactivex.SingleObserver
+import io.reactivex.disposables.Disposable
 
 /**
  * 网络回调基类，主要负责异常封装，以及数据序列化。
@@ -11,28 +10,12 @@ import io.reactivex.disposables.Disposable;
  * @author Aslan
  * @date 2019/9/23
  */
-public abstract class DataSingleObserver<T> implements SingleObserver<T> {
+abstract class DataSingleObserver<T>(private val context: Context) : SingleObserver<T> {
+    override fun onError(e: Throwable) {}
+    override fun onSubscribe(d: Disposable) {}
+    override fun onSuccess(t: T) {
+        handleSuccess(t)
+    }
 
-  private Context context;
-
-  public DataSingleObserver(Context context) {
-    this.context = context;
-  }
-
-  @Override
-  public void onError(@NonNull Throwable e) {
-
-  }
-
-  @Override
-  public void onSubscribe(@NonNull Disposable d) {
-
-  }
-
-  @Override
-  public void onSuccess(@NonNull T t) {
-    handleSuccess(t);
-  }
-
-  public abstract void handleSuccess(@NonNull T t);
+    abstract fun handleSuccess(t: T)
 }

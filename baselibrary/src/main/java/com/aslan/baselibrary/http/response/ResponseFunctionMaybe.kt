@@ -9,9 +9,7 @@ import io.reactivex.Maybe
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-class ResponseFunctionMaybe<T>(context: Context?) : BaseResponseFunction<T, Maybe<T>?>(
-    context!!
-) {
+class ResponseFunctionMaybe<T>(val context: Context) : BaseResponseFunction<T, Maybe<T>>(context) {
     override fun error(ex: Exception): Maybe<T> {
         return Maybe.error(ex)
     }

@@ -9,9 +9,8 @@ import io.reactivex.Completable
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-class ResponseFunctionCompletable<T>(context: Context?) : BaseResponseFunction<T, Completable?>(
-    context!!
-) {
+class ResponseFunctionCompletable<T>(val context: Context) :
+    BaseResponseFunction<T, Completable>(context) {
     override fun error(ex: Exception): Completable {
         return Completable.error(ex)
     }

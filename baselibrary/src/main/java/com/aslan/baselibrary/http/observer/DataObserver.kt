@@ -1,9 +1,11 @@
-package com.aslan.baselibrary.http.observer;
+package com.aslan.baselibrary.http.observer
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import android.content.Context
+import io.reactivex.CompletableObserver
+import io.reactivex.disposables.Disposable
+import io.reactivex.MaybeObserver
+import io.reactivex.Observer
+import io.reactivex.SingleObserver
 
 /**
  * 网络回调基类，主要负责异常封装，以及数据序列化。
@@ -11,32 +13,13 @@ import io.reactivex.disposables.Disposable;
  * @author Aslan
  * @date 2019/9/23
  */
-public abstract class DataObserver<T> implements Observer<T> {
+abstract class DataObserver<T>(private val context: Context) : Observer<T> {
+    override fun onError(e: Throwable) {}
+    override fun onComplete() {}
+    override fun onSubscribe(d: Disposable) {}
+    override fun onNext(t: T) {
+        handleSuccess(t)
+    }
 
-  private Context context;
-
-  public DataObserver(Context context) {
-    this.context = context;
-  }
-
-  @Override
-  public void onError(@NonNull Throwable e) {
-  }
-
-  @Override
-  public void onComplete() {
-
-  }
-
-  @Override
-  public void onSubscribe(@NonNull Disposable d) {
-
-  }
-
-  @Override
-  public void onNext(@NonNull T t) {
-    handleSuccess(t);
-  }
-
-  public abstract void handleSuccess(@NonNull T t);
+    abstract fun handleSuccess(t: T)
 }
