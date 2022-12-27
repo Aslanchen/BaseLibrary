@@ -1,6 +1,5 @@
 package com.aslan.baselibrary.base
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +24,7 @@ import com.vmadalin.easypermissions.EasyPermissions
  */
 abstract class BaseDialogFragment : DialogFragment(), IBaseView {
     protected val provider = AndroidLifecycle.createLifecycleProvider(this)
-    protected var progressDialog: ProgressDialog? = null
+    protected var progressDialog: WaitingDialog? = null
     protected var mToast: Toast? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,16 +94,16 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
         }
 
         if (progressDialog == null) {
-            progressDialog = ProgressDialog(context)
+            progressDialog = initProgressDialog()
         }
-        if (progressDialog!!.isShowing) {
+
+        if (progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
-        progressDialog!!.setMessage(msg)
-        progressDialog!!.setCancelable(canCancel)
-        progressDialog!!.setCanceledOnTouchOutside(canCancel)
+
         try {
-            progressDialog!!.show()
+            progressDialog!!.isCancelable = canCancel
+            progressDialog!!.show(parentFragmentManager, msg)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -112,13 +111,17 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
 
     @UiThread
     override fun closeProgressBar() {
-        if (progressDialog != null && progressDialog!!.isShowing) {
+        if (progressDialog != null && progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             try {
                 progressDialog!!.dismiss()
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
         }
+    }
+
+    protected open fun initProgressDialog(): WaitingDialog {
+        return WaitingDialog()
     }
 
     @UiThread

@@ -1,6 +1,5 @@
 package com.aslan.baselibrary.base
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +27,7 @@ import java.lang.Deprecated
  */
 abstract class BaseFragment : Fragment(), IBaseView {
     protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
-    protected var progressDialog: ProgressDialog? = null
+    protected var progressDialog: WaitingDialog? = null
     protected var titleBar: CustomToolbar? = null
     protected var mToast: Toast? = null
 
@@ -120,16 +119,16 @@ abstract class BaseFragment : Fragment(), IBaseView {
         }
 
         if (progressDialog == null) {
-            progressDialog = ProgressDialog(context)
+            progressDialog = initProgressDialog()
         }
-        if (progressDialog!!.isShowing) {
+
+        if (progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             return
         }
-        progressDialog!!.setMessage(msg)
-        progressDialog!!.setCancelable(canCancel)
-        progressDialog!!.setCanceledOnTouchOutside(canCancel)
+
         try {
-            progressDialog!!.show()
+            progressDialog!!.isCancelable = canCancel
+            progressDialog!!.show(parentFragmentManager, msg)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -137,13 +136,17 @@ abstract class BaseFragment : Fragment(), IBaseView {
 
     @UiThread
     override fun closeProgressBar() {
-        if (progressDialog != null && progressDialog!!.isShowing) {
+        if (progressDialog != null && progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             try {
                 progressDialog!!.dismiss()
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
         }
+    }
+
+    protected open fun initProgressDialog(): WaitingDialog {
+        return WaitingDialog()
     }
 
     @UiThread
