@@ -5,7 +5,7 @@
   android:layout_height="wrap_content"
   android:layout_gravity="center"
   android:background="@drawable/shape_wait_bg"
-  android:padding="60dp">
+  android:padding="40dp">
 
   <ProgressBar
     android:id="@+id/pb"
