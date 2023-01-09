@@ -112,7 +112,7 @@ abstract class BaseFragment : Fragment(), IBaseView {
                 progressDialog = initProgressDialog()
             }
 
-            if (progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+            if (progressDialog!!.isAdded) {
                 return@launchWhenResumed
             }
 
@@ -127,7 +127,7 @@ abstract class BaseFragment : Fragment(), IBaseView {
 
     @UiThread
     override fun closeProgressBar() {
-        if (progressDialog != null && progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+        if (progressDialog != null && progressDialog!!.isAdded) {
             try {
                 progressDialog!!.dismiss()
             } catch (ex: Exception) {
