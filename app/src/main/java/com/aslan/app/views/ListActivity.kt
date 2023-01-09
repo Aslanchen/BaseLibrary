@@ -1,11 +1,13 @@
 package com.aslan.app.views
 
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import com.aslan.app.databinding.ActivityMenusBinding
 import com.aslan.app.views.items.ItemMenu
 import com.aslan.baselibrary.base.VBBaseListActivity
 import eu.davidea.flexibleadapter.items.IFlexible
 import io.reactivex.Observable
+import kotlinx.coroutines.delay
 
 class ListActivity :
     VBBaseListActivity<ListActivity.Menu, ActivityMenusBinding>(ActivityMenusBinding::inflate) {
@@ -35,6 +37,17 @@ class ListActivity :
             }
         }
         return super.onItemClick(item, position)
+    }
+
+    override fun iniData() {
+        super.iniData()
+
+        lifecycleScope.launchWhenResumed {
+            showProgressBar()
+            showProgressBar()
+            delay(1000L)
+            closeProgressBar()
+        }
     }
 
     inner class Menu(val v: String)

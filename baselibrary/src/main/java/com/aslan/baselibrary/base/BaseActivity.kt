@@ -26,6 +26,7 @@ import com.vmadalin.easypermissions.EasyPermissions
 abstract class BaseActivity : AppCompatActivity(), IBaseView {
     protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
     protected var progressDialog: WaitingDialog? = null
+    protected var isProgressDialogShowing = false
     protected var titleBar: CustomToolbar? = null
     protected var mToast: Toast? = null
 
@@ -97,27 +98,41 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
                 progressDialog = initProgressDialog()
             }
 
+            if (isProgressDialogShowing) {
+                return@launchWhenResumed
+            }
+
             if (progressDialog!!.isAdded) {
+                return@launchWhenResumed
+            }
+
+            if (progressDialog!!.isVisible) {
+                return@launchWhenResumed
+            }
+
+            if (progressDialog!!.dialog?.isShowing == true) {
                 return@launchWhenResumed
             }
 
             try {
                 progressDialog!!.isCancelable = canCancel
-                progressDialog!!.show(supportFragmentManager, msg)
+                progressDialog!!.show(supportFragmentManager, msg, true)
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
+            isProgressDialogShowing = true
         }
     }
 
     @UiThread
     override fun closeProgressBar() {
-        if (progressDialog != null && progressDialog!!.isAdded) {
+        if (progressDialog != null) {
             try {
                 progressDialog!!.dismiss()
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
+            isProgressDialogShowing = false
         }
     }
 
