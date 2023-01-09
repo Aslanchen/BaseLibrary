@@ -10,6 +10,7 @@ import androidx.annotation.UiThread
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.aslan.baselibrary.R
 import com.aslan.baselibrary.listener.IBaseView
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
@@ -64,10 +65,6 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
 
     @UiThread
     override fun showProgressBar(@StringRes msg: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
-
         val message = getString(msg)
         showProgressBar(message)
     }
@@ -79,33 +76,27 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, @StringRes msg: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
-
         val message = getString(msg)
         showProgressBar(canCancel, message)
     }
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, msg: String) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
+        lifecycleScope.launchWhenResumed {
+            if (progressDialog == null) {
+                progressDialog = initProgressDialog()
+            }
 
-        if (progressDialog == null) {
-            progressDialog = initProgressDialog()
-        }
+            if (progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+                return@launchWhenResumed
+            }
 
-        if (progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
-
-        try {
-            progressDialog!!.isCancelable = canCancel
-            progressDialog!!.show(parentFragmentManager, msg)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
+            try {
+                progressDialog!!.isCancelable = canCancel
+                progressDialog!!.show(parentFragmentManager, msg)
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
         }
     }
 
@@ -136,24 +127,20 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
 
     @UiThread
     override fun showToastMessage(@StringRes resId: Int, duration: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
+        lifecycleScope.launchWhenResumed {
+            mToast?.cancel()
+            mToast = Toast.makeText(requireContext(), resId, duration)
+            mToast!!.show()
         }
-
-        mToast?.cancel()
-        mToast = Toast.makeText(requireContext(), resId, duration)
-        mToast!!.show()
     }
 
     @UiThread
     override fun showToastMessage(text: CharSequence, duration: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
+        lifecycleScope.launchWhenResumed {
+            mToast?.cancel()
+            mToast = Toast.makeText(requireContext(), text, duration)
+            mToast!!.show()
         }
-
-        mToast?.cancel()
-        mToast = Toast.makeText(requireContext(), text, duration)
-        mToast!!.show()
     }
 
     override fun onDestroy() {

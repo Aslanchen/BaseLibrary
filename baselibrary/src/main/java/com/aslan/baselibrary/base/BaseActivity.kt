@@ -9,6 +9,7 @@ import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.aslan.baselibrary.R
 import com.aslan.baselibrary.listener.IBaseView
 import com.aslan.baselibrary.view.CustomToolbar
@@ -74,10 +75,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
 
     @UiThread
     override fun showProgressBar(@StringRes msg: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
-
         val message = getString(msg)
         showProgressBar(message)
     }
@@ -89,33 +86,27 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, @StringRes msg: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
-
         val message = getString(msg)
         showProgressBar(canCancel, message)
     }
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, msg: String) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
+        lifecycleScope.launchWhenResumed {
+            if (progressDialog == null) {
+                progressDialog = initProgressDialog()
+            }
 
-        if (progressDialog == null) {
-            progressDialog = initProgressDialog()
-        }
+            if (progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+                return@launchWhenResumed
+            }
 
-        if (progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
-
-        try {
-            progressDialog!!.isCancelable = canCancel
-            progressDialog!!.show(supportFragmentManager, msg)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
+            try {
+                progressDialog!!.isCancelable = canCancel
+                progressDialog!!.show(supportFragmentManager, msg)
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
         }
     }
 
@@ -146,24 +137,20 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
 
     @UiThread
     override fun showToastMessage(@StringRes resId: Int, duration: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
+        lifecycleScope.launchWhenResumed {
+            mToast?.cancel()
+            mToast = Toast.makeText(this@BaseActivity, resId, duration)
+            mToast!!.show()
         }
-
-        mToast?.cancel()
-        mToast = Toast.makeText(this, resId, duration)
-        mToast!!.show()
     }
 
     @UiThread
     override fun showToastMessage(text: CharSequence, duration: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
+        lifecycleScope.launchWhenResumed {
+            mToast?.cancel()
+            mToast = Toast.makeText(this@BaseActivity, text, duration)
+            mToast!!.show()
         }
-
-        mToast?.cancel()
-        mToast = Toast.makeText(this, text, duration)
-        mToast!!.show()
     }
 
     @MainThread
