@@ -43,8 +43,13 @@ class ListActivity :
         super.iniData()
 
         lifecycleScope.launchWhenResumed {
-            showProgressBar()
-            showProgressBar()
+            showProgressBar("AAAAAAA")
+            delay(1000L)
+            closeProgressBar()
+
+            delay(3000L)
+
+            showProgressBar("BBBBBBB")
             delay(1000L)
             closeProgressBar()
         }
