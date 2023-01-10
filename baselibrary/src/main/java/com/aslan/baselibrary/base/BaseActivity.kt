@@ -9,6 +9,7 @@ import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.aslan.baselibrary.R
 import com.aslan.baselibrary.listener.IBaseView
 import com.aslan.baselibrary.view.CustomToolbar
@@ -25,6 +26,7 @@ import com.vmadalin.easypermissions.EasyPermissions
 abstract class BaseActivity : AppCompatActivity(), IBaseView {
     protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
     protected var progressDialog: WaitingDialog? = null
+    protected var isProgressDialogShowing = false
     protected var titleBar: CustomToolbar? = null
     protected var mToast: Toast? = null
 
@@ -74,10 +76,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
 
     @UiThread
     override fun showProgressBar(@StringRes msg: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
-
         val message = getString(msg)
         showProgressBar(message)
     }
@@ -89,44 +87,52 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, @StringRes msg: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
-
         val message = getString(msg)
         showProgressBar(canCancel, message)
     }
 
     @UiThread
     override fun showProgressBar(canCancel: Boolean, msg: String) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
+        lifecycleScope.launchWhenResumed {
+            if (progressDialog == null) {
+                progressDialog = initProgressDialog()
+            }
 
-        if (progressDialog == null) {
-            progressDialog = initProgressDialog()
-        }
+            if (isProgressDialogShowing) {
+                return@launchWhenResumed
+            }
 
-        if (progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
-        }
+            if (progressDialog!!.isAdded) {
+                return@launchWhenResumed
+            }
 
-        try {
-            progressDialog!!.isCancelable = canCancel
-            progressDialog!!.show(supportFragmentManager, msg)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
+            if (progressDialog!!.isVisible) {
+                return@launchWhenResumed
+            }
+
+            if (progressDialog!!.dialog?.isShowing == true) {
+                return@launchWhenResumed
+            }
+
+            try {
+                progressDialog!!.isCancelable = canCancel
+                progressDialog!!.show(supportFragmentManager, msg, true)
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+            isProgressDialogShowing = true
         }
     }
 
     @UiThread
     override fun closeProgressBar() {
-        if (progressDialog != null && progressDialog!!.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+        if (progressDialog != null) {
             try {
                 progressDialog!!.dismiss()
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
+            isProgressDialogShowing = false
         }
     }
 
@@ -146,24 +152,20 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
 
     @UiThread
     override fun showToastMessage(@StringRes resId: Int, duration: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
+        lifecycleScope.launchWhenResumed {
+            mToast?.cancel()
+            mToast = Toast.makeText(this@BaseActivity, resId, duration)
+            mToast!!.show()
         }
-
-        mToast?.cancel()
-        mToast = Toast.makeText(this, resId, duration)
-        mToast!!.show()
     }
 
     @UiThread
     override fun showToastMessage(text: CharSequence, duration: Int) {
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            return
+        lifecycleScope.launchWhenResumed {
+            mToast?.cancel()
+            mToast = Toast.makeText(this@BaseActivity, text, duration)
+            mToast!!.show()
         }
-
-        mToast?.cancel()
-        mToast = Toast.makeText(this, text, duration)
-        mToast!!.show()
     }
 
     @MainThread
