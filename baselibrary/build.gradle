@@ -21,6 +21,7 @@ android {
         consumerProguardFiles "proguard-rules-okhttp.pro"
         consumerProguardFiles "proguard-rules-ormlite.pro"
         consumerProguardFiles "proguard-rules-retrofit.pro"
+        consumerProguardFiles "proguard-rules-mmkv.pro"
     }
 
     compileOptions {
@@ -71,7 +72,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
     //对象存储
-    api 'com.tencent:mmkv-static:1.2.11'
+    api 'com.tencent:mmkv:1.2.15'
 
     //list adapter
     api 'eu.davidea:flexible-adapter:5.1.0'
