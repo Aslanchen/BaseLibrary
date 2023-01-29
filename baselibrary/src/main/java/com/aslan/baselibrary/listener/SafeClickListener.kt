@@ -15,7 +15,7 @@ class SafeClickListener(
     private val onSafeCLick: (View) -> Unit
 ) : View.OnClickListener {
     companion object {
-        const val DEFAUL_TINTERVAL = 600
+        var DEFAUL_TINTERVAL = 600
     }
 
     private var lastTimeClicked = 0L
