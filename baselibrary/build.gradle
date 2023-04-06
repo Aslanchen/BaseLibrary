@@ -14,6 +14,7 @@ android {
         versionName VERSIONNAME
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "proguard-rules.pro"
         consumerProguardFiles "proguard-rules-databinding.pro"
         consumerProguardFiles "proguard-rules-eventbus.pro"
         consumerProguardFiles "proguard-rules-glide.pro"
