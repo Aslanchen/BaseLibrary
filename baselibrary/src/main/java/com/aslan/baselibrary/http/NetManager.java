@@ -75,9 +75,9 @@ public final class NetManager {
     HttpLoggingInterceptor logging = new HttpLoggingInterceptor(logger);
     logging.setLevel(HttpLoggingInterceptor.Level.BODY);
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(10, TimeUnit.SECONDS)
-        .writeTimeout(10, TimeUnit.SECONDS)
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
         .addInterceptor(logging)
         .build();
     Retrofit retrofit = new Retrofit.Builder()

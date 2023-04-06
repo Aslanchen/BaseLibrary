@@ -22,6 +22,7 @@ import java.lang.Deprecated
 
 /**
  * 基础类
+ * 如果需要重写[WaitingDialog]，重写[initProgressDialog]方法
  *
  * @author Aslan
  * @date 2018/4/11

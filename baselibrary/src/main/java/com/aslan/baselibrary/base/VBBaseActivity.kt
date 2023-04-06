@@ -9,7 +9,7 @@ import com.aslan.baselibrary.utils.InflateActivity
  * @author Aslan
  * @date 2018/4/11
  */
-open abstract class VBBaseActivity<VB : ViewBinding>(private val inflate: InflateActivity<VB>) :
+abstract class VBBaseActivity<VB : ViewBinding>(private val inflate: InflateActivity<VB>) :
     BaseActivity() {
     private var _binding: VB? = null
     protected val mViewBinding get() = _binding!!

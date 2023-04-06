@@ -6,6 +6,9 @@ import com.aslan.baselibrary.utils.InflateView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.viewholders.FlexibleViewHolder
 
+/**
+ * 配合ViewBinding使用的ViewHolder
+ */
 open class VBBaseViewHolder<VB : ViewBinding>(
     view: View,
     adapter: FlexibleAdapter<*>,

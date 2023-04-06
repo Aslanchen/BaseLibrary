@@ -12,7 +12,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.aslan.baselibrary.databinding.EmptyViewBinding
 
 /**
- * 空页面 Aslanchen
+ * 空页面
+ *
+ * @author Aslan
+ * @date 2023/04/06
  */
 class EmptyView : ConstraintLayout {
 

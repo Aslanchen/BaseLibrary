@@ -9,6 +9,20 @@ import io.reactivex.CompletableSource
 import io.reactivex.CompletableTransformer
 import java.util.concurrent.CancellationException
 
+/**
+ * 数据转换器，用于处理数据，如显示进度条，显示错误信息等
+ *
+ * @param mBaseView BaseView
+ * @param clickView 点击的View，用于防止重复点击
+ * @param isShowProgressbar 是否显示进度条
+ * @param isShowToast 是否显示错误信息
+ * @param progressbarMsg 进度条显示的信息
+ * @param progressbarMsgResId 进度条显示的信息的资源id
+ * @param progressbarCanCancel 进度条是否可以取消
+ *
+ * @author Aslan
+ * @date 2023/04/06
+ */
 open class DataTransformerCompletable(
     private val mBaseView: IBaseView,
     private val clickView: View? = null,

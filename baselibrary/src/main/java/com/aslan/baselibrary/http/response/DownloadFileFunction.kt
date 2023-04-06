@@ -9,9 +9,8 @@ import java.io.File
 import java.io.IOException
 import java.net.URLDecoder
 
-
 /**
- * 处理业务异常
+ * 文件下载处理类，将文件下载到指定目录，如果文件名为空，则从响应头中获取文件名
  *
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12

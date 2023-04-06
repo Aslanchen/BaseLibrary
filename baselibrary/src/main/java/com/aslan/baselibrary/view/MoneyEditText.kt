@@ -7,6 +7,12 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 
+/**
+ * 金额输入EditText，可以设置最大值和最小值。
+ *
+ * @author Aslan
+ * @date 2023/04/06
+ */
 class MoneyEditText : androidx.appcompat.widget.AppCompatEditText {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -16,12 +22,12 @@ class MoneyEditText : androidx.appcompat.widget.AppCompatEditText {
         defStyleAttr
     )
 
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int = 0,
-        defStyleRes: Int = 0
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
+//    constructor(
+//        context: Context,
+//        attrs: AttributeSet?,
+//        defStyleAttr: Int = 0,
+//        defStyleRes: Int = 0
+//    ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private val mTextWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

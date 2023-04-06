@@ -4,13 +4,14 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.aslan.app.databinding.ActivityMenusBinding
 import com.aslan.app.views.items.ItemMenu
-import com.aslan.baselibrary.base.VBBaseListActivity
+import com.aslan.baselibrary.base.UpdateState
+import com.aslan.baselibrary.base.VBBaseListSimpleActivity
 import eu.davidea.flexibleadapter.items.IFlexible
 import io.reactivex.Observable
 import kotlinx.coroutines.delay
 
-class ListActivity :
-    VBBaseListActivity<ListActivity.Menu, ActivityMenusBinding>(ActivityMenusBinding::inflate) {
+class ListSimpleActivity :
+    VBBaseListSimpleActivity<ListSimpleActivity.Menu, ActivityMenusBinding>(ActivityMenusBinding::inflate) {
 
     override fun iniBundle(bundle: Bundle) {}
 

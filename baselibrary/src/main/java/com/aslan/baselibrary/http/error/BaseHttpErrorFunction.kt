@@ -16,7 +16,13 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.sql.SQLException
 
-open abstract class BaseHttpErrorFunction<T>(val context: Context) : Function<Throwable, T> {
+/**
+ * 统一异常处理
+ *
+ * @author Aslan
+ * @date 2023/04/06
+ */
+abstract class BaseHttpErrorFunction<T>(val context: Context) : Function<Throwable, T> {
 
     override fun apply(t: Throwable): T {
         val ex = when (t) {
@@ -26,6 +32,7 @@ open abstract class BaseHttpErrorFunction<T>(val context: Context) : Function<Th
             is ConnectException -> ClientException(
                 context.getString(R.string.error_net), t
             )
+            //[ConnectTimeoutException]java9开始弃用，使用[SocketTimeoutException]代替
             is ConnectTimeoutException -> ClientException(
                 context.getString(R.string.error_net_connect_timeout), t
             )

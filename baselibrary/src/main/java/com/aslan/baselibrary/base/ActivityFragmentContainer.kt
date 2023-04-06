@@ -10,6 +10,12 @@ import com.aslan.baselibrary.R
 import com.aslan.baselibrary.databinding.ActivityFragmentContainerBinding
 import kotlin.reflect.KClass
 
+/**
+ * Fragment容器，利用反射实例化Fragment，然后加载到Activity中
+ *
+ * @author Aslan
+ * @date 2023/04/06
+ */
 class ActivityFragmentContainer :
     VBBaseActivity<ActivityFragmentContainerBinding>(ActivityFragmentContainerBinding::inflate) {
 

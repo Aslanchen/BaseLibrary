@@ -12,7 +12,7 @@ import androidx.viewbinding.ViewBinding
 import com.aslan.baselibrary.R
 import com.aslan.baselibrary.http.observer.DataObserver
 import com.aslan.baselibrary.items.ProgressItem
-import com.aslan.baselibrary.items.ProgressItem.StatusEnum
+import com.aslan.baselibrary.listener.SafeClickListener
 import com.aslan.baselibrary.utils.InflateActivity
 import com.aslan.baselibrary.view.EmptyView
 import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
@@ -24,15 +24,18 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActivity<VB>) :
-    VBBaseActivity<VB>(inflate), FlexibleAdapter.OnItemClickListener,
+/**
+ * 对[RecyclerView]进行了封装。
+ *
+ * @author Aslan
+ * @date 2023/04/06
+ */
+abstract class VBBaseListActivity<M, A : FlexibleAdapter<IFlexible<*>>, VB : ViewBinding>(
+    inflate: InflateActivity<VB>
+) : VBBaseActivity<VB>(inflate), FlexibleAdapter.OnItemClickListener,
     SwipeRefreshLayout.OnRefreshListener, FlexibleAdapter.EndlessScrollListener {
 
-    enum class UpdateState {
-        Refresh, LoadMore
-    }
-
-    protected lateinit var adapter: FlexibleAdapter<IFlexible<*>>
+    protected lateinit var adapter: A
     protected var mProgressItem: IFlexible<*>? = null
 
     protected var swipeRefreshLayout: SwipeRefreshLayout? = null
@@ -47,6 +50,9 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
         initEmptyView()
     }
 
+    /**
+     * 对加载更多进行了封装，可以通过[ProgressItem]进行自定义，返回空则不显示加载更多。
+     */
     protected open fun getProgressItem(): IFlexible<*>? {
         if (mProgressItem == null) {
             mProgressItem = ProgressItem()
@@ -67,8 +73,9 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
 //        recyclerView.addItemDecoration(FlexibleItemDecoration(requireContext()))
     }
 
+    protected abstract fun instanceAdapter(): A
     protected open fun initApater() {
-        adapter = FlexibleAdapter(null, this)
+        adapter = instanceAdapter()
         val progressItem = getProgressItem()
         if (progressItem != null) {
             adapter.setEndlessScrollListener(this, progressItem)
@@ -79,7 +86,14 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
         recyclerView.adapter = adapter
     }
 
+    /**
+     * 自定义空页面
+     */
     protected open fun getEmptyLayoutResource() = -1
+
+    /**
+     * 对空页面进行了封装，可以通过[EmptyView]进行自定义。
+     */
     protected open fun initEmptyView() {
         mEmptyView = findViewById(R.id.list_empty_view)
         if (mEmptyView != null) {
@@ -112,7 +126,7 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
         onRefresh()
     }
 
-    protected var DEFAULTINTERVAL = 1000
+    open protected var DEFAULTINTERVAL = SafeClickListener.DEFAUL_TINTERVAL
     private var mLastClickTime = 0L
     protected fun isSafeClick(): Boolean {
         val now = SystemClock.elapsedRealtime()
@@ -149,7 +163,7 @@ open abstract class VBBaseListActivity<M, VB : ViewBinding>(inflate: InflateActi
 
     protected open fun onLoadMoreItemClick() {
         if (mProgressItem is ProgressItem) {
-            if ((mProgressItem as ProgressItem).status == StatusEnum.ON_ERROR
+            if ((mProgressItem as ProgressItem).status == ProgressItem.StatusEnum.ON_ERROR
             ) {
                 onLoadMore(adapter.mainItemCount - 1, adapter.endlessCurrentPage)
             }

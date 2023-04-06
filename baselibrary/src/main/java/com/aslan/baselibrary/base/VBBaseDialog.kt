@@ -13,7 +13,7 @@ import com.aslan.baselibrary.utils.InflateFragment
  * @author Aslan
  * @date 2018/4/11
  */
-open abstract class VBBaseDialog<VB : ViewBinding>(private val inflate: InflateFragment<VB>) :
+abstract class VBBaseDialog<VB : ViewBinding>(private val inflate: InflateFragment<VB>) :
     BaseDialogFragment() {
     private var _binding: VB? = null
     protected val mViewBinding get() = _binding!!

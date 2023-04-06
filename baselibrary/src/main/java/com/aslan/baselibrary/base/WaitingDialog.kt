@@ -12,6 +12,9 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.aslan.baselibrary.R
 
+/**
+ * 等待框
+ */
 open class WaitingDialog : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,

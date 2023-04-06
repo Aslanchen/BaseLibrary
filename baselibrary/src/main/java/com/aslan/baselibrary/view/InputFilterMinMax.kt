@@ -3,6 +3,12 @@ package com.aslan.baselibrary.view
 import android.text.InputFilter
 import android.text.Spanned
 
+/**
+ * 对输入进行过滤，限制输入的最大值和最小值。
+ *
+ * @author Aslan
+ * @date 2023/04/06
+ */
 class InputFilterMinMax : InputFilter {
     private var min: Int = 0
     private var max: Int = 0
