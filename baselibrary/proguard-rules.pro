@@ -22,8 +22,8 @@
 
 -keepattributes Signature
 
--keep public class * extends com.aslan.baselibrary.http.IHttpBean
--keep public class * implements com.aslan.baselibrary.http.IHttpBean
+-keep class * extends com.aslan.baselibrary.http.IHttpBean
+-keep class * implements com.aslan.baselibrary.http.IHttpBean{*;}
 
 -dontwarn com.aslan.baselibrary.http.IHttpBean
 -keep public class com.aslan.baselibrary.http.IHttpBean {*;}
