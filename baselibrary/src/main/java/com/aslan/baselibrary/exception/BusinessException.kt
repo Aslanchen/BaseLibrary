@@ -6,4 +6,4 @@ package com.aslan.baselibrary.exception
  * @author Aslan
  * @date 2019/9/23
  */
-open class BusinessException(val code: String, message: String) : Exception(message)
+open class BusinessException(open var code: String, open override var message: String) : Exception(message)
