@@ -116,7 +116,7 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
         }
     }
 
-    private var isRefreshing = false
+    protected open var isRefreshing = false
     protected fun autoRefresh() {
         if (isRefreshing) {
             return
