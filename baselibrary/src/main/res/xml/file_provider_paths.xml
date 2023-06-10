@@ -12,6 +12,9 @@
   <files-path
     name="Pictures"
     path="Pictures" />
+  <files-path
+    name="files"
+    path="." />
 
   <external-files-path
     name="Logs"
@@ -25,6 +28,9 @@
   <external-files-path
     name="Pictures"
     path="Pictures" />
+  <external-files-path
+    name="external-files"
+    path="." />
 
   <external-path
     name="Logs"
@@ -38,6 +44,9 @@
   <external-path
     name="Pictures"
     path="Pictures" />
+  <external-path
+    name="external-paths"
+    path="." />
 
   <external-cache-path
     name="Logs"
@@ -51,4 +60,7 @@
   <external-cache-path
     name="Pictures"
     path="Pictures" />
+  <external-cache-path
+    name="external-caches"
+    path="." />
 </paths>
