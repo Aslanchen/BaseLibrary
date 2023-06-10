@@ -2,27 +2,53 @@
 <paths>
   <files-path
     name="Logs"
-    path="Logs"/>
+    path="Logs" />
   <files-path
     name="Documents"
-    path="Documents"/>
+    path="Documents" />
   <files-path
     name="Download"
-    path="Download"/>
+    path="Download" />
   <files-path
     name="Pictures"
-    path="Pictures"/>
+    path="Pictures" />
 
   <external-files-path
     name="Logs"
-    path="Logs"/>
+    path="Logs" />
   <external-files-path
     name="Documents"
-    path="Documents"/>
+    path="Documents" />
   <external-files-path
     name="Download"
-    path="Download"/>
+    path="Download" />
   <external-files-path
     name="Pictures"
-    path="Pictures"/>
+    path="Pictures" />
+
+  <external-path
+    name="Logs"
+    path="Logs" />
+  <external-path
+    name="Documents"
+    path="Documents" />
+  <external-path
+    name="Download"
+    path="Download" />
+  <external-path
+    name="Pictures"
+    path="Pictures" />
+
+  <external-cache-path
+    name="Logs"
+    path="Logs" />
+  <external-cache-path
+    name="Documents"
+    path="Documents" />
+  <external-cache-path
+    name="Download"
+    path="Download" />
+  <external-cache-path
+    name="Pictures"
+    path="Pictures" />
 </paths>
