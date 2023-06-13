@@ -186,14 +186,12 @@ abstract class BaseFragment : Fragment(), IBaseView {
 
     @MainThread
     open fun navigationOnClickListener() {
-        (activity as BaseActivity?)!!.thisFinish()
+        thisFinish()
     }
 
     @MainThread
     override fun thisFinish() {
-        if (activity is BaseActivity) {
-            (activity as BaseActivity).thisFinish()
-        }
+        (activity as BaseActivity).thisFinish()
     }
 
     override fun onDestroy() {
