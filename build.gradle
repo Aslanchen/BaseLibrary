@@ -6,6 +6,6 @@ plugins {
 }
 
 ext {
-    VERSIONCODE = 71
-    VERSIONNAME = "1.7.6"
+    VERSIONCODE = 72
+    VERSIONNAME = "1.7.7"
 }
