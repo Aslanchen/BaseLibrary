@@ -17,4 +17,6 @@
 
   <string name="progress_waiting">Waiting</string>
   <string name="base_data_error_unknow">Unknow error</string>
+
+  <string name="download_is_in_download">正在下载中，请耐心等待...</string>
 </resources>

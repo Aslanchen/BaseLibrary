@@ -6,6 +6,9 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+  <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+  <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
   <application
     android:allowBackup="true"
@@ -14,6 +17,16 @@
     android:screenOrientation="portrait"
     android:supportsRtl="true"
     android:usesCleartextTraffic="true">
+    <receiver
+      android:name=".base.DownloadCompleteReceiver"
+      android:enabled="true"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+        <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
+      </intent-filter>
+    </receiver>
+
     <activity
       android:name=".base.ActivityFragmentContainer"
       android:screenOrientation="portrait" />
