@@ -5,7 +5,13 @@
 
 ## 使用
 ```
-maven { url 'https://jitpack.io' }
-
+maven {
+    url 'https://jitpack.io'
+    credentials {
+        username = "ZQPJ018"
+        password = "jp_sl98ia8fpg57drai7ed5k8jm40"
+    }
+}
+        
 implementation 'com.github.Aslanchen:BaseLibrary:x.x.x'
 ```
