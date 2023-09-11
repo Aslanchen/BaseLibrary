@@ -8,8 +8,7 @@
 maven {
     url 'https://jitpack.io'
     credentials {
-        username = ""
-        password = ""
+        username authToken
     }
 }
         
