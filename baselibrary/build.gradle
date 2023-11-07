@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
-    id 'maven-publish'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
 
 android {
@@ -108,15 +108,39 @@ dependencies {
     api 'com.jaeger.statusbarutil:library:1.5.1'
 }
 
+apply plugin: 'maven-publish'
 afterEvaluate {
     publishing {
         publications {
             maven(MavenPublication) {
                 from components.release
-
-                groupId = 'com.github.Aslanchen'
-                artifactId = 'BaseLibrary'
+                groupId = GROUPID
+                artifactId = ARTIFACTID
                 version = VERSIONNAME
+            }
+
+            aliyun(MavenPublication) {
+                from components.release
+                groupId = GROUPID
+                artifactId = ARTIFACTID
+                version = VERSIONNAME
+            }
+        }
+
+        repositories {
+            maven {
+                url = 'https://packages.aliyun.com/maven/repository/2431942-release-hscuua/'
+                credentials {
+                    username = aliyun_maven_username
+                    password = aliyun_maven_password
+                }
+            }
+            maven {
+                url = 'https://packages.aliyun.com/maven/repository/2431942-snapshot-vvk1B7/'
+                credentials {
+                    username = aliyun_maven_username
+                    password = aliyun_maven_password
+                }
             }
         }
     }

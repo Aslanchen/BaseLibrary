@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import com.aslan.baselibrary.R
 
-class CustomeInputView : CustomeLabelView {
+class CustomInputView : CustomLabelView {
     constructor(context: Context) : super(context) {
         init(null, 0, 0);
     }

@@ -17,7 +17,7 @@ import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.aslan.baselibrary.R
 
-open class CustomeLabelView : ConstraintLayout {
+open class CustomLabelView : ConstraintLayout {
     constructor(context: Context) : super(context) {
         init(null, 0, 0);
     }
