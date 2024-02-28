@@ -10,7 +10,7 @@ import io.reactivex.disposables.Disposable
  * @author Aslan
  * @date 2019/9/23
  */
-abstract class DataSingleObserver<T:Any>(private val context: Context) : SingleObserver<T> {
+abstract class DataSingleObserver<T : Any>(private val context: Context) : SingleObserver<T> {
     override fun onError(e: Throwable) {}
     override fun onSubscribe(d: Disposable) {}
     override fun onSuccess(t: T) {
