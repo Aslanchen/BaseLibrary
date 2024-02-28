@@ -192,6 +192,11 @@ open class CustomLabelView : ConstraintLayout {
             }
             getValueTextView().setPadding(startPadding, topPadding, endPadding, bottomPadding)
 
+            val layout_constraintHorizontal_bias =
+                a.getFloat(R.styleable.CustomeLabelView_value_layout_constraintHorizontal_bias, 1F)
+            val lpValue = getValueTextView().layoutParams as ConstraintLayout.LayoutParams
+            lpValue.horizontalBias = layout_constraintHorizontal_bias
+
             val labelTextStyle = a.getInt(R.styleable.CustomeLabelView_label_textStyle, 0)
             getLabelTextView().setTypeface(getLabelTextView().typeface, labelTextStyle)
             val valueTextStyle = a.getInt(R.styleable.CustomeLabelView_value_textStyle, 0)
@@ -219,8 +224,8 @@ open class CustomLabelView : ConstraintLayout {
             lpLabel.startToStart = LayoutParams.PARENT_ID
             lpLabel.topToTop = LayoutParams.PARENT_ID
             lpLabel.endToEnd = LayoutParams.UNSET
-            lpLabel.bottomToBottom = LayoutParams.PARENT_ID
-            lpLabel.height = LayoutParams.MATCH_CONSTRAINT
+//            lpLabel.bottomToBottom = LayoutParams.PARENT_ID
+            lpLabel.height = LayoutParams.WRAP_CONTENT
             lpLabel.width = label_width
 
             lpValue.marginStart = startMargin
@@ -228,9 +233,9 @@ open class CustomLabelView : ConstraintLayout {
             lpValue.startToEnd = getLabelTextView().id
             lpValue.topToTop = LayoutParams.PARENT_ID
             lpValue.endToEnd = LayoutParams.PARENT_ID
-            lpValue.bottomToBottom = LayoutParams.PARENT_ID
-            lpValue.height = LayoutParams.MATCH_PARENT
-            lpValue.width = LayoutParams.MATCH_CONSTRAINT
+//            lpValue.bottomToBottom = LayoutParams.PARENT_ID
+            lpValue.height = LayoutParams.WRAP_CONTENT
+            lpValue.width = LayoutParams.WRAP_CONTENT
         } else {
             //还原属性
             lpLabel.bottomToBottom = LayoutParams.UNSET

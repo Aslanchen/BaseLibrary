@@ -5,6 +5,7 @@
     <enum name="match_parent" value="-1" />
     <enum name="wrap_content" value="-2" />
   </attr>
+  <attr name="value_layout_constraintHorizontal_bias" format="float" />
   <attr name="labelTextSize" format="dimension" />
   <attr name="valueTextSize" format="dimension" />
   <attr name="labelTextColor" format="color" />
@@ -212,6 +213,7 @@
 
   <declare-styleable name="CustomeLabelView">
     <attr name="label_layout_width" />
+    <attr name="value_layout_constraintHorizontal_bias" />
     <attr name="labelTextSize" />
     <attr name="valueTextSize" />
     <attr name="labelTextColor" />
