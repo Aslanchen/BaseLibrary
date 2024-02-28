@@ -13,7 +13,7 @@ import io.reactivex.SingleObserver
  * @author Aslan
  * @date 2019/9/23
  */
-abstract class DataObserver<T>(private val context: Context) : Observer<T> {
+abstract class DataObserver<T:Any>(private val context: Context) : Observer<T> {
     override fun onError(e: Throwable) {}
     override fun onComplete() {}
     override fun onSubscribe(d: Disposable) {}

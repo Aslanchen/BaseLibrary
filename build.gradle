@@ -6,8 +6,8 @@ plugins {
 }
 
 ext {
-    VERSIONCODE = 72
-    VERSIONNAME = "1.7.7"
+    VERSIONCODE = 73
+    VERSIONNAME = "1.7.8"
 
     GROUPID = 'com.github.Aslanchen'
     ARTIFACTID = 'BaseLibrary'

@@ -10,7 +10,7 @@ import io.reactivex.disposables.Disposable
  * @author Aslan
  * @date 2019/9/23
  */
-abstract class DataMaybeObserver<T>(private val context: Context) : MaybeObserver<T> {
+abstract class DataMaybeObserver<T:Any>(private val context: Context) : MaybeObserver<T> {
     override fun onError(e: Throwable) {}
     override fun onSubscribe(d: Disposable) {}
     override fun onComplete() {
