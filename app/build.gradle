@@ -5,11 +5,11 @@ plugins {
 
 android {
     compileSdk 32
+    namespace "com.aslan.app"
 
     defaultConfig {
         applicationId "com.aslan.app"
         minSdk 19
-        targetSdk 32
         versionCode 1
         versionName "1.0"
 
