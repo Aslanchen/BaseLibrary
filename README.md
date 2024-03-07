@@ -3,6 +3,10 @@
 
 [![](https://jitpack.io/v/Aslanchen/BaseLibrary.svg)](https://jitpack.io/#Aslanchen/BaseLibrary)
 
+## 上传
+gradle build
+gradle publish
+
 ## 使用
 ```
 maven {
