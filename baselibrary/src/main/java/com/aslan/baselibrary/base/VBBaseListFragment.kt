@@ -47,7 +47,7 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
     override fun iniView(view: View) {
         initSwipeRefreshView(view)
         initRecyclerView(view)
-        initApater()
+        initAdapter()
         initEmptyView(view)
     }
 
@@ -75,15 +75,17 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
     }
 
     protected abstract fun instanceAdapter(): A
-    protected open fun initApater() {
+    protected open fun initAdapter() {
         adapter = instanceAdapter()
-        val progressItem = getProgressItem()
-        if (progressItem != null) {
-            adapter.setEndlessScrollListener(this, progressItem)
-                .setEndlessPageSize(getPageSize())
-                .isTopEndless = false
+        if (isPaging()) {
+            val progressItem = getProgressItem()
+            if (progressItem != null) {
+                adapter.setEndlessScrollListener(this, progressItem)
+                    .setEndlessPageSize(getPageSize())
+                    .isTopEndless = false
+            }
         }
-        adapter.mode = SelectableAdapter.Mode.IDLE
+        adapter.mode = getAdapterMode()
         recyclerView.adapter = adapter
     }
 
@@ -91,6 +93,13 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
      * 自定义空页面
      */
     protected open fun getEmptyLayoutResource() = -1
+
+    /**
+     * 是否分页
+     */
+    protected open fun isPaging() = true
+
+    protected open fun getAdapterMode() = SelectableAdapter.Mode.IDLE
 
     /**
      * 对空页面进行了封装，可以通过[EmptyView]进行自定义。
@@ -227,10 +236,12 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
 
         if (rushState == UpdateState.Refresh) {
             adapter.updateDataSet(items)
-            if (items.size < getPageSize()) {
-                adapter.onLoadMoreComplete(null)
-            } else {
-                adapter.setEndlessProgressItem(getProgressItem())
+            if (isPaging()) {
+                if (items.size < getPageSize()) {
+                    adapter.onLoadMoreComplete(null)
+                } else {
+                    adapter.setEndlessProgressItem(getProgressItem())
+                }
             }
         } else if (rushState == UpdateState.LoadMore) {
             adapter.onLoadMoreComplete(items, -1)
