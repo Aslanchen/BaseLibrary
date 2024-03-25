@@ -27,3 +27,9 @@
 # and replaces all potential values with null. Explicitly keeping the interfaces prevents this.
 -if interface * { @retrofit2.http.* <methods>; }
 -keep,allowobfuscation interface <1>
+
+# Keep generic signature of RxJava2 (R8 full mode strips signatures from non-kept items).
+-keep,allowobfuscation,allowshrinking class io.reactivex.Flowable
+-keep,allowobfuscation,allowshrinking class io.reactivex.Maybe
+-keep,allowobfuscation,allowshrinking class io.reactivex.Observable
+-keep,allowobfuscation,allowshrinking class io.reactivex.Single
