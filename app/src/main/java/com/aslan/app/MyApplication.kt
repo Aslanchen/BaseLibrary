@@ -1,6 +1,6 @@
 package com.aslan.app
 
-import androidx.multidex.MultiDexApplication
+import android.app.Application
 import com.aslan.baselibrary.utils.FileUtil
 import com.aslan.baselibrary.utils.LogUtils
 import com.elvishew.xlog.LogLevel
@@ -11,7 +11,7 @@ import com.elvishew.xlog.LogLevel
  * @author chenhengfei(Aslanchen)
  * @date 2021/8/3
  */
-class MyApplication : MultiDexApplication() {
+class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()

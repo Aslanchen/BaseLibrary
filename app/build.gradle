@@ -9,12 +9,11 @@ android {
 
     defaultConfig {
         applicationId "com.aslan.app"
-        minSdk 19
+        minSdk 21
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
     }
 
     buildTypes {
@@ -44,5 +43,4 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation project(":baselibrary")
-    implementation "androidx.multidex:multidex:2.0.1"
 }
