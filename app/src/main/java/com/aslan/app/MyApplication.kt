@@ -1,9 +1,6 @@
 package com.aslan.app
 
 import android.app.Application
-import com.aslan.baselibrary.utils.FileUtil
-import com.aslan.baselibrary.utils.LogUtils
-import com.elvishew.xlog.LogLevel
 
 /**
  *
@@ -19,10 +16,10 @@ class MyApplication : Application() {
     }
 
     private fun initLog() {
-        LogUtils.config(
-            "App",
-            if (BuildConfig.DEBUG) LogLevel.ALL else LogLevel.INFO,
-            FileUtil.getLog(this).path
-        )
+//        LogUtils.config(
+//            "App",
+//            if (BuildConfig.DEBUG) LogLevel.ALL else LogLevel.INFO,
+//            FileUtil.getLog(this).path
+//        )
     }
 }
