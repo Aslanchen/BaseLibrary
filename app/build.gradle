@@ -9,11 +9,12 @@ android {
 
     defaultConfig {
         applicationId "com.aslan.app"
-        minSdk 21
+        minSdk 19
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     buildTypes {
