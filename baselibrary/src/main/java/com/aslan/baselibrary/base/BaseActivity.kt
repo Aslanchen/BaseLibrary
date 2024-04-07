@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import androidx.annotation.UiThread
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -238,23 +239,24 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
      */
     fun requestPackageInstalls(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val packageInfo = AppUtil.getPackageInfo(requireContext())
-            if (packageInfo == null) {
-                return true
-            }
+            val packageInfo = AppUtil.getPackageInfo(requireContext()) ?: return true
 
             //Android8.0开始需要获取应用内安装权限
             val allowInstall = packageManager.canRequestPackageInstalls()
             //如果还没有授权安装应用，去设置内开启应用内安装权限
             if (!allowInstall) {
                 //注意这个是8.0新API
-                val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                    onManageUnknownAppSourcesCallback(result)
-                }
+                AlertDialog.Builder(requireContext())
+                    .setMessage(getString(R.string.request_permisstion_install_apk))
+                    .setPositiveButton(R.string.ok) { dialog, which ->
+                        val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                            onManageUnknownAppSourcesCallback(result)
+                        }
 
-                val packageUri = Uri.parse("package:" + packageInfo.packageName)
-                val intentX = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageUri)
-                launcher.launch(intentX)
+                        val packageUri = Uri.parse("package:" + packageInfo.packageName)
+                        val intentX = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageUri)
+                        launcher.launch(intentX)
+                    }.show()
                 return false
             }
         }

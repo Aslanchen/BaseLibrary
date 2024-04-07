@@ -19,4 +19,6 @@
   <string name="base_data_error_unknow">未知错误</string>
 
   <string name="download_is_in_download">正在下载中，请耐心等待...</string>
+  <string name="request_permisstion_install_apk">安装APK需要先授权!</string>
+  <string name="ok">好的</string>
 </resources>
