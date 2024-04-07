@@ -106,9 +106,6 @@ dependencies {
 
     //状态栏，丢弃，使用：WindowInsetsControllerCompat代替
     api 'com.jaeger.statusbarutil:library:1.5.1'
-
-    //版本更新
-    api 'com.github.xuexiangjys:XUpdate:2.1.5'
 }
 
 apply plugin: 'maven-publish'
