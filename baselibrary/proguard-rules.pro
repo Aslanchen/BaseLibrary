@@ -27,3 +27,5 @@
 
 -dontwarn com.aslan.baselibrary.http.IHttpBean
 -keep public class com.aslan.baselibrary.http.IHttpBean {*;}
+
+-keep class com.xuexiang.xupdate.entity.** { *; }

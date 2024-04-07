@@ -108,7 +108,7 @@ dependencies {
     api 'com.jaeger.statusbarutil:library:1.5.1'
 
     //版本更新
-    api 'com.qianwen:update-app-kotlin:1.2.3'
+    api 'com.github.xuexiangjys:XUpdate:2.1.5'
 }
 
 apply plugin: 'maven-publish'
