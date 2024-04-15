@@ -45,6 +45,10 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
 
     @CallSuper
     override fun iniView(view: View) {
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        recyclerView = view.findViewById(R.id.recycler_view)
+        mEmptyView = view.findViewById(R.id.list_empty_view)
+
         initSwipeRefreshView(view)
         initRecyclerView(view)
         initAdapter()
@@ -62,12 +66,10 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
     }
 
     protected open fun initSwipeRefreshView(view: View) {
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout?.isEnabled = true
     }
 
     protected open fun initRecyclerView(view: View) {
-        recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = SmoothScrollLinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
         recyclerView.itemAnimator = DefaultItemAnimator()
@@ -105,7 +107,6 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
      * 对空页面进行了封装，可以通过[EmptyView]进行自定义。
      */
     protected open fun initEmptyView(view: View) {
-        mEmptyView = view.findViewById(R.id.list_empty_view)
         if (mEmptyView != null) {
             if (getEmptyLayoutResource() != -1) {
                 mEmptyView!!.setLayoutResource(getEmptyLayoutResource())
@@ -216,10 +217,7 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
     /**
      * @param curPage 当前页数，从1开始
      */
-    protected abstract fun getDatas(
-        rushState: UpdateState,
-        @Size(min = 1) curPage: Int
-    ): Observable<List<M>>
+    protected abstract fun getDatas(rushState: UpdateState, @Size(min = 1) curPage: Int): Observable<List<M>>
 
     protected open fun addToListView(rushState: UpdateState, datas: List<M>) {
         if (rushState == UpdateState.Refresh && datas.isEmpty()) {
