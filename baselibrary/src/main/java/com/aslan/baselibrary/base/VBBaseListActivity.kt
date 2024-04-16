@@ -180,11 +180,15 @@ abstract class VBBaseListActivity<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
         }
     }
 
+    open fun isShowToast(): Boolean {
+        return true
+    }
+
     open override fun onRefresh() {
         getDatas(UpdateState.Refresh, 1)
             .observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
-            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
+            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false, isShowToast = isShowToast()))
             .doFinally {
                 swipeRefreshLayout?.isRefreshing = false
                 isRefreshing = false

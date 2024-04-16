@@ -200,11 +200,15 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
     override fun noMoreLoad(newItemsSize: Int) {
     }
 
+    open fun isShowToast(): Boolean {
+        return true
+    }
+
     open override fun onLoadMore(lastPosition: Int, currentPage: Int) {
         getDatas(UpdateState.LoadMore, currentPage + 1)
             .observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
-            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
+            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false, isShowToast = isShowToast()))
             .subscribe(object : DataObserver<List<M>>(requireContext()) {
                 override fun handleSuccess(t: List<M>) {
                     addToListView(UpdateState.LoadMore, t)
