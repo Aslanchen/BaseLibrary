@@ -207,7 +207,7 @@ abstract class VBBaseListActivity<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
         getDatas(UpdateState.LoadMore, currentPage + 1)
             .observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
-            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
+            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false, isShowToast = isShowToast()))
             .subscribe(object : DataObserver<List<M>>(this) {
                 override fun handleSuccess(t: List<M>) {
                     addToListView(UpdateState.LoadMore, t)

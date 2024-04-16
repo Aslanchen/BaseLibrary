@@ -185,7 +185,7 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
         getDatas(UpdateState.Refresh, 1)
             .observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
-            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false))
+            .compose(DataTransformer(mBaseView = this, isShowProgressbar = false, isShowToast = isShowToast()))
             .doFinally {
                 swipeRefreshLayout?.isRefreshing = false
                 isRefreshing = false
