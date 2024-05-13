@@ -234,6 +234,10 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
         return mLifecycleProvider
     }
 
+    private val launcherInstall = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        onManageUnknownAppSourcesCallback(result)
+    }
+
     /**
      * 请求安装未知应用权限
      */
@@ -249,13 +253,9 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
                 AlertDialog.Builder(requireContext())
                     .setMessage(getString(R.string.request_permisstion_install_apk))
                     .setPositiveButton(R.string.ok) { dialog, which ->
-                        val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                            onManageUnknownAppSourcesCallback(result)
-                        }
-
                         val packageUri = Uri.parse("package:" + packageInfo.packageName)
                         val intentX = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageUri)
-                        launcher.launch(intentX)
+                        launcherInstall.launch(intentX)
                     }.show()
                 return false
             }
