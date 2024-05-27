@@ -1,5 +1,6 @@
 package com.aslan.baselibrary.base
 
+import android.Manifest
 import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -31,6 +32,7 @@ import com.aslan.baselibrary.view.CustomToolbar
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import com.trello.rxlifecycle3.LifecycleProvider
 import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.models.PermissionRequest
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -44,6 +46,14 @@ import java.io.File
  * @date 2018/4/11
  */
 abstract class BaseActivity : AppCompatActivity(), IBaseView {
+    companion object {
+        const val REQUEST_CODE_PERMISSITION = 6150
+        val PERMISSIONS_EXTE_STORAGE = arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+        )
+    }
+
     protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
     protected var progressDialog: WaitingDialog? = null
     protected var isProgressDialogShowing = false
@@ -234,6 +244,42 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
         return mLifecycleProvider
     }
 
+    open fun checkSDPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                AlertDialog.Builder(this)
+                    .setTitle(R.string.permissions)
+                    .setMessage(getString(R.string.request_permission_down))
+                    .setPositiveButton(R.string.agree) { dialog, which ->
+                        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                        intent.data = Uri.parse("package:$packageName")
+                        startActivity(intent)
+                    }
+                    .setNegativeButton(R.string.refuse, null)
+                return
+            }
+        }
+
+        if (!EasyPermissions.hasPermissions(this, *PERMISSIONS_EXTE_STORAGE)) {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.permissions)
+                .setMessage(getString(R.string.request_permission_down))
+                .setPositiveButton(R.string.agree) { dialog, which ->
+                    EasyPermissions.requestPermissions(
+                        this@BaseActivity,
+                        PermissionRequest.Builder(this@BaseActivity)
+                            .code(REQUEST_CODE_PERMISSITION)
+                            .perms(PERMISSIONS_EXTE_STORAGE)
+                            .rationale(R.string.request_permission_down)
+                            .positiveButtonText(R.string.agree)
+                            .negativeButtonText(R.string.refuse)
+                            .build()
+                    )
+                }
+                .setNegativeButton(R.string.refuse, null)
+        }
+    }
+
     private val launcherInstall = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         onManageUnknownAppSourcesCallback(result)
     }
@@ -251,7 +297,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
             if (!allowInstall) {
                 //注意这个是8.0新API
                 AlertDialog.Builder(requireContext())
-                    .setMessage(getString(R.string.request_permisstion_install_apk))
+                    .setMessage(getString(R.string.request_permission_install_apk))
                     .setPositiveButton(R.string.ok) { dialog, which ->
                         val packageUri = Uri.parse("package:" + packageInfo.packageName)
                         val intentX = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageUri)

@@ -19,6 +19,14 @@
   <string name="base_data_error_unknow">Unknow error</string>
 
   <string name="download_is_in_download">Downloading...</string>
-  <string name="request_permisstion_install_apk">Installing the apk requires authorization first</string>
+  <string name="request_permission_install_apk">Installing the apk requires authorization first</string>
+  <string name="request_permission_down">In order to facilitate your viewing, the downloaded data needs to be saved in an external SD card. Please authorize the read and write permissions of the SD card first.</string>
+  <string name="permissions">Permissions</string>
+  <string name="confirm">Confirm</string>
   <string name="ok">OK</string>
+  <string name="agree">Agree</string>
+  <string name="refuse">Refuse</string>
+  <string name="add">Add</string>
+  <string name="delete">Delete</string>
+  <string name="cancel">Cancel</string>
 </resources>

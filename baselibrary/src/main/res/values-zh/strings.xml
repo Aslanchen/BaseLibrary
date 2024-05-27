@@ -19,6 +19,14 @@
   <string name="base_data_error_unknow">未知错误</string>
 
   <string name="download_is_in_download">正在下载中，请耐心等待...</string>
-  <string name="request_permisstion_install_apk">安装APK需要先授权!</string>
+  <string name="request_permission_install_apk">安装APK需要先授权!</string>
+  <string name="request_permission_down">为了方便您的查看，下载数据需要保存在外部SD卡，请您先授权SD卡的读写权限</string>
+  <string name="permissions">权限</string>
+  <string name="confirm">确认</string>
   <string name="ok">好的</string>
+  <string name="agree">同意</string>
+  <string name="refuse">拒绝</string>
+  <string name="add">新增</string>
+  <string name="delete">删除</string>
+  <string name="cancel">取消</string>
 </resources>
