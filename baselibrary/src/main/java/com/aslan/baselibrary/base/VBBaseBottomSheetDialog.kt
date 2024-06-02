@@ -38,14 +38,19 @@ abstract class VBBaseBottomSheetDialog<VB : ViewBinding>(private val inflate: In
         if (dialog != null) {
             val v = dialog!!.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             BottomSheetBehavior.from<View>(v).apply {
-                isHideable = this@VBBaseBottomSheetDialog.isHideable
-                isDraggable = this@VBBaseBottomSheetDialog.isDraggable
+                isHideable = this@VBBaseBottomSheetDialog.isHideable()
+                isDraggable = this@VBBaseBottomSheetDialog.isDraggable()
             }
         }
     }
 
-    open protected var isHideable = true
-    open protected var isDraggable = true
+    open protected fun isHideable(): Boolean {
+        return true
+    }
+
+    open protected fun isDraggable(): Boolean {
+        return true
+    }
 
     abstract fun iniView()
 
