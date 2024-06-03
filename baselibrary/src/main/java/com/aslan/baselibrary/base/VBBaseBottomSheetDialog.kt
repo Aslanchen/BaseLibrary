@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import com.aslan.baselibrary.utils.InflateFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 /**
  * 基础类
@@ -30,6 +31,25 @@ abstract class VBBaseBottomSheetDialog<VB : ViewBinding>(private val inflate: In
 
     override fun iniView(view: View) {
         iniView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (dialog != null) {
+            val v = dialog!!.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            BottomSheetBehavior.from<View>(v).apply {
+                isHideable = this@VBBaseBottomSheetDialog.isHideable()
+                isDraggable = this@VBBaseBottomSheetDialog.isDraggable()
+            }
+        }
+    }
+
+    open protected fun isHideable(): Boolean {
+        return true
+    }
+
+    open protected fun isDraggable(): Boolean {
+        return true
     }
 
     abstract fun iniView()
