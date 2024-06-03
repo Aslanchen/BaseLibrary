@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.MainThread
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AlertDialog
@@ -53,12 +54,12 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
             Manifest.permission.READ_EXTERNAL_STORAGE,
         )
 
-//        @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-//        val PERMISSIONS_EXTE_STORAGE_33 = arrayOf(
-//            Manifest.permission.READ_MEDIA_IMAGES,
-//            Manifest.permission.READ_MEDIA_AUDIO,
-//            Manifest.permission.READ_MEDIA_VIDEO
-//        )
+        @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+        val PERMISSIONS_EXTERNAL_STORAGE_33 = arrayOf(
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.READ_MEDIA_VIDEO
+        )
     }
 
     protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
@@ -256,12 +257,18 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
     }
 
     open protected fun onExternalStorageManager(result: ActivityResult) {
-        if (!EasyPermissions.hasPermissions(this, *PERMISSIONS_EXTERNAL_STORAGE)) {
+        val s = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            PERMISSIONS_EXTERNAL_STORAGE_33
+        } else {
+            PERMISSIONS_EXTERNAL_STORAGE
+        }
+
+        if (!EasyPermissions.hasPermissions(this, *s)) {
             EasyPermissions.requestPermissions(
                 this@BaseActivity,
                 PermissionRequest.Builder(this@BaseActivity)
                     .code(REQUEST_CODE_SD_PERMISSION)
-                    .perms(PERMISSIONS_EXTERNAL_STORAGE)
+                    .perms(s)
                     .rationale(R.string.request_permission_down)
                     .positiveButtonText(R.string.agree)
                     .negativeButtonText(R.string.refuse)
@@ -295,13 +302,19 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
             }
         }
 
-        if (!EasyPermissions.hasPermissions(this, *PERMISSIONS_EXTERNAL_STORAGE)) {
+        val s = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            PERMISSIONS_EXTERNAL_STORAGE_33
+        } else {
+            PERMISSIONS_EXTERNAL_STORAGE
+        }
+
+        if (!EasyPermissions.hasPermissions(this, *s)) {
             showSDPermissionDialog({
                 EasyPermissions.requestPermissions(
                     this@BaseActivity,
                     PermissionRequest.Builder(this@BaseActivity)
                         .code(REQUEST_CODE_SD_PERMISSION)
-                        .perms(PERMISSIONS_EXTERNAL_STORAGE)
+                        .perms(s)
                         .rationale(R.string.request_permission_down)
                         .positiveButtonText(R.string.agree)
                         .negativeButtonText(R.string.refuse)
