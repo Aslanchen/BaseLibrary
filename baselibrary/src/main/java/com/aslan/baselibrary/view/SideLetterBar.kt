@@ -138,6 +138,6 @@ class SideLetterBar : View {
      *
      */
     interface OnTouchLetterListener {
-        fun onTouchLetter(letter: String?)
+        fun onTouchLetter(letter: String)
     }
 }
