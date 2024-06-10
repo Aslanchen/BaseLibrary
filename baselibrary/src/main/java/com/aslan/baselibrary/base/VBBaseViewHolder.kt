@@ -12,8 +12,9 @@ import eu.davidea.viewholders.FlexibleViewHolder
 open class VBBaseViewHolder<VB : ViewBinding>(
     view: View,
     adapter: FlexibleAdapter<*>,
-    inflate: InflateView<VB>
-) : FlexibleViewHolder(view, adapter) {
+    inflate: InflateView<VB>,
+    stickyHeader: Boolean = false,
+) : FlexibleViewHolder(view, adapter, stickyHeader) {
     private var _binding: VB? = null
     val mViewBinding get() = _binding!!
 
