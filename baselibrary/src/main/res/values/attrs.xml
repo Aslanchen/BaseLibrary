@@ -6,6 +6,8 @@
     <enum name="wrap_content" value="-2" />
   </attr>
   <attr name="value_layout_constraintHorizontal_bias" format="float" />
+  <attr name="labelFontFamily" format="reference" />
+  <attr name="valueFontFamily" format="reference" />
   <attr name="labelTextSize" format="dimension" />
   <attr name="valueTextSize" format="dimension" />
   <attr name="labelTextColor" format="color" />
@@ -239,6 +241,8 @@
     <attr name="value_textStyle" />
     <attr name="singleLine" />
     <attr name="lines" />
+    <attr name="labelFontFamily" />
+    <attr name="valueFontFamily" />
   </declare-styleable>
 
   <declare-styleable name="CustomeInputView" />

@@ -53,8 +53,7 @@ public class CustomToolbar extends Toolbar {
     super(context, attrs, defStyleAttr);
 
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomToolbar);
-    mTitleTextAppearance = typedArray.getResourceId(
-        R.styleable.CustomToolbar_ct_titleTextAppearance, 0);
+    mTitleTextAppearance = typedArray.getResourceId(R.styleable.CustomToolbar_ct_titleTextAppearance, 0);
     mGravity = typedArray.getInt(R.styleable.CustomToolbar_ct_gravity, Gravity.CENTER);
 
     CharSequence title = typedArray.getText(R.styleable.CustomToolbar_ct_title);
@@ -67,6 +66,7 @@ public class CustomToolbar extends Toolbar {
     if (typedArray.hasValue(R.styleable.CustomToolbar_ct_titleTextColor)) {
       setTitleTextColor(typedArray.getColorStateList(R.styleable.CustomToolbar_ct_titleTextColor));
     }
+
     typedArray.recycle();
   }
 

@@ -15,7 +15,9 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import com.aslan.baselibrary.R
+
 
 open class CustomLabelView : ConstraintLayout {
     constructor(context: Context) : super(context) {
@@ -197,10 +199,26 @@ open class CustomLabelView : ConstraintLayout {
             val lpValue = getValueTextView().layoutParams as ConstraintLayout.LayoutParams
             lpValue.horizontalBias = layout_constraintHorizontal_bias
 
-            val labelTextStyle = a.getInt(R.styleable.CustomeLabelView_label_textStyle, 0)
-            getLabelTextView().setTypeface(getLabelTextView().typeface, labelTextStyle)
-            val valueTextStyle = a.getInt(R.styleable.CustomeLabelView_value_textStyle, 0)
-            getValueTextView().setTypeface(getValueTextView().typeface, valueTextStyle)
+            if (a.hasValue(R.styleable.CustomeLabelView_labelFontFamily)) {
+                val fontResId = a.getResourceId(R.styleable.CustomeLabelView_labelFontFamily, 0)
+                getLabelTextView().setTypeface(ResourcesCompat.getFont(context, fontResId))
+            }
+
+            if (a.hasValue(R.styleable.CustomeLabelView_valueFontFamily)) {
+                val fontResId = a.getResourceId(R.styleable.CustomeLabelView_valueFontFamily, 0)
+                getLabelTextView().setTypeface(ResourcesCompat.getFont(context, fontResId))
+            }
+
+            if (a.hasValue(R.styleable.CustomeLabelView_label_textStyle)) {
+                val labelTextStyle = a.getInt(R.styleable.CustomeLabelView_label_textStyle, 0)
+                getLabelTextView().setTypeface(getLabelTextView().typeface, labelTextStyle)
+            }
+
+            if (a.hasValue(R.styleable.CustomeLabelView_value_textStyle)) {
+                val valueTextStyle = a.getInt(R.styleable.CustomeLabelView_value_textStyle, 0)
+                getValueTextView().setTypeface(getValueTextView().typeface, valueTextStyle)
+            }
+
             a.recycle()
         }
     }
