@@ -206,7 +206,7 @@ open class CustomLabelView : ConstraintLayout {
 
             if (a.hasValue(R.styleable.CustomeLabelView_valueFontFamily)) {
                 val fontResId = a.getResourceId(R.styleable.CustomeLabelView_valueFontFamily, 0)
-                getLabelTextView().setTypeface(ResourcesCompat.getFont(context, fontResId))
+                getValueTextView().setTypeface(ResourcesCompat.getFont(context, fontResId))
             }
 
             if (a.hasValue(R.styleable.CustomeLabelView_label_textStyle)) {
