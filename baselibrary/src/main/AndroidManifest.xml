@@ -28,7 +28,7 @@
     android:supportsRtl="true"
     android:usesCleartextTraffic="true">
     <receiver
-      android:name=".base.DownloadCompleteReceiver"
+      android:name=".widget.DownloadCompleteReceiver"
       android:enabled="true"
       android:exported="true">
       <intent-filter>

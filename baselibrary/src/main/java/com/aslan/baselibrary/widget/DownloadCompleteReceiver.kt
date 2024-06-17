@@ -1,4 +1,4 @@
-package com.aslan.baselibrary.base
+package com.aslan.baselibrary.widget
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
