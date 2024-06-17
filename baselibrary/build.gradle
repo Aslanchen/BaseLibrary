@@ -110,6 +110,9 @@ dependencies {
 
     //状态栏，丢弃，使用：WindowInsetsControllerCompat代替
     api 'com.jaeger.statusbarutil:library:1.5.1'
+
+    //flex布局
+    api 'com.google.android.flexbox:flexbox:3.0.0'
 }
 
 apply plugin: 'maven-publish'

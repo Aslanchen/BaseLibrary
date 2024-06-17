@@ -24,7 +24,7 @@ class MyApplication : Application() {
     private fun initLog() {
 //        LogUtils.config(
 //            "App",
-//            if (com.aslan.app.BuildConfig.DEBUG) LogLevel.ALL else LogLevel.INFO,
+//            if (BuildConfig.DEBUG) LogLevel.ALL else LogLevel.INFO,
 //            FileUtil.getLog(this).path
 //        )
     }
