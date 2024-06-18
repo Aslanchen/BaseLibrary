@@ -304,12 +304,16 @@ open class CustomLabelView : ConstraintLayout {
         getValueTextView().isEnabled = enabled
     }
 
-    fun getHint(): CharSequence {
-        return getValueTextView().hint
+    fun getLabelText(): CharSequence {
+        return getLabelTextView().text
     }
 
     open fun getValueText(): CharSequence {
         return getValueTextView().text
+    }
+
+    open fun getValueHint(): CharSequence {
+        return getValueTextView().hint
     }
 
     fun setLabelText(text: CharSequence? = "") {

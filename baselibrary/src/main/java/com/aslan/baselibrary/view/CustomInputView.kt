@@ -48,15 +48,15 @@ class CustomInputView : CustomLabelView {
         }
     }
 
-    override fun getValueText(): Editable {
-        return getEditText().text
-    }
-
     fun getEditText(): EditText {
         return getValueTextView() as EditText
     }
 
-    fun getValueHintText(): CharSequence {
+    override fun getValueText(): Editable {
+        return getEditText().text
+    }
+
+    override fun getValueHint(): CharSequence {
         return getEditText().hint
     }
 
