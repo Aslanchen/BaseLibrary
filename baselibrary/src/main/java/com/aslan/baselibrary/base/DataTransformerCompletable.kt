@@ -49,6 +49,11 @@ open class DataTransformerCompletable(
     }
 
     private fun doOnError(error: Throwable) {
+        if (isShowProgressbar) {
+            mBaseView.closeProgressBar()
+        }
+        clickView?.isEnabled = true
+
         if (error is CancellationException) {
             //Rxjava绑定生命周期后，会触发此异常
             return
