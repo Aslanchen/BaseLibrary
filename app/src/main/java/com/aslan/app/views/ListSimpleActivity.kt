@@ -34,7 +34,8 @@ class ListSimpleActivity :
     override fun onItemClick(item: IFlexible<*>, position: Int): Boolean {
         if (item is ItemMenu) {
             if (position == 0) {
-
+                startActivity(InputActivity.newIntent(requireContext()))
+                return true
             }
         }
         return super.onItemClick(item, position)

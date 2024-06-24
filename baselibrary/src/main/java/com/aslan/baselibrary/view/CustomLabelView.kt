@@ -219,6 +219,14 @@ open class CustomLabelView : ConstraintLayout {
                 getValueTextView().setTypeface(getValueTextView().typeface, valueTextStyle)
             }
 
+            if (a.hasValue(R.styleable.CustomeLabelView_valueDigits)) {
+                //TODO
+//                val valueDigits = a.getText(R.styleable.CustomeLabelView_valueDigits)
+//                getValueTextView().keyListener = (DigitsKeyListener.getInstance(valueDigits.toString()))
+//                getValueTextView().inputType =
+//                    (if (inputType != EditorInfo.TYPE_NULL) (inputType xor EditorInfo.TYPE_CLASS_TEXT) else EditorInfo.TYPE_CLASS_TEXT)
+            }
+
             a.recycle()
         }
     }

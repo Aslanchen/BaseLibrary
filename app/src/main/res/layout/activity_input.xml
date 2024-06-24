@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+
+  <com.aslan.baselibrary.view.CustomToolbar
+    android:id="@+id/titleBar"
+    style="@style/style_titlebar"
+    app:ct_title="输入列表"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.aslan.baselibrary.view.CustomInputView
+      android:id="@+id/vInput"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:hint="请输入内容"
+      app:labelText="Label"
+      app:labelTextSize="20sp"
+      app:label_layout_width="wrap_content"
+      app:orientation="horizontal"
+      app:valueDigits="ABCD"
+      app:valueTextSize="20sp" />
+  </LinearLayout>
+</LinearLayout>
