@@ -14,6 +14,7 @@ import java.net.Inet6Address
 import java.net.InetAddress
 import java.net.NetworkInterface
 
+
 /**
  * 网络相关
  *
@@ -271,5 +272,28 @@ object NetworkUtils {
             }
         }
         return list
+    }
+
+    /**
+     * 判断是否在同一个子网
+     */
+    fun isIpAddressInSubnet(ipAddress: InetAddress, subnetAddress: InetAddress, subnetMask: String): Boolean {
+        val mask = InetAddress.getByName(subnetMask)
+
+        val inetAddressBytes = ipAddress.address
+        val subnetBytes = subnetAddress.address
+        val maskBytes = mask.address
+
+        for (i in inetAddressBytes.indices) {
+            val addressByte = inetAddressBytes[i].toInt() and 0xFF
+            val subnetByte = subnetBytes[i].toInt() and 0xFF
+            val maskByte = maskBytes[i].toInt() and 0xFF
+
+            if ((addressByte and maskByte) != (subnetByte and maskByte)) {
+                return false
+            }
+        }
+
+        return true
     }
 }
