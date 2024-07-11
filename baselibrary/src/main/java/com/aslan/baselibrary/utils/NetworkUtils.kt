@@ -294,4 +294,25 @@ object NetworkUtils {
 
         return true
     }
+
+    /**
+     * 判断是否在同一个子网
+     */
+    fun isIpAddressInSubnet(ipAddress: String, subnetAddress: String, mask: String): Boolean {
+        val inetAddressBytes = InetAddress.getByName(ipAddress).address
+        val subnetBytes = InetAddress.getByName(subnetAddress).address
+        val maskBytes = InetAddress.getByName(mask).address
+
+        for (i in inetAddressBytes.indices) {
+            val addressByte = inetAddressBytes[i].toInt() and 0xFF
+            val subnetByte = subnetBytes[i].toInt() and 0xFF
+            val maskByte = maskBytes[i].toInt() and 0xFF
+
+            if ((addressByte and maskByte) != (subnetByte and maskByte)) {
+                return false
+            }
+        }
+
+        return true
+    }
 }
