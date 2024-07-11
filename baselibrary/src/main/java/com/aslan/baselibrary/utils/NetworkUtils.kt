@@ -277,9 +277,7 @@ object NetworkUtils {
     /**
      * 判断是否在同一个子网
      */
-    fun isIpAddressInSubnet(ipAddress: InetAddress, subnetAddress: InetAddress, subnetMask: String): Boolean {
-        val mask = InetAddress.getByName(subnetMask)
-
+    fun isIpAddressInSubnet(ipAddress: InetAddress, subnetAddress: InetAddress, mask: InetAddress): Boolean {
         val inetAddressBytes = ipAddress.address
         val subnetBytes = subnetAddress.address
         val maskBytes = mask.address
