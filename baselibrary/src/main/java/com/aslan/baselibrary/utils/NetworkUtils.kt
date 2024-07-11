@@ -208,8 +208,8 @@ object NetworkUtils {
     /**
      * 获取本地IPv4地址
      */
-    fun getInet4Address(context: Context): MutableList<InetAddress> {
-        val list = mutableListOf<InetAddress>()
+    fun getInet4Address(context: Context): MutableList<Inet4Address> {
+        val list = mutableListOf<Inet4Address>()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
@@ -218,7 +218,7 @@ object NetworkUtils {
             if (linkProperties != null) {
                 linkProperties.linkAddresses.forEach {
                     if (it.address is Inet4Address && !it.address.isLoopbackAddress && it.address.isSiteLocalAddress) {
-                        list.add(it.address)
+                        list.add(it.address as Inet4Address)
                     }
                 }
                 return list
@@ -242,8 +242,8 @@ object NetworkUtils {
     /**
      * 获取本地IPv6地址
      */
-    fun getInet6Address(context: Context): MutableList<InetAddress> {
-        val list = mutableListOf<InetAddress>()
+    fun getInet6Address(context: Context): MutableList<Inet6Address> {
+        val list = mutableListOf<Inet6Address>()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
@@ -252,7 +252,7 @@ object NetworkUtils {
             if (linkProperties != null) {
                 linkProperties.linkAddresses.forEach {
                     if (it.address is Inet6Address && !it.address.isLoopbackAddress && it.address.isSiteLocalAddress) {
-                        list.add(it.address)
+                        list.add(it.address as Inet6Address)
                     }
                 }
                 return list
