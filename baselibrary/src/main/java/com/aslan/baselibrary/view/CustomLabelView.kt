@@ -262,6 +262,7 @@ open class CustomLabelView : ConstraintLayout {
 //            lpValue.bottomToBottom = LayoutParams.PARENT_ID
             lpValue.height = LayoutParams.WRAP_CONTENT
             lpValue.width = LayoutParams.WRAP_CONTENT
+            lpValue.constrainedWidth = true
         } else {
             //还原属性
             lpLabel.bottomToBottom = LayoutParams.UNSET
