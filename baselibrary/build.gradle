@@ -113,6 +113,9 @@ dependencies {
 
     //flex布局
     api 'com.google.android.flexbox:flexbox:3.0.0'
+
+    api "androidx.work:work-runtime-ktx:2.8.1"
+    api "androidx.work:work-rxjava2:2.8.1"
 }
 
 apply plugin: 'maven-publish'
