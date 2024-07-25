@@ -195,7 +195,10 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
                     if (isPaging()) {
                         if (getProgressItem() is ProgressItem) {
                             (getProgressItem() as ProgressItem).status = ProgressItem.StatusEnum.MORE_TO_LOAD
-                            adapter.notifyItemChanged(adapter.getGlobalPositionOf(getProgressItem()))
+                            val index = adapter.getGlobalPositionOf(getProgressItem())
+                            if (index >= 0) {
+                                adapter.notifyItemChanged(index)
+                            }
                         }
                         adapter.setEndlessProgressItem(getProgressItem())
                     }
@@ -227,7 +230,10 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
                     if (isPaging()) {
                         if (getProgressItem() is ProgressItem) {
                             (getProgressItem() as ProgressItem).status = ProgressItem.StatusEnum.ON_ERROR
-                            adapter.notifyItemChanged(adapter.getGlobalPositionOf(getProgressItem()))
+                            val index = adapter.getGlobalPositionOf(getProgressItem())
+                            if (index >= 0) {
+                                adapter.notifyItemChanged(index)
+                            }
                         }
                     }
                     adapter.onLoadMoreComplete(null, -1)
