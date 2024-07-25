@@ -197,6 +197,7 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
                             (getProgressItem() as ProgressItem).status = ProgressItem.StatusEnum.MORE_TO_LOAD
                             adapter.notifyItemChanged(adapter.getGlobalPositionOf(getProgressItem()))
                         }
+                        adapter.setEndlessProgressItem(getProgressItem())
                     }
 
                     addToListView(UpdateState.Refresh, t)
@@ -259,8 +260,6 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
             if (isPaging()) {
                 if (items.size < getPageSize()) {
                     adapter.onLoadMoreComplete(null)
-                } else {
-                    adapter.setEndlessProgressItem(getProgressItem())
                 }
             }
         } else if (rushState == UpdateState.LoadMore) {
