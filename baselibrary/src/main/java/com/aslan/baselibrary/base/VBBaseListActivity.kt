@@ -195,8 +195,10 @@ abstract class VBBaseListActivity<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
             }
             .subscribe(object : DataObserver<List<M>>(this) {
                 override fun handleSuccess(t: List<M>) {
-                    if (getProgressItem() is ProgressItem) {
-                        (getProgressItem() as ProgressItem).status = ProgressItem.StatusEnum.MORE_TO_LOAD
+                    if (isPaging()) {
+                        if (getProgressItem() is ProgressItem) {
+                            (getProgressItem() as ProgressItem).status = ProgressItem.StatusEnum.MORE_TO_LOAD
+                        }
                     }
 
                     addToListView(UpdateState.Refresh, t)
@@ -219,8 +221,10 @@ abstract class VBBaseListActivity<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
 
                 override fun onError(e: Throwable) {
                     super.onError(e)
-                    if (getProgressItem() is ProgressItem) {
-                        (getProgressItem() as ProgressItem).status = ProgressItem.StatusEnum.ON_ERROR
+                    if (isPaging()) {
+                        if (getProgressItem() is ProgressItem) {
+                            (getProgressItem() as ProgressItem).status = ProgressItem.StatusEnum.ON_ERROR
+                        }
                     }
                 }
             })
