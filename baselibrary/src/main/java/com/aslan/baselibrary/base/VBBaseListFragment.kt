@@ -217,6 +217,13 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
                 override fun handleSuccess(t: List<M>) {
                     addToListView(UpdateState.LoadMore, t)
                 }
+
+                override fun onError(e: Throwable) {
+                    super.onError(e)
+                    if (getProgressItem() is ProgressItem) {
+                        (getProgressItem() as ProgressItem).status = ProgressItem.StatusEnum.ON_ERROR
+                    }
+                }
             })
     }
 
