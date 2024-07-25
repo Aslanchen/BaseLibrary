@@ -192,6 +192,10 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
             }
             .subscribe(object : DataObserver<List<M>>(requireContext()) {
                 override fun handleSuccess(t: List<M>) {
+                    if (getProgressItem() is ProgressItem) {
+                        (getProgressItem() as ProgressItem).status = ProgressItem.StatusEnum.MORE_TO_LOAD
+                    }
+
                     addToListView(UpdateState.Refresh, t)
                 }
             })
