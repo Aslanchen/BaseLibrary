@@ -6,6 +6,7 @@
   <string name="error_net_connect_timeout">Connect timeout</string>
   <string name="error_net_socket_timeout">Waiting timeout</string>
   <string name="error_net_token_error">Token error</string>
+  <string name="error_data_empty">Data is empty</string>
   <string name="error_data_parse">Abnormal data format, please try again later</string>
   <string name="error_local_database_default">Local database error, Please try again</string>
 

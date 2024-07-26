@@ -12,8 +12,7 @@ import io.reactivex.functions.Function
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-abstract class BaseResponseFunction<T, R>(private val context: Context) :
-    Function<IHttpBean<T>, R> {
+abstract class BaseResponseFunction<T, R>(private val context: Context) : Function<IHttpBean<T>, R> {
 
     @Throws(Exception::class)
     override fun apply(respone: IHttpBean<T>): R {

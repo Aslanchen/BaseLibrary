@@ -15,8 +15,7 @@ import java.net.URLDecoder
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
  */
-class DownloadFileFunction(val root: File, val filename: String? = null) :
-    Function<retrofit2.Response<ResponseBody>, Single<File>> {
+class DownloadFileFunction(val root: File, val filename: String? = null) : Function<retrofit2.Response<ResponseBody>, Single<File>> {
     @Throws(Exception::class)
     override fun apply(response: retrofit2.Response<ResponseBody>): Single<File> {
         val headers = response.headers()

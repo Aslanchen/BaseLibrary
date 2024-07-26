@@ -6,6 +6,7 @@
   <string name="error_net_connect_timeout">连接超时，请重试</string>
   <string name="error_net_socket_timeout">操作超时，请重试</string>
   <string name="error_net_token_error">登录异常</string>
+  <string name="error_data_empty">数据为空</string>
   <string name="error_data_parse">数据格式异常，请稍后再试</string>
   <string name="error_local_database_default">本地数据库操作异常，请重试</string>
 
