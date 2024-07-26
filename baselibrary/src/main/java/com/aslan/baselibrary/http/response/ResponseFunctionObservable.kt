@@ -1,10 +1,11 @@
 package com.aslan.baselibrary.http.response
 
 import android.content.Context
+import com.aslan.baselibrary.R
 import io.reactivex.Observable
 
 /**
- * 处理业务异常
+ * 处理业务异常，值不能为空
  *
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12
@@ -15,6 +16,10 @@ class ResponseFunctionObservable<T>(val context: Context) : BaseResponseFunction
     }
 
     override fun handleData(item: T?): Observable<T> {
-        return Observable.just(item)
+        return if (item == null) {
+            Observable.error(NullPointerException(context.getString(R.string.error_data_empty)))
+        } else {
+            Observable.just(item)
+        }
     }
 }
