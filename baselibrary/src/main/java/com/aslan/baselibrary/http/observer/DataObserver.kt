@@ -10,7 +10,6 @@ import io.reactivex.disposables.Disposable
  * @author Aslan
  * @date 2019/9/23
  */
-@Deprecated("use DataObserver2")
 abstract class DataObserver<T : Any>(private val context: Context) : Observer<T> {
     override fun onError(e: Throwable) {}
     override fun onComplete() {}

@@ -7,7 +7,7 @@ import com.aslan.app.views.items.ItemMenu
 import com.aslan.baselibrary.base.UpdateState
 import com.aslan.baselibrary.base.VBBaseListSimpleActivity
 import eu.davidea.flexibleadapter.items.IFlexible
-import io.reactivex.Observable
+import io.reactivex.Maybe
 import kotlinx.coroutines.delay
 
 class ListSimpleActivity :
@@ -17,7 +17,7 @@ class ListSimpleActivity :
 
     override fun getItem(model: Menu) = ItemMenu(model)
 
-    override fun getDatas(rushState: UpdateState, curPage: Int): Observable<List<Menu>> {
+    override fun getDatas(rushState: UpdateState, curPage: Int): Maybe<List<Menu>> {
         val list = mutableListOf<Menu>()
         if (rushState == UpdateState.Refresh) {
             for (i in 0 until 22) {
@@ -28,7 +28,7 @@ class ListSimpleActivity :
                 list.add(Menu(i.toString()))
             }
         }
-        return Observable.fromArray(list)
+        return Maybe.just(list)
     }
 
     override fun onItemClick(item: IFlexible<*>, position: Int): Boolean {

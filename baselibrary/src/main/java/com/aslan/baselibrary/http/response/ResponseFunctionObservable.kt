@@ -5,7 +5,7 @@ import com.aslan.baselibrary.R
 import io.reactivex.Observable
 
 /**
- * 处理业务异常，值不能为空
+ * 处理业务异常
  *
  * @author Aslan chenhengfei@yy.com
  * @date 2020/6/12

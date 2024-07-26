@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewbinding.ViewBinding
 import com.aslan.baselibrary.R
-import com.aslan.baselibrary.http.observer.DataObserver2
+import com.aslan.baselibrary.http.observer.DataMaybeObserver
 import com.aslan.baselibrary.items.ProgressItem
 import com.aslan.baselibrary.listener.SafeClickListener
 import com.aslan.baselibrary.utils.InflateFragment
@@ -21,7 +21,7 @@ import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.helpers.EmptyViewHelper
 import eu.davidea.flexibleadapter.items.IFlexible
-import io.reactivex.Observable
+import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 /**
@@ -190,7 +190,7 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
                 swipeRefreshLayout?.isRefreshing = false
                 isRefreshing = false
             }
-            .subscribe(object : DataObserver2<List<M>>(requireContext()) {
+            .subscribe(object : DataMaybeObserver<List<M>>(requireContext()) {
                 override fun handleSuccess(t: List<M>?) {
                     if (isPaging()) {
                         if (getProgressItem() is ProgressItem) {
@@ -220,7 +220,7 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
             .observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false, isShowToast = isShowToast()))
-            .subscribe(object : DataObserver2<List<M>>(requireContext()) {
+            .subscribe(object : DataMaybeObserver<List<M>>(requireContext()) {
                 override fun handleSuccess(t: List<M>?) {
                     addToListView(UpdateState.LoadMore, t)
                 }
@@ -246,7 +246,7 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
     /**
      * @param curPage 当前页数，从1开始
      */
-    protected abstract fun getDatas(rushState: UpdateState, @Size(min = 1) curPage: Int): Observable<List<M>>
+    protected abstract fun getDatas(rushState: UpdateState, @Size(min = 1) curPage: Int): Maybe<List<M>>
 
     protected open fun addToListView(rushState: UpdateState, datas: List<M>?) {
         if (rushState == UpdateState.Refresh && datas.isNullOrEmpty()) {
