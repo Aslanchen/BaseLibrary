@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewbinding.ViewBinding
 import com.aslan.baselibrary.R
-import com.aslan.baselibrary.http.observer.DataObserver
+import com.aslan.baselibrary.http.observer.DataObserver2
 import com.aslan.baselibrary.items.ProgressItem
 import com.aslan.baselibrary.listener.SafeClickListener
 import com.aslan.baselibrary.utils.InflateActivity
@@ -193,8 +193,8 @@ abstract class VBBaseListActivity<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
                 swipeRefreshLayout?.isRefreshing = false
                 isRefreshing = false
             }
-            .subscribe(object : DataObserver<List<M>>(this) {
-                override fun handleSuccess(t: List<M>) {
+            .subscribe(object : DataObserver2<List<M>>(this) {
+                override fun handleSuccess(t: List<M>?) {
                     if (isPaging()) {
                         if (getProgressItem() is ProgressItem) {
                             (getProgressItem() as ProgressItem).status = ProgressItem.StatusEnum.MORE_TO_LOAD
@@ -219,8 +219,8 @@ abstract class VBBaseListActivity<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
             .observeOn(AndroidSchedulers.mainThread())
             .bindToLifecycle(this)
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false, isShowToast = isShowToast()))
-            .subscribe(object : DataObserver<List<M>>(this) {
-                override fun handleSuccess(t: List<M>) {
+            .subscribe(object : DataObserver2<List<M>>(this) {
+                override fun handleSuccess(t: List<M>?) {
                     addToListView(UpdateState.LoadMore, t)
                 }
 
@@ -247,15 +247,15 @@ abstract class VBBaseListActivity<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
      */
     protected abstract fun getDatas(rushState: UpdateState, @Size(min = 1) curPage: Int): Observable<List<M>>
 
-    protected open fun addToListView(rushState: UpdateState, datas: List<M>) {
-        if (rushState == UpdateState.Refresh && datas.isEmpty()) {
+    protected open fun addToListView(rushState: UpdateState, datas: List<M>?) {
+        if (rushState == UpdateState.Refresh && datas.isNullOrEmpty()) {
             adapter.updateDataSet(null)
             adapter.onLoadMoreComplete(null)
             return
         }
 
         val items = ArrayList<IFlexible<*>>()
-        for (model in datas) {
+        for (model in datas!!) {
             val item = getItem(model)
             items.add(item)
         }
