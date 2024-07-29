@@ -19,8 +19,14 @@
   <attr name="lines" format="integer" />
   <attr name="hint" format="string" />
   <attr name="hintTextColor" format="color" />
-  <attr name="marginStart" format="dimension" />
-  <attr name="marginTop" format="dimension" />
+  <attr name="startMarginValue" format="dimension" />
+  <attr name="topMarginValue" format="dimension" />
+  <attr name="endMarginValue" format="dimension" />
+  <attr name="bottomMarginValue" format="dimension" />
+  <attr name="startMarginLabel" format="dimension" />
+  <attr name="topMarginLabel" format="dimension" />
+  <attr name="endMarginLabel" format="dimension" />
+  <attr name="bottomMarginLabel" format="dimension" />
   <attr name="drawableStart" format="reference|color" />
   <attr name="drawableEnd" format="reference|color" />
   <attr name="drawablePadding" format="dimension" />
@@ -223,8 +229,6 @@
     <attr name="valueTextColor" />
     <attr name="labelText" />
     <attr name="valueText" />
-    <attr name="marginStart" />
-    <attr name="marginTop" />
     <attr name="orientation" />
     <attr name="labelGravity" />
     <attr name="valueGravity" />
@@ -245,6 +249,14 @@
     <attr name="labelFontFamily" />
     <attr name="valueFontFamily" />
     <attr name="valueDigits" />
+    <attr name="startMarginValue" />
+    <attr name="topMarginValue" />
+    <attr name="endMarginValue" />
+    <attr name="bottomMarginValue" />
+    <attr name="startMarginLabel" />
+    <attr name="topMarginLabel" />
+    <attr name="endMarginLabel" />
+    <attr name="bottomMarginLabel" />
   </declare-styleable>
 
   <declare-styleable name="CustomeInputView">
@@ -256,8 +268,6 @@
     <attr name="valueTextColor" />
     <attr name="labelText" />
     <attr name="valueText" />
-    <attr name="marginStart" />
-    <attr name="marginTop" />
     <attr name="orientation" />
     <attr name="labelGravity" />
     <attr name="valueGravity" />
@@ -278,6 +288,14 @@
     <attr name="labelFontFamily" />
     <attr name="valueFontFamily" />
     <attr name="valueDigits" />
+    <attr name="startMarginValue" />
+    <attr name="topMarginValue" />
+    <attr name="endMarginValue" />
+    <attr name="bottomMarginValue" />
+    <attr name="startMarginLabel" />
+    <attr name="topMarginLabel" />
+    <attr name="endMarginLabel" />
+    <attr name="bottomMarginLabel" />
   </declare-styleable>
 
   <declare-styleable name="CustomToolbar">
