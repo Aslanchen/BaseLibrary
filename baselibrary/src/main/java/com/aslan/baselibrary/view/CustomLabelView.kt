@@ -46,9 +46,17 @@ open class CustomLabelView : ConstraintLayout {
         init(attrs, defStyleAttr, defStyleRes)
     }
 
-    private var startMargin = 0
-    private var topMargin = 0
     private var label_width = 0
+
+    private var startMarginLabel = 0
+    private var topMarginLabel = 0
+    private var endMarginLabel = 0
+    private var bottomMarginLabel = 0
+
+    private var startMarginValue = 0
+    private var topMarginValue = 0
+    private var endMarginValue = 0
+    private var bottomMarginValue = 0
 
     private var paddingVertical = -1
     private var paddingHorizontal = -1
@@ -82,13 +90,21 @@ open class CustomLabelView : ConstraintLayout {
             paddingHorizontal =
                 a.getDimensionPixelSize(R.styleable.CustomeLabelView_value_paddingHorizontal, -1)
 
-            startMargin = a.getDimensionPixelSize(R.styleable.CustomeLabelView_marginStart, 0)
-            topMargin = a.getDimensionPixelSize(R.styleable.CustomeLabelView_marginTop, 0)
             label_width =
                 a.getLayoutDimension(
                     R.styleable.CustomeLabelView_label_layout_width,
                     "label_layout_width"
                 )
+
+            startMarginLabel = a.getDimensionPixelSize(R.styleable.CustomeLabelView_startMarginLabel, 0)
+            topMarginLabel = a.getDimensionPixelSize(R.styleable.CustomeLabelView_topMarginLabel, 0)
+            endMarginLabel = a.getDimensionPixelSize(R.styleable.CustomeLabelView_endMarginLabel, 0)
+            bottomMarginLabel = a.getDimensionPixelSize(R.styleable.CustomeLabelView_bottomMarginLabel, 0)
+
+            startMarginValue = a.getDimensionPixelSize(R.styleable.CustomeLabelView_startMarginValue, 0)
+            topMarginValue = a.getDimensionPixelSize(R.styleable.CustomeLabelView_topMarginValue, 0)
+            endMarginValue = a.getDimensionPixelSize(R.styleable.CustomeLabelView_endMarginValue, 0)
+            bottomMarginValue = a.getDimensionPixelSize(R.styleable.CustomeLabelView_bottomMarginValue, 0)
 
             val singleLine = a.getBoolean(R.styleable.CustomeLabelView_singleLine, false)
             val lines = a.getInt(R.styleable.CustomeLabelView_lines, -1)
@@ -254,8 +270,6 @@ open class CustomLabelView : ConstraintLayout {
             lpLabel.height = LayoutParams.WRAP_CONTENT
             lpLabel.width = label_width
 
-            lpValue.marginStart = startMargin
-            lpValue.topMargin = topMargin
             lpValue.startToEnd = getLabelTextView().id
             lpValue.topToTop = LayoutParams.PARENT_ID
             lpValue.endToEnd = LayoutParams.PARENT_ID
@@ -276,8 +290,6 @@ open class CustomLabelView : ConstraintLayout {
             lpLabel.height = LayoutParams.WRAP_CONTENT
             lpLabel.width = label_width
 
-            lpValue.marginStart = startMargin
-            lpValue.topMargin = topMargin
             lpValue.startToStart = LayoutParams.PARENT_ID
             lpValue.topToTop = LayoutParams.UNSET
             lpValue.topToBottom = getLabelTextView().id
@@ -285,6 +297,32 @@ open class CustomLabelView : ConstraintLayout {
             lpValue.bottomToBottom = LayoutParams.PARENT_ID
             lpValue.height = LayoutParams.WRAP_CONTENT
             lpValue.width = LayoutParams.MATCH_PARENT
+        }
+
+        if (startMarginLabel != 0) {
+            lpLabel.leftMargin = startMarginLabel
+        }
+        if (topMarginLabel != 0) {
+            lpLabel.topMargin = topMarginLabel
+        }
+        if (endMarginLabel != 0) {
+            lpLabel.rightMargin = endMarginLabel
+        }
+        if (bottomMarginLabel != 0) {
+            lpLabel.bottomMargin = bottomMarginLabel
+        }
+
+        if (startMarginValue != 0) {
+            lpValue.leftMargin = startMarginValue
+        }
+        if (topMarginValue != 0) {
+            lpValue.topMargin = topMarginValue
+        }
+        if (endMarginValue != 0) {
+            lpValue.rightMargin = endMarginValue
+        }
+        if (bottomMarginValue != 0) {
+            lpValue.bottomMargin = bottomMarginValue
         }
     }
 
