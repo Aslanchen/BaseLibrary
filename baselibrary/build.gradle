@@ -108,7 +108,7 @@ dependencies {
     //日志
     api 'com.elvishew:xlog:1.10.1'
 
-    //状态栏，丢弃，使用：WindowInsetsControllerCompat代替
+    //状态栏,配合WindowInsetsControllerCompat使用
     api 'com.jaeger.statusbarutil:library:1.5.1'
 
     //flex布局
