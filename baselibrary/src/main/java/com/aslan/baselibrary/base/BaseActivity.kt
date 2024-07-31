@@ -30,6 +30,7 @@ import com.aslan.baselibrary.utils.AppUtil
 import com.aslan.baselibrary.utils.FileUtil
 import com.aslan.baselibrary.utils.LogUtils
 import com.aslan.baselibrary.view.CustomToolbar
+import com.jaeger.library.StatusBarUtil
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import com.trello.rxlifecycle3.LifecycleProvider
 import com.vmadalin.easypermissions.EasyPermissions
@@ -86,7 +87,10 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
         iniData()
     }
 
-    open fun setStatusBar() {}
+    open fun setStatusBar() {
+        StatusBarUtil.setDarkMode(this)
+        StatusBarUtil.setTranslucent(this, 0)
+    }
 
     open fun setCusContentView() {
         setContentView(getLayoutId())
