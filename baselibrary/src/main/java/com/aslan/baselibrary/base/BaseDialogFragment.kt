@@ -27,7 +27,6 @@ import com.vmadalin.easypermissions.EasyPermissions
 abstract class BaseDialogFragment : DialogFragment(), IBaseView {
     protected val provider = AndroidLifecycle.createLifecycleProvider(this)
     protected var progressDialog: WaitingDialog? = null
-    protected var isProgressDialogShowing = false
     protected var mToast: Toast? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,10 +88,6 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
                 progressDialog = initProgressDialog()
             }
 
-            if (isProgressDialogShowing) {
-                return@launchWhenResumed
-            }
-
             if (progressDialog!!.isAdded) {
                 return@launchWhenResumed
             }
@@ -106,12 +101,13 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
             }
 
             try {
-                progressDialog!!.isCancelable = canCancel
-                progressDialog!!.show(parentFragmentManager, msg, true)
+                progressDialog = WaitingDialog.Builder(requireContext())
+                    .setCancelable(canCancel)
+                    .setMessage(msg)
+                    .show(parentFragmentManager)
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
-            isProgressDialogShowing = true
         }
     }
 
@@ -123,7 +119,6 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
-            isProgressDialogShowing = false
         }
     }
 
