@@ -55,6 +55,7 @@ open class WaitingDialog : DialogFragment() {
             bundle.putString("msg", builder.msg.toString())
         }
         arguments = bundle
+
         super.show(manager, WaitingDialog::class.java.simpleName)
     }
 
