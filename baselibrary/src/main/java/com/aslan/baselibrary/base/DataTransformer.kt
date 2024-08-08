@@ -4,6 +4,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import com.aslan.baselibrary.R
 import com.aslan.baselibrary.exception.TokenException
 import com.aslan.baselibrary.listener.IBaseView
@@ -72,7 +73,9 @@ open class DataTransformer<T>(
                     waitingDialogBuilder.setMessage(progressbarMsg)
                 }
 
-                this.progressDialog = waitingDialogBuilder.show(manager)
+                mBaseView.getLifecycleOwner().lifecycleScope.launchWhenResumed {
+                    this@DataTransformer.progressDialog = waitingDialogBuilder.show(manager)
+                }
             }
         }
 
