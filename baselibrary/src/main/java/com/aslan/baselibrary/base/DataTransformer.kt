@@ -1,10 +1,24 @@
 package com.aslan.baselibrary.base
 
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import com.aslan.baselibrary.R
 import com.aslan.baselibrary.exception.TokenException
 import com.aslan.baselibrary.listener.IBaseView
-import io.reactivex.*
+import io.reactivex.Flowable
+import io.reactivex.FlowableTransformer
+import io.reactivex.Maybe
+import io.reactivex.MaybeSource
+import io.reactivex.MaybeTransformer
+import io.reactivex.Observable
+import io.reactivex.ObservableSource
+import io.reactivex.ObservableTransformer
+import io.reactivex.Single
+import io.reactivex.SingleSource
+import io.reactivex.SingleTransformer
 import org.reactivestreams.Publisher
 import java.util.concurrent.CancellationException
 
@@ -34,14 +48,34 @@ open class DataTransformer<T>(
     ObservableTransformer<T, T>, FlowableTransformer<T, T>, SingleTransformer<T, T>,
     MaybeTransformer<T, T> {
 
+    private var progressDialog: WaitingDialog? = null
+
+    private fun getFragmentManager(): FragmentManager? {
+        if (mBaseView is Fragment) {
+            return mBaseView.parentFragmentManager
+        } else if (mBaseView is AppCompatActivity) {
+            return mBaseView.supportFragmentManager
+        }
+        return null
+    }
+
     private fun doOnSubscribe() {
         if (isShowProgressbar) {
-            if (progressbarMsg != null) {
-                mBaseView.showProgressBar(progressbarCanCancel, progressbarMsg)
-            } else if (progressbarMsgResId != null) {
-                mBaseView.showProgressBar(progressbarCanCancel, progressbarMsgResId)
-            } else {
-                mBaseView.showProgressBar(progressbarCanCancel)
+            val manager = getFragmentManager()
+            if (manager != null) {
+                val waitingDialogBuilder = WaitingDialog.Builder(mBaseView.requireContext())
+                waitingDialogBuilder.setCancelable(progressbarCanCancel)
+                if (progressbarMsgResId != null) {
+                    waitingDialogBuilder.setMessage(progressbarMsgResId)
+                }
+
+                if (progressbarMsg != null) {
+                    waitingDialogBuilder.setMessage(progressbarMsg)
+                }
+
+                mBaseView.getLifecycleOwner().lifecycleScope.launchWhenResumed {
+                    this@DataTransformer.progressDialog = waitingDialogBuilder.show(manager)
+                }
             }
         }
 
@@ -50,7 +84,11 @@ open class DataTransformer<T>(
 
     private fun doOnError(error: Throwable) {
         if (isShowProgressbar) {
-            mBaseView.closeProgressBar()
+            try {
+                progressDialog?.dismiss()
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
         }
         clickView?.isEnabled = true
 
@@ -75,7 +113,11 @@ open class DataTransformer<T>(
 
     private fun doFinally() {
         if (isShowProgressbar) {
-            mBaseView.closeProgressBar()
+            try {
+                progressDialog?.dismiss()
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
         }
         clickView?.isEnabled = true
     }

@@ -30,7 +30,6 @@ import java.lang.Deprecated
 abstract class BaseFragment : Fragment(), IBaseView {
     protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
     protected var progressDialog: WaitingDialog? = null
-    protected var isProgressDialogShowing = false
     protected var titleBar: CustomToolbar? = null
     protected var mToast: Toast? = null
 
@@ -114,10 +113,6 @@ abstract class BaseFragment : Fragment(), IBaseView {
                 progressDialog = initProgressDialog()
             }
 
-            if (isProgressDialogShowing) {
-                return@launchWhenResumed
-            }
-
             if (progressDialog!!.isAdded) {
                 return@launchWhenResumed
             }
@@ -131,12 +126,13 @@ abstract class BaseFragment : Fragment(), IBaseView {
             }
 
             try {
-                progressDialog!!.isCancelable = canCancel
-                progressDialog!!.show(parentFragmentManager, msg, true)
+                progressDialog = WaitingDialog.Builder(requireContext())
+                    .setCancelable(canCancel)
+                    .setMessage(msg)
+                    .show(parentFragmentManager)
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
-            isProgressDialogShowing = true
         }
     }
 
@@ -148,7 +144,6 @@ abstract class BaseFragment : Fragment(), IBaseView {
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
-            isProgressDialogShowing = false
         }
     }
 
