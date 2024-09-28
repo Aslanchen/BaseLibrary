@@ -1,6 +1,5 @@
 package com.aslan.baselibrary.base
 
-import android.Manifest
 import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -15,7 +14,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.MainThread
-import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AlertDialog
@@ -29,6 +27,7 @@ import com.aslan.baselibrary.listener.IBaseView
 import com.aslan.baselibrary.utils.AppUtil
 import com.aslan.baselibrary.utils.FileUtil
 import com.aslan.baselibrary.utils.LogUtils
+import com.aslan.baselibrary.utils.PermissionUtils
 import com.aslan.baselibrary.view.CustomToolbar
 import com.jaeger.library.StatusBarUtil
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
@@ -50,17 +49,6 @@ import java.io.File
 abstract class BaseActivity : AppCompatActivity(), IBaseView {
     companion object {
         const val REQUEST_CODE_SD_PERMISSION = 6150
-        val PERMISSIONS_EXTERNAL_STORAGE = arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-        )
-
-        @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-        val PERMISSIONS_EXTERNAL_STORAGE_33 = arrayOf(
-            Manifest.permission.READ_MEDIA_IMAGES,
-            Manifest.permission.READ_MEDIA_AUDIO,
-            Manifest.permission.READ_MEDIA_VIDEO
-        )
     }
 
     protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
@@ -233,14 +221,10 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
         super.onDestroy()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (this is EasyPermissions.PermissionCallbacks) {
-            EasyPermissions
-                .onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+            EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
         }
     }
 
@@ -260,19 +244,13 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
         onExternalStorageManager(result)
     }
 
-    open protected fun onExternalStorageManager(result: ActivityResult) {
-        val s = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            PERMISSIONS_EXTERNAL_STORAGE_33
-        } else {
-            PERMISSIONS_EXTERNAL_STORAGE
-        }
-
-        if (!EasyPermissions.hasPermissions(this, *s)) {
-            EasyPermissions.requestPermissions(
+    open fun onExternalStorageManager(result: ActivityResult) {
+        if (!PermissionUtils.hasPermissions(this, *PermissionUtils.PERMISSIONS_EXTERNAL_STORAGE)) {
+            PermissionUtils.requestPermissions(
                 this@BaseActivity,
                 PermissionRequest.Builder(this@BaseActivity)
                     .code(REQUEST_CODE_SD_PERMISSION)
-                    .perms(s)
+                    .perms(PermissionUtils.PERMISSIONS_EXTERNAL_STORAGE)
                     .rationale(R.string.request_permission_down)
                     .positiveButtonText(R.string.agree)
                     .negativeButtonText(R.string.refuse)
@@ -281,55 +259,121 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
         }
     }
 
-    open protected fun showSDPermissionDialog(agree: () -> Unit, refuse: () -> Unit) {
-        AlertDialog.Builder(this)
-            .setTitle(R.string.permissions)
-            .setMessage(getString(R.string.request_permission_down))
-            .setPositiveButton(R.string.agree) { dialog, which ->
+    /**
+     * SD卡申请选线
+     */
+    open fun showDialogBeforeRequestSDPermission(agree: () -> Unit, refuse: () -> Unit) {
+        showDialogBeforeRequestPermission(
+            AlertDialog.Builder(this)
+                .setTitle(R.string.permissions)
+                .setMessage(getString(R.string.request_permission_down)), agree, refuse
+        )
+    }
+
+    fun showDialogBeforeRequestPermission(build: AlertDialog.Builder, agree: () -> Unit, refuse: () -> Unit) {
+        showDialogBeforeRequestPermission(build, R.string.agree, R.string.refuse, agree, refuse)
+    }
+
+    /**
+     * 应用市场审核需要，在申请权限之前，需要弹框给出提示
+     */
+    fun showDialogBeforeRequestPermission(
+        build: AlertDialog.Builder, @StringRes agreeTextId: Int, @StringRes refuseTextId: Int,
+        agree: () -> Unit, refuse: () -> Unit
+    ) {
+        build
+            .setPositiveButton(agreeTextId) { dialog, which ->
                 agree()
             }
-            .setNegativeButton(R.string.refuse) { dialog, which ->
+            .setNegativeButton(refuseTextId) { dialog, which ->
                 refuse()
             }
             .show()
     }
 
-    open fun checkSDPermission() {
+    /**
+     * 应用市场审核需要，在申请权限之前，需要弹框给出提示
+     */
+    fun showDialogBeforeRequestPermission(
+        build: AlertDialog.Builder, agreeText: String, refuseText: String,
+        agree: () -> Unit, refuse: () -> Unit
+    ) {
+        build
+            .setPositiveButton(agreeText) { dialog, which ->
+                agree()
+            }
+            .setNegativeButton(refuseText) { dialog, which ->
+                refuse()
+            }
+            .show()
+    }
+
+    /**
+     * 检查并且请求权限
+     */
+    open fun checkAndRequestPermission(build: AlertDialog.Builder, vararg perms: String, request: PermissionRequest): Boolean {
+        if (!PermissionUtils.hasPermissions(this, *perms)) {
+            if (PermissionUtils.somePermissionDenied(this, *perms)) {
+                PermissionUtils.newAppSettingsDialogBuilder(this)
+                    .requestCode(request.code)
+                    .rationale(request.rationale!!)
+                    .negativeButtonText(request.negativeButtonText!!)
+                    .positiveButtonText(request.positiveButtonText!!)
+                    .openOnNewTask(true)
+                    .build()
+                    .show()
+            } else {
+                showDialogBeforeRequestPermission(build, { PermissionUtils.requestPermissions(this@BaseActivity, request) }, {})
+            }
+            return false
+        }
+
+        return true
+    }
+
+    /**
+     * 检查并且请求SD卡读写权限
+     */
+    open fun checkAndRequestSDPermission(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (!Environment.isExternalStorageManager()) {
-                showSDPermissionDialog({
+                showDialogBeforeRequestSDPermission({
                     val packageUri = Uri.parse("package:$packageName")
                     val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, packageUri)
                     launcherExternalStorageManager.launch(intent)
                 }, {})
-                return
+                return false
             }
         }
 
-        val s = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            PERMISSIONS_EXTERNAL_STORAGE_33
-        } else {
-            PERMISSIONS_EXTERNAL_STORAGE
+        if (!PermissionUtils.hasPermissions(this, *PermissionUtils.PERMISSIONS_EXTERNAL_STORAGE)) {
+            if (PermissionUtils.somePermissionDenied(this, *PermissionUtils.PERMISSIONS_EXTERNAL_STORAGE)) {
+                PermissionUtils.newAppSettingsDialogBuilder(this)
+                    .requestCode(REQUEST_CODE_SD_PERMISSION)
+                    .rationale(R.string.request_permission_down)
+                    .negativeButtonText(R.string.agree)
+                    .positiveButtonText(R.string.refuse)
+                    .openOnNewTask(true)
+                    .build()
+                    .show()
+            } else {
+                showDialogBeforeRequestSDPermission({
+                    PermissionUtils.requestPermissions(
+                        this@BaseActivity,
+                        PermissionRequest.Builder(this@BaseActivity)
+                            .code(REQUEST_CODE_SD_PERMISSION)
+                            .perms(PermissionUtils.PERMISSIONS_EXTERNAL_STORAGE)
+                            .rationale(R.string.request_permission_down)
+                            .positiveButtonText(R.string.agree)
+                            .negativeButtonText(R.string.refuse)
+                            .build()
+                    )
+                }, {})
+            }
+            return false
         }
 
-        if (!EasyPermissions.hasPermissions(this, *s)) {
-            showSDPermissionDialog({
-                EasyPermissions.requestPermissions(
-                    this@BaseActivity,
-                    PermissionRequest.Builder(this@BaseActivity)
-                        .code(REQUEST_CODE_SD_PERMISSION)
-                        .perms(s)
-                        .rationale(R.string.request_permission_down)
-                        .positiveButtonText(R.string.agree)
-                        .negativeButtonText(R.string.refuse)
-                        .build()
-                )
-            }, {})
-        }
-    }
-
-    open protected fun onRequestSDPermissionResult() {
-
+        return true
     }
 
     private val launcherInstall = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -435,15 +479,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
     protected open fun onFileDownload(event: EventDownload) {
 
     }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_SD_PERMISSION) {
-            onRequestSDPermissionResult()
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEventDownload(event: EventDownload) {

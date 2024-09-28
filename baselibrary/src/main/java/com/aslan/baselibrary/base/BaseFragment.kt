@@ -201,14 +201,10 @@ abstract class BaseFragment : Fragment(), IBaseView {
     }
 
     @Deprecated
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (this is EasyPermissions.PermissionCallbacks) {
-            EasyPermissions
-                .onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+            EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
         }
     }
 
