@@ -312,7 +312,16 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
-        requestPermissionLast = null
+        if (requestPermissionLast != null) {
+            val request = requestPermissionLast!!
+            if (request.code != requestCode) {
+                return
+            }
+
+            if (PermissionUtils.somePermissionPermanentlyDenied(this, requestPermissionLast!!.perms.toList()).not()) {
+                requestPermissionLast = null
+            }
+        }
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
@@ -322,7 +331,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
                 return
             }
 
-            if (PermissionUtils.somePermissionPermanentlyDenied(this, request.perms.toList())) {
+            if (PermissionUtils.somePermissionPermanentlyDenied(this, perms)) {
                 PermissionUtils.newAppSettingsDialogBuilder(this)
                     .title(R.string.permissions)
                     .requestCode(REQUEST_CODE_SETTING_PERMANENTLY_DENIED)
