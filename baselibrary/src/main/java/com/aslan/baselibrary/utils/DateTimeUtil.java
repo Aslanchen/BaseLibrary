@@ -7,7 +7,9 @@ import com.blankj.utilcode.util.TimeUtils;
  *
  * @author Aslan
  * @date 2018/4/11
+ * @deprecated 使用 {@link TimeUtils}代替
  */
+@Deprecated
 public final class DateTimeUtil {
 
   public static final long SECOND = 1000;
