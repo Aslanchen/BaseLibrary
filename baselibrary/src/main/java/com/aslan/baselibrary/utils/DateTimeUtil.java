@@ -1,5 +1,7 @@
 package com.aslan.baselibrary.utils;
 
+import com.blankj.utilcode.util.TimeUtils;
+
 /**
  * 日期时间操作类
  *
@@ -30,7 +32,7 @@ public final class DateTimeUtil {
     DateTimeUtil.timeoffset = timeoffset;
   }
 
-  public static long currentTimeMillis() {
-    return System.currentTimeMillis() + timeoffset;
+  public synchronized static long currentTimeMillis() {
+    return TimeUtils.getNowMills() + timeoffset;
   }
 }
