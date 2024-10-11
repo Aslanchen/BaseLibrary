@@ -13,16 +13,27 @@ android {
         applicationId "com.aslan.app"
         minSdk 19
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
 
     buildTypes {
-        release {
+        debug {
+            debuggable true
             minifyEnabled false
+            buildConfigField "String", "provider_authorities", "\"com.aslan.app.provider\""
+            manifestPlaceholders = [provider_authorities: "com.aslan.app.provider",]
+
+            buildConfigField "String", "HOST", "\"https://127.0.0.1\""
+        }
+
+        release {
+            initWith(debug)
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
+            minifyEnabled true
         }
     }
 
@@ -37,7 +48,20 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "v${variant.versionName}.apk"
+        }
+    }
+}
+
+//maven缓存时间
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
 }
 
 dependencies {
@@ -47,4 +71,45 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.3'
     implementation project(":baselibrary")
+}
+
+//上传到bugly
+private def doUploadMappingToBugly() {
+    def VERSIONNAME = ext.VERSIONNAME
+    android.applicationVariants.all { variant ->
+        def buildType = variant.buildType.name
+
+        //bugly jar下载地址：https://bugly.qq.com/v2/downloads
+        def jarPath = "${project.rootDir}/bugly/buglyqq-upload-symbol.jar"
+        def appid = '813d984a7d'
+        def appKey = 'c8ea4953-0623-4135-9908-e0674b2a2819'
+        def packagename = 'com.aslan.intangibleculturalheritage'
+        def version = VERSIONNAME
+        def inputSymbol = "${project.buildDir}"
+        def inputMapping = "${project.buildDir}/outputs/mapping/${buildType}"
+
+        if (!new File(inputMapping).exists()) {
+            return
+        }
+
+        def java = System.getenv("JAVA_HOME")
+        if (java == null || java.isEmpty()) {
+            println("请先配置环境变量【JAVA_HOME】")
+            return
+        }
+
+        def java_exe = "${java}/bin/java.exe"
+        exec {
+            executable = java_exe
+            args = ['-jar', jarPath, '-appid', appid, '-appkey', appKey, '-bundleid', packagename, '-platform', 'Android', '-version', version, '-inputSymbol', inputSymbol, '-inputMapping', inputMapping]
+        }
+    }
+}
+
+task uploadBugly() {
+    description('Upload mapping to bugly')
+    dependsOn("assembleRelease")
+    doLast {
+        doUploadMappingToBugly()
+    }
 }
