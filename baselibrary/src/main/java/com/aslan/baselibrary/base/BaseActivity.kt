@@ -75,8 +75,8 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
     }
 
     open fun setStatusBar() {
-        StatusBarUtil.setDarkMode(this)
         StatusBarUtil.setTranslucent(this, 0)
+        StatusBarUtil.setDarkMode(this)
     }
 
     open fun setCusContentView() {
