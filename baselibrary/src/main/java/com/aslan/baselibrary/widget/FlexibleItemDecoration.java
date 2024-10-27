@@ -23,6 +23,9 @@ import eu.davidea.flexibleadapter.utils.LayoutUtils;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 间隔线，修复官方瀑布流问题
+ */
 public class FlexibleItemDecoration extends RecyclerView.ItemDecoration {
 
   private Context context;

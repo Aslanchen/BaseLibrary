@@ -6,7 +6,7 @@ import android.util.Log
 import com.aslan.baselibrary.R
 import com.aslan.baselibrary.exception.BusinessException
 import com.aslan.baselibrary.exception.ClientException
-import com.aslan.baselibrary.http.NetManager
+import com.aslan.baselibrary.http.HTTPManager
 import com.google.gson.JsonParseException
 import io.reactivex.functions.Function
 import org.apache.http.conn.ConnectTimeoutException
@@ -54,14 +54,14 @@ abstract class BaseHttpErrorFunction<T>(val context: Context) : Function<Throwab
         }
 
         if (ex is ClientException) {
-            Log.e(NetManager.TAG_LOG, "ClientException", ex)
+            Log.e(HTTPManager.TAG_LOG, "ClientException", ex)
         } else if (ex is BusinessException) {
             Log.e(
-                NetManager.TAG_LOG,
+                HTTPManager.TAG_LOG,
                 String.format("BusinessException code= [%s] msg= [%s]", ex.code, ex.message)
             )
         } else {
-            Log.e(NetManager.TAG_LOG, "Unknow exception", t)
+            Log.e(HTTPManager.TAG_LOG, "Unknow exception", t)
         }
         return error(ex)
     }

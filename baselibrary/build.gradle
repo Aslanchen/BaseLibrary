@@ -121,6 +121,9 @@ dependencies {
 
     //基础类
     api 'com.blankj:utilcodex:1.31.1'
+
+    //API 脱糖
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 }
 
 apply plugin: 'maven-publish'

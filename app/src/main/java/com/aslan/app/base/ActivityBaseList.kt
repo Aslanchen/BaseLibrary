@@ -7,6 +7,9 @@ import com.jaeger.library.StatusBarUtil
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 
+/**
+ * 基础类
+ */
 abstract class ActivityBaseList<M, A : FlexibleAdapter<IFlexible<*>>, VB : ViewBinding>(inflate: InflateActivity<VB>) :
     VBBaseListActivity<M, A, VB>(inflate) {
 

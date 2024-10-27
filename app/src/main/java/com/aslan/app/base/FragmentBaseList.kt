@@ -6,6 +6,9 @@ import com.aslan.baselibrary.utils.InflateFragment
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 
+/**
+ * 基础类
+ */
 abstract class FragmentBaseList<M, A : FlexibleAdapter<IFlexible<*>>, VB : ViewBinding>(inflate: InflateFragment<VB>) :
     VBBaseListFragment<M, A, VB>(inflate) {
 
