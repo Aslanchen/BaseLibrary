@@ -4,6 +4,7 @@ import android.os.SystemClock
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.Size
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +16,7 @@ import com.aslan.baselibrary.items.ProgressItem
 import com.aslan.baselibrary.listener.SafeClickListener
 import com.aslan.baselibrary.utils.InflateFragment
 import com.aslan.baselibrary.view.EmptyView
-import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
+import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindUntilEvent
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -184,7 +185,7 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
     open override fun onRefresh() {
         getDatas(UpdateState.Refresh, 1)
             .observeOn(AndroidSchedulers.mainThread())
-            .bindToLifecycle(this)
+            .bindUntilEvent(this, getHttpBindUntilEvent())
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false, isShowToast = isShowToast()))
             .doFinally {
                 swipeRefreshLayout?.isRefreshing = false
@@ -218,7 +219,7 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
     open override fun onLoadMore(lastPosition: Int, currentPage: Int) {
         getDatas(UpdateState.LoadMore, currentPage + 1)
             .observeOn(AndroidSchedulers.mainThread())
-            .bindToLifecycle(this)
+            .bindUntilEvent(this, getHttpBindUntilEvent())
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false, isShowToast = isShowToast()))
             .subscribe(object : DataObserver<List<M>>(requireContext()) {
                 override fun handleSuccess(t: List<M>) {
@@ -275,5 +276,9 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
 
     open fun getPageSize(): Int {
         return 20
+    }
+
+    protected fun getHttpBindUntilEvent(): Lifecycle.Event {
+        return Lifecycle.Event.ON_DESTROY
     }
 }
