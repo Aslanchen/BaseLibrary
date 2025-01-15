@@ -216,11 +216,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
         super.onDestroy()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
     override fun requireContext(): Context {
         return this
     }
@@ -231,6 +226,11 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
 
     override fun getLifecycleProvider(): LifecycleProvider<Lifecycle.Event> {
         return mLifecycleProvider
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
     /**
@@ -258,7 +258,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
      *
      */
     open fun checkAndRequestPermission(request: PermissionUtils.PermissionRequest): Boolean {
-        if (!PermissionUtils.hasPermissions(this, *request.perms)) {
+        if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
             requestPermissionLast = request
             showDialogBeforeRequestPermission(request, { PermissionUtils.requestPermissions(this, request) }, {})
             return false
@@ -311,6 +311,9 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
         return checkAndRequestPermission(getRequestSDPermission())
     }
 
+    /**
+     * 权限被授予
+     */
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
         if (requestPermissionLast != null) {
             val request = requestPermissionLast!!
@@ -324,6 +327,9 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
         }
     }
 
+    /**
+     * 权限被拒绝
+     */
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
         if (requestPermissionLast != null) {
             val request = requestPermissionLast!!
@@ -332,6 +338,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
             }
 
             if (PermissionUtils.somePermissionPermanentlyDenied(this, perms)) {
+                //永久拒绝，只能跳转到设置界面
                 PermissionUtils.newAppSettingsDialogBuilder(this)
                     .title(R.string.permissions)
                     .requestCode(REQUEST_CODE_SETTING_PERMANENTLY_DENIED)

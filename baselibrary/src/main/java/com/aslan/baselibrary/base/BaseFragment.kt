@@ -8,12 +8,15 @@ import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import androidx.annotation.UiThread
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.aslan.baselibrary.R
+import com.aslan.baselibrary.base.BaseActivity.Companion.REQUEST_CODE_SETTING_PERMANENTLY_DENIED
 import com.aslan.baselibrary.listener.IBaseView
+import com.aslan.baselibrary.utils.PermissionUtils
 import com.aslan.baselibrary.view.CustomToolbar
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import com.trello.rxlifecycle3.LifecycleProvider
@@ -27,7 +30,7 @@ import java.lang.Deprecated
  * @author Aslan
  * @date 2018/4/11
  */
-abstract class BaseFragment : Fragment(), IBaseView {
+abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionCallbacks {
     protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
     protected var progressDialog: WaitingDialog? = null
     protected var titleBar: CustomToolbar? = null
@@ -195,19 +198,93 @@ abstract class BaseFragment : Fragment(), IBaseView {
         super.onDestroy()
     }
 
-    @Deprecated
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (this is EasyPermissions.PermissionCallbacks) {
-            EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-        }
-    }
-
     override fun getLifecycleOwner(): LifecycleOwner {
         return this
     }
 
     override fun getLifecycleProvider(): LifecycleProvider<Lifecycle.Event> {
         return mLifecycleProvider
+    }
+
+    @Deprecated
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    private var requestPermissionLast: PermissionUtils.PermissionRequest? = null
+
+    /**
+     * 检查并且请求权限
+     *
+     * 应用市场审核需要，在申请权限之前，需要弹框给出提示
+     *
+     */
+    open fun checkAndRequestPermission(request: PermissionUtils.PermissionRequest): Boolean {
+        if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
+            requestPermissionLast = request
+            showDialogBeforeRequestPermission(request, { PermissionUtils.requestPermissions(this, request) }, {})
+            return false
+        }
+
+        return true
+    }
+
+    /**
+     * 应用市场审核需要，在申请权限之前，需要弹框给出提示
+     */
+    open fun showDialogBeforeRequestPermission(request: PermissionUtils.PermissionRequest, agree: () -> Unit, refuse: () -> Unit) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(request.title)
+            .setMessage(request.rationale)
+            .setPositiveButton(request.positiveButtonText) { dialog, which ->
+                agree()
+            }
+            .setNegativeButton(request.negativeButtonText) { dialog, which ->
+                refuse()
+            }
+            .show()
+    }
+
+    /**
+     * 权限被授予
+     */
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        if (requestPermissionLast != null) {
+            val request = requestPermissionLast!!
+            if (request.code != requestCode) {
+                return
+            }
+
+            if (PermissionUtils.somePermissionPermanentlyDenied(this, requestPermissionLast!!.perms.toList()).not()) {
+                requestPermissionLast = null
+            }
+        }
+    }
+
+    /**
+     * 权限被拒绝
+     */
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        if (requestPermissionLast != null) {
+            val request = requestPermissionLast!!
+            if (request.code != requestCode) {
+                return
+            }
+
+            if (PermissionUtils.somePermissionPermanentlyDenied(this, perms)) {
+                //永久拒绝，只能跳转到设置界面
+                PermissionUtils.newAppSettingsDialogBuilder(requireContext())
+                    .title(R.string.permissions)
+                    .requestCode(REQUEST_CODE_SETTING_PERMANENTLY_DENIED)
+                    .rationale(R.string.request_permission_permanently_denied)
+                    .negativeButtonText(R.string.refuse)
+                    .positiveButtonText(R.string.go_setting)
+                    .openOnNewTask(true)
+                    .build()
+                    .show()
+            }
+            requestPermissionLast = null
+        }
     }
 }
