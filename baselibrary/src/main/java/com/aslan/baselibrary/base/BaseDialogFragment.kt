@@ -190,7 +190,7 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    private var requestPermissionLast: PermissionUtils.PermissionRequest? = null
+    protected var requestPermissionLast: PermissionUtils.PermissionRequest? = null
 
     /**
      * 检查并且请求权限
@@ -198,6 +198,16 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, EasyPermissions
      * 应用市场审核需要，在申请权限之前，需要弹框给出提示
      *
      */
+    open fun checkAndRequestPermission(request: PermissionUtils.PermissionRequest, agree: () -> Unit, refuse: () -> Unit): Boolean {
+        if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
+            requestPermissionLast = request
+            showDialogBeforeRequestPermission(request, agree, refuse)
+            return false
+        }
+
+        return true
+    }
+
     open fun checkAndRequestPermission(request: PermissionUtils.PermissionRequest): Boolean {
         if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
             requestPermissionLast = request
@@ -219,7 +229,7 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, EasyPermissions
     /**
      * 需要全面访问外部存储（例如文件管理器应用）
      */
-    open fun checkAndRequestExternalStorageManager(request: PermissionUtils.PermissionRequest): Boolean {
+    open fun checkAndRequestExternalStorageManager(request: PermissionUtils.PermissionRequest, refuse: () -> Unit): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Android11以上需要申请所有文件访问权限
             if (!Environment.isExternalStorageManager()) {
@@ -228,7 +238,7 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, EasyPermissions
                     val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, packageUri)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     launcherExternalStorageManager.launch(intent)
-                }, {})
+                }, refuse)
                 return false
             }
         }
@@ -255,8 +265,9 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, EasyPermissions
     /**
      * 检查并且请求SD卡读写权限
      */
-    open fun checkAndRequestSDPermission(): Boolean {
-        return checkAndRequestPermission(getRequestSDPermission())
+    open fun checkAndRequestSDPermission(refuse: () -> Unit): Boolean {
+        val request = getRequestSDPermission()
+        return checkAndRequestPermission(request, { PermissionUtils.requestPermissions(this, request) }, refuse)
     }
 
     /**
