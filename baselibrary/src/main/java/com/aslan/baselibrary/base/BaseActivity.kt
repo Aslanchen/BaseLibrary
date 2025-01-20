@@ -305,11 +305,11 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
         return true
     }
 
-    private var requestSDPermission: PermissionUtils.PermissionRequest? = null//SD权限
+    private var mRequestSDPermission: PermissionUtils.PermissionRequest? = null//SD权限
 
     fun getRequestSDPermission(): PermissionUtils.PermissionRequest {
-        if (requestSDPermission == null) {
-            requestSDPermission = PermissionUtils.PermissionRequest.Builder(this)
+        if (mRequestSDPermission == null) {
+            mRequestSDPermission = PermissionUtils.PermissionRequest.Builder(this)
                 .code(REQUEST_CODE_SD_PERMISSION)
                 .perms(PermissionUtils.PERMISSIONS_EXTERNAL_STORAGE)
                 .title(R.string.permissions)
@@ -318,7 +318,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
                 .negativeButtonText(R.string.refuse)
                 .build()
         }
-        return requestSDPermission!!
+        return mRequestSDPermission!!
     }
 
     /**

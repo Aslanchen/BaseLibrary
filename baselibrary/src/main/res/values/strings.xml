@@ -20,7 +20,7 @@
 
   <string name="download_is_in_download">Downloading...</string>
   <string name="request_permission_install_apk">Installing the apk requires authorization first</string>
-  <string name="request_permission_down">In order to facilitate your viewing, the downloaded data needs to be saved in an external SD card. Please authorize the read and write permissions of the SD card first.</string>
+  <string name="request_permission_down">To enhance your user experience, the app needs to download and store some data on your device during use. Therefore, we require your permission to access storage read and write functions. The app can only function properly once the permission is granted.</string>
   <string name="request_permission_permanently_denied">The current permission has been denied multiple times and you need to enter the settings interface to manually open it!</string>
   <string name="permissions">Permissions</string>
   <string name="confirm">Confirm</string>
