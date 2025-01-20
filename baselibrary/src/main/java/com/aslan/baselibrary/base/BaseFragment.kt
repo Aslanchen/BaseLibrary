@@ -1,10 +1,17 @@
 package com.aslan.baselibrary.base
 
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import androidx.annotation.UiThread
@@ -14,6 +21,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.aslan.baselibrary.R
+import com.aslan.baselibrary.base.BaseActivity.Companion.REQUEST_CODE_SD_PERMISSION
 import com.aslan.baselibrary.base.BaseActivity.Companion.REQUEST_CODE_SETTING_PERMANENTLY_DENIED
 import com.aslan.baselibrary.listener.IBaseView
 import com.aslan.baselibrary.utils.PermissionUtils
@@ -213,6 +221,57 @@ abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionC
     }
 
     private var requestPermissionLast: PermissionUtils.PermissionRequest? = null
+
+    private val launcherExternalStorageManager = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        onExternalStorageManagerResult(result)
+    }
+
+    open fun onExternalStorageManagerResult(result: ActivityResult) {
+
+    }
+
+    /**
+     * 需要全面访问外部存储（例如文件管理器应用）
+     */
+    open fun checkAndRequestExternalStorageManager(request: PermissionUtils.PermissionRequest): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Android11以上需要申请所有文件访问权限
+            if (!Environment.isExternalStorageManager()) {
+                showDialogBeforeRequestPermission(request, {
+                    val packageUri = Uri.parse("package:${requireContext().packageName}")
+                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, packageUri)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    launcherExternalStorageManager.launch(intent)
+                }, {})
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private var requestSDPermission: PermissionUtils.PermissionRequest? = null//SD权限
+
+    fun getRequestSDPermission(): PermissionUtils.PermissionRequest {
+        if (requestSDPermission == null) {
+            requestSDPermission = PermissionUtils.PermissionRequest.Builder(requireContext())
+                .code(REQUEST_CODE_SD_PERMISSION)
+                .perms(PermissionUtils.PERMISSIONS_EXTERNAL_STORAGE)
+                .title(R.string.permissions)
+                .rationale(R.string.request_permission_down)
+                .positiveButtonText(R.string.agree)
+                .negativeButtonText(R.string.refuse)
+                .build()
+        }
+        return requestSDPermission!!
+    }
+
+    /**
+     * 检查并且请求SD卡读写权限
+     */
+    open fun checkAndRequestSDPermission(): Boolean {
+        return checkAndRequestPermission(getRequestSDPermission())
+    }
 
     /**
      * 检查并且请求权限
