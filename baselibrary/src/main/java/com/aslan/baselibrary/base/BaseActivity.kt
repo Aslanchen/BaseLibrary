@@ -268,10 +268,34 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
     }
 
     private val launcherExternalStorageManager = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        onExternalStorageManager(result)
+        onExternalStorageManagerResult(result)
     }
 
-    private var requestSDPermission: PermissionUtils.PermissionRequest? = null
+    open fun onExternalStorageManagerResult(result: ActivityResult) {
+
+    }
+
+    /**
+     * 需要全面访问外部存储（例如文件管理器应用）
+     */
+    open fun checkAndRequestExternalStorageManager(request: PermissionUtils.PermissionRequest): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Android11以上需要申请所有文件访问权限
+            if (!Environment.isExternalStorageManager()) {
+                showDialogBeforeRequestPermission(request, {
+                    val packageUri = Uri.parse("package:$packageName")
+                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, packageUri)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    launcherExternalStorageManager.launch(intent)
+                }, {})
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private var requestSDPermission: PermissionUtils.PermissionRequest? = null//SD权限
 
     fun getRequestSDPermission(): PermissionUtils.PermissionRequest {
         if (requestSDPermission == null) {
@@ -287,27 +311,10 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
         return requestSDPermission!!
     }
 
-    open fun onExternalStorageManager(result: ActivityResult) {
-        if (!PermissionUtils.hasPermissions(this, *PermissionUtils.PERMISSIONS_EXTERNAL_STORAGE)) {
-            PermissionUtils.requestPermissions(this, getRequestSDPermission())
-        }
-    }
-
     /**
      * 检查并且请求SD卡读写权限
      */
     open fun checkAndRequestSDPermission(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (!Environment.isExternalStorageManager()) {
-                showDialogBeforeRequestPermission(getRequestSDPermission(), {
-                    val packageUri = Uri.parse("package:$packageName")
-                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, packageUri)
-                    launcherExternalStorageManager.launch(intent)
-                }, {})
-                return false
-            }
-        }
-
         return checkAndRequestPermission(getRequestSDPermission())
     }
 
