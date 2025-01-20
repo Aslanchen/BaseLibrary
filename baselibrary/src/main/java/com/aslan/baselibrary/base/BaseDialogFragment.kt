@@ -246,11 +246,11 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, EasyPermissions
         return true
     }
 
-    private var requestSDPermission: PermissionUtils.PermissionRequest? = null//SD权限
+    private var mRequestSDPermission: PermissionUtils.PermissionRequest? = null//SD权限
 
     fun getRequestSDPermission(): PermissionUtils.PermissionRequest {
-        if (requestSDPermission == null) {
-            requestSDPermission = PermissionUtils.PermissionRequest.Builder(requireContext())
+        if (mRequestSDPermission == null) {
+            mRequestSDPermission = PermissionUtils.PermissionRequest.Builder(requireContext())
                 .code(REQUEST_CODE_SD_PERMISSION)
                 .perms(PermissionUtils.PERMISSIONS_EXTERNAL_STORAGE)
                 .title(R.string.permissions)
@@ -259,7 +259,7 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, EasyPermissions
                 .negativeButtonText(R.string.refuse)
                 .build()
         }
-        return requestSDPermission!!
+        return mRequestSDPermission!!
     }
 
     /**
