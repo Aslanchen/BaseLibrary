@@ -379,15 +379,39 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
      * 权限被永久拒绝，需要去设置界面，手动设置
      */
     fun showPermissionPermanentlyDeniedDialog() {
-        PermissionUtils.newAppSettingsDialogBuilder(this)
-            .title(R.string.permissions)
-            .requestCode(REQUEST_CODE_SETTING_PERMANENTLY_DENIED)
-            .rationale(R.string.request_permission_permanently_denied)
-            .negativeButtonText(R.string.refuse)
-            .positiveButtonText(R.string.go_setting)
-            .openOnNewTask(true)
-            .build()
+        val launcherApplicationDetailSettings = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            mTopSnackbar?.dismiss()
+            mTopSnackbar = null
+//            onApplicationDetailSettingsReturn(result)
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.permissions)
+            .setMessage(R.string.request_permission_permanently_denied)
+            .setPositiveButton(R.string.go_setting) { dialog, which ->
+                mTopSnackbar?.dismiss()
+                mTopSnackbar = null
+
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", requireContext().packageName, null)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                launcherApplicationDetailSettings.launch(intent)
+            }
+            .setNegativeButton(R.string.refuse) { dialog, which ->
+                mTopSnackbar?.dismiss()
+                mTopSnackbar = null
+            }
             .show()
+//        PermissionUtils.newAppSettingsDialogBuilder(this)
+//            .title(R.string.permissions)
+//            .requestCode(REQUEST_CODE_SETTING_PERMANENTLY_DENIED)
+//            .rationale(R.string.request_permission_permanently_denied)
+//            .negativeButtonText(R.string.refuse)
+//            .positiveButtonText(R.string.go_setting)
+//            .openOnNewTask(true)
+//            .build()
+//            .show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -406,6 +430,8 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
      */
     override fun onRationaleAccepted(requestCode: Int) {
         LogUtils.d("onRationaleAccepted requestCode=" + requestCode)
+        mTopSnackbar?.dismiss()
+        mTopSnackbar = null
     }
 
     /**
@@ -413,6 +439,8 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
      */
     override fun onRationaleDenied(requestCode: Int) {
         LogUtils.d("onRationaleDenied requestCode=" + requestCode)
+        mTopSnackbar?.dismiss()
+        mTopSnackbar = null
     }
 
     private val launcherInstall = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -517,6 +545,12 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
 
     protected open fun onFileDownload(event: EventDownload) {
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mTopSnackbar?.dismiss()
+        mTopSnackbar = null
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

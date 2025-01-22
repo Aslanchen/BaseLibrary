@@ -206,7 +206,7 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, EasyPermissions
         if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
             requestPermissionLast = request
             showToastBeforeRequestPermission(request)
-            PermissionUtils.requestPermissions(this, request)
+            PermissionUtils.requestPermissions(requireActivity(), request)
             return false
         }
 
@@ -271,7 +271,7 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, EasyPermissions
      * 应用市场审核需要，在申请权限之前，需要弹框给出提示，双屏显示
      */
     open fun showToastBeforeRequestPermission(request: PermissionUtils.PermissionRequest) {
-        val viewGroup = view?.findViewById<ViewGroup>(android.R.id.content) ?: return
+        val viewGroup = requireActivity().findViewById<ViewGroup>(android.R.id.content)
         mTopSnackbar = TopSnackbar.make(viewGroup, request.title ?: "", request.rationale ?: "")
         mTopSnackbar!!.show()
     }
@@ -352,6 +352,8 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, EasyPermissions
      */
     override fun onRationaleAccepted(requestCode: Int) {
         LogUtils.d("onRationaleAccepted requestCode=" + requestCode)
+        mTopSnackbar?.dismiss()
+        mTopSnackbar = null
     }
 
     /**
@@ -359,5 +361,13 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, EasyPermissions
      */
     override fun onRationaleDenied(requestCode: Int) {
         LogUtils.d("onRationaleDenied requestCode=" + requestCode)
+        mTopSnackbar?.dismiss()
+        mTopSnackbar = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mTopSnackbar?.dismiss()
+        mTopSnackbar = null
     }
 }

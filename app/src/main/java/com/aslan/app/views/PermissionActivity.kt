@@ -3,6 +3,7 @@ package com.aslan.app.views
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.aslan.app.R
 import com.aslan.app.base.ActivityBase
 import com.aslan.app.databinding.ActivityPermissionBinding
 import com.aslan.baselibrary.listener.setSafeOnClickListener
@@ -27,6 +28,9 @@ class PermissionActivity : ActivityBase<ActivityPermissionBinding>(ActivityPermi
     }
 
     override fun iniData() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.flMain, PermissionFragment.newInstance())
+            .commitAllowingStateLoss()
     }
 
     private fun doRequest() {

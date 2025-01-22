@@ -3,10 +3,12 @@ package com.aslan.baselibrary.utils
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.Size
 import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
@@ -78,8 +80,19 @@ object PermissionUtils {
     /**
      * 是否具备权限
      */
-    fun hasPermissions(host: Context, @Size(min = 1) vararg perms: String): Boolean {
-        return EasyPermissions.hasPermissions(host, *perms)
+    fun hasPermissions(context: Context?, @Size(min = 1) vararg perms: String): Boolean {
+        // Always return true for SDK < M, let the system deal with the permissions
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true
+        }
+
+        context?.let {
+            return perms.all { perm ->
+                ContextCompat.checkSelfPermission(it, perm) == PackageManager.PERMISSION_GRANTED
+            }
+        } ?: run {
+            throw IllegalArgumentException("Can't check permissions for null context")
+        }
     }
 
     /**

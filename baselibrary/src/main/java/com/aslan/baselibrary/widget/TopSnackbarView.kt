@@ -29,7 +29,7 @@ class TopSnackbarView : ConstraintLayout, ContentViewCallback {
 
         fitsSystemWindows = true
         val padding = SizeUtils.dp2px(20f)
-        setPadding(padding, padding, padding, padding)
+        setPadding(padding, 0, padding, 0)
     }
 
     override fun animateContentIn(delay: Int, duration: Int) {
