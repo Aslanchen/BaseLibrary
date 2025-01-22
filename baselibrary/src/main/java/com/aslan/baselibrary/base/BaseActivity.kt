@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,6 +30,7 @@ import com.aslan.baselibrary.utils.FileUtil
 import com.aslan.baselibrary.utils.LogUtils
 import com.aslan.baselibrary.utils.PermissionUtils
 import com.aslan.baselibrary.view.CustomToolbar
+import com.aslan.baselibrary.widget.TopSnackbar
 import com.jaeger.library.StatusBarUtil
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import com.trello.rxlifecycle3.LifecycleProvider
@@ -45,7 +47,7 @@ import java.io.File
  * @author Aslan
  * @date 2018/4/11
  */
-abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.PermissionCallbacks {
+abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
     companion object {
         const val REQUEST_CODE_SD_PERMISSION = 6150
         const val REQUEST_CODE_SETTING_PERMANENTLY_DENIED = 6100
@@ -233,6 +235,16 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
+    private var mTopSnackbar: TopSnackbar? = null
+
+    /**
+     * 应用市场审核需要，在申请权限之前，需要弹框给出提示，双屏显示
+     */
+    open fun showToastBeforeRequestPermission(viewGroup: ViewGroup, request: PermissionUtils.PermissionRequest) {
+        mTopSnackbar = TopSnackbar.make(viewGroup, request.title ?: "", request.rationale ?: "")
+        mTopSnackbar!!.show()
+    }
+
     /**
      * 应用市场审核需要，在申请权限之前，需要弹框给出提示
      */
@@ -254,23 +266,16 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
     /**
      * 检查并且请求权限
      *
-     * 应用市场审核需要，在申请权限之前，需要弹框给出提示
+     * 应用市场审核需要，在申请权限之前，需要弹框给出提示。
+     *
+     * 采用了Snackbar双屏显示。
      *
      */
-    open fun checkAndRequestPermission(request: PermissionUtils.PermissionRequest, agree: () -> Unit, refuse: () -> Unit): Boolean {
+    open fun checkAndRequestPermission(viewGroup: ViewGroup, request: PermissionUtils.PermissionRequest): Boolean {
         if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
             requestPermissionLast = request
-            showDialogBeforeRequestPermission(request, agree, refuse)
-            return false
-        }
-
-        return true
-    }
-
-    open fun checkAndRequestPermission(request: PermissionUtils.PermissionRequest): Boolean {
-        if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
-            requestPermissionLast = request
-            showDialogBeforeRequestPermission(request, { PermissionUtils.requestPermissions(this, request) }, {})
+            showToastBeforeRequestPermission(viewGroup, request)
+            PermissionUtils.requestPermissions(this, request)
             return false
         }
 
@@ -324,15 +329,18 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
     /**
      * 检查并且请求SD卡读写权限
      */
-    open fun checkAndRequestSDPermission(refuse: () -> Unit): Boolean {
+    open fun checkAndRequestSDPermission(viewGroup: ViewGroup): Boolean {
         val request = getRequestSDPermission()
-        return checkAndRequestPermission(request, { PermissionUtils.requestPermissions(this, request) }, refuse)
+        return checkAndRequestPermission(viewGroup, request)
     }
 
     /**
      * 权限被授予
      */
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        mTopSnackbar?.dismiss()
+        mTopSnackbar = null
+
         if (requestPermissionLast != null) {
             val request = requestPermissionLast!!
             if (request.code != requestCode) {
@@ -349,6 +357,9 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
      * 权限被拒绝
      */
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        mTopSnackbar?.dismiss()
+        mTopSnackbar = null
+
         if (requestPermissionLast != null) {
             val request = requestPermissionLast!!
             if (request.code != requestCode) {
@@ -369,6 +380,12 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
             }
             requestPermissionLast = null
         }
+    }
+
+    override fun onRationaleAccepted(requestCode: Int) {
+    }
+
+    override fun onRationaleDenied(requestCode: Int) {
     }
 
     private val launcherInstall = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

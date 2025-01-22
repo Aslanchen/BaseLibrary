@@ -26,6 +26,7 @@ import com.aslan.baselibrary.base.BaseActivity.Companion.REQUEST_CODE_SETTING_PE
 import com.aslan.baselibrary.listener.IBaseView
 import com.aslan.baselibrary.utils.PermissionUtils
 import com.aslan.baselibrary.view.CustomToolbar
+import com.aslan.baselibrary.widget.TopSnackbar
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import com.trello.rxlifecycle3.LifecycleProvider
 import com.vmadalin.easypermissions.EasyPermissions
@@ -269,21 +270,24 @@ abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionC
     /**
      * 检查并且请求SD卡读写权限
      */
-    open fun checkAndRequestSDPermission(refuse: () -> Unit): Boolean {
+    open fun checkAndRequestSDPermission(viewGroup: ViewGroup): Boolean {
         val request = getRequestSDPermission()
-        return checkAndRequestPermission(request, { PermissionUtils.requestPermissions(this, request) }, refuse)
+        return checkAndRequestPermission(viewGroup, request)
     }
 
     /**
      * 检查并且请求权限
      *
-     * 应用市场审核需要，在申请权限之前，需要弹框给出提示
+     * 应用市场审核需要，在申请权限之前，需要弹框给出提示。
+     *
+     * 采用了Snackbar双屏显示。
      *
      */
-    open fun checkAndRequestPermission(request: PermissionUtils.PermissionRequest, agree: () -> Unit, refuse: () -> Unit): Boolean {
+    open fun checkAndRequestPermission(viewGroup: ViewGroup, request: PermissionUtils.PermissionRequest): Boolean {
         if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
             requestPermissionLast = request
-            showDialogBeforeRequestPermission(request, agree, refuse)
+            showToastBeforeRequestPermission(viewGroup, request)
+            PermissionUtils.requestPermissions(this, request)
             return false
         }
 
@@ -298,6 +302,16 @@ abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionC
         }
 
         return true
+    }
+
+    private var mTopSnackbar: TopSnackbar? = null
+
+    /**
+     * 应用市场审核需要，在申请权限之前，需要弹框给出提示，双屏显示
+     */
+    open fun showToastBeforeRequestPermission(viewGroup: ViewGroup, request: PermissionUtils.PermissionRequest) {
+        mTopSnackbar = TopSnackbar.make(viewGroup, request.title ?: "", request.rationale ?: "")
+        mTopSnackbar!!.show()
     }
 
     /**
@@ -320,6 +334,9 @@ abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionC
      * 权限被授予
      */
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        mTopSnackbar?.dismiss()
+        mTopSnackbar = null
+
         if (requestPermissionLast != null) {
             val request = requestPermissionLast!!
             if (request.code != requestCode) {
@@ -336,6 +353,9 @@ abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionC
      * 权限被拒绝
      */
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        mTopSnackbar?.dismiss()
+        mTopSnackbar = null
+
         if (requestPermissionLast != null) {
             val request = requestPermissionLast!!
             if (request.code != requestCode) {

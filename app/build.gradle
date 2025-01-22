@@ -6,12 +6,13 @@ plugins {
 }
 
 android {
-    compileSdk 33
     namespace "com.aslan.app"
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.aslan.app"
-        minSdk 19
+        minSdk 21
+        targetSdk 33
         versionCode 1
         versionName "1.0.0"
 
@@ -51,6 +52,11 @@ android {
         buildConfig true
     }
 
+    lint {
+        // https://github.com/bumptech/glide/issues/4940
+        lintConfig = file("$rootDir/android_glide_lint.xml")
+    }
+
     android.applicationVariants.all { variant ->
         variant.outputs.all {
             outputFileName = "v${variant.versionName}.apk"
@@ -60,8 +66,8 @@ android {
 
 //maven缓存时间
 configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    resolutionStrategy.cacheChangingModulesFor 30, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 30, 'seconds'
 }
 
 dependencies {
