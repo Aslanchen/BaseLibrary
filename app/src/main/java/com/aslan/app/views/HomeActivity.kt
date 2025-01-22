@@ -6,7 +6,7 @@ import com.aslan.app.databinding.ActivityMenusBinding
 import com.aslan.app.views.items.ItemMenu
 import com.aslan.baselibrary.base.UpdateState
 import eu.davidea.flexibleadapter.items.IFlexible
-import io.reactivex.Maybe
+import io.reactivex.Observable
 
 class HomeActivity : ActivityBaseListSimple<HomeActivity.Menu, ActivityMenusBinding>(ActivityMenusBinding::inflate) {
 
@@ -14,11 +14,11 @@ class HomeActivity : ActivityBaseListSimple<HomeActivity.Menu, ActivityMenusBind
 
     override fun getItem(model: Menu) = ItemMenu(model)
 
-    override fun getDatas(rushState: UpdateState, curPage: Int): Maybe<List<Menu>> {
+    override fun getDatas(rushState: UpdateState, curPage: Int): Observable<List<Menu>> {
         val list = mutableListOf<Menu>()
         list.add(Menu("输入界面") { startActivity(InputActivity.newIntent(requireContext())) })
         list.add(Menu("权限界面") { startActivity(PermissionActivity.newIntent(requireContext())) })
-        return Maybe.just(list)
+        return Observable.just(list)
     }
 
     override fun onItemClick(item: IFlexible<*>, position: Int): Boolean {
