@@ -21,11 +21,13 @@ import com.vmadalin.easypermissions.dialogs.SettingsDialog
  *
  */
 object PermissionUtils {
+    //定位权限
     val PERMISSIONS_LOCATION = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION,
     )
 
+    //外部拓展存储
     val PERMISSIONS_EXTERNAL_STORAGE = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(
             Manifest.permission.READ_MEDIA_IMAGES,
@@ -39,6 +41,7 @@ object PermissionUtils {
         )
     }
 
+    //外部存储和拍照
     val PERMISSIONS_CAMERA_AND_ALBUM = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(
             Manifest.permission.READ_MEDIA_IMAGES,
@@ -54,6 +57,7 @@ object PermissionUtils {
         )
     }
 
+    //外部存储和录视频
     val PERMISSIONS_VIDEO_AND_ALBUM = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(
             Manifest.permission.READ_MEDIA_IMAGES,

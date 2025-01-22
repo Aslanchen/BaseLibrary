@@ -24,6 +24,7 @@ import com.aslan.baselibrary.R
 import com.aslan.baselibrary.base.BaseActivity.Companion.REQUEST_CODE_SD_PERMISSION
 import com.aslan.baselibrary.base.BaseActivity.Companion.REQUEST_CODE_SETTING_PERMANENTLY_DENIED
 import com.aslan.baselibrary.listener.IBaseView
+import com.aslan.baselibrary.utils.LogUtils
 import com.aslan.baselibrary.utils.PermissionUtils
 import com.aslan.baselibrary.view.CustomToolbar
 import com.aslan.baselibrary.widget.TopSnackbar
@@ -39,7 +40,7 @@ import java.lang.Deprecated
  * @author Aslan
  * @date 2018/4/11
  */
-abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionCallbacks {
+abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
     protected val mLifecycleProvider = AndroidLifecycle.createLifecycleProvider(this)
     protected var progressDialog: WaitingDialog? = null
     protected var titleBar: CustomToolbar? = null
@@ -270,9 +271,9 @@ abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionC
     /**
      * 检查并且请求SD卡读写权限
      */
-    open fun checkAndRequestSDPermission(viewGroup: ViewGroup): Boolean {
+    open fun checkAndRequestSDPermission(): Boolean {
         val request = getRequestSDPermission()
-        return checkAndRequestPermission(viewGroup, request)
+        return checkAndRequestPermission(request)
     }
 
     /**
@@ -283,21 +284,11 @@ abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionC
      * 采用了Snackbar双屏显示。
      *
      */
-    open fun checkAndRequestPermission(viewGroup: ViewGroup, request: PermissionUtils.PermissionRequest): Boolean {
-        if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
-            requestPermissionLast = request
-            showToastBeforeRequestPermission(viewGroup, request)
-            PermissionUtils.requestPermissions(this, request)
-            return false
-        }
-
-        return true
-    }
-
     open fun checkAndRequestPermission(request: PermissionUtils.PermissionRequest): Boolean {
         if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
             requestPermissionLast = request
-            showDialogBeforeRequestPermission(request, { PermissionUtils.requestPermissions(this, request) }, {})
+            showToastBeforeRequestPermission(request)
+            PermissionUtils.requestPermissions(this, request)
             return false
         }
 
@@ -309,7 +300,8 @@ abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionC
     /**
      * 应用市场审核需要，在申请权限之前，需要弹框给出提示，双屏显示
      */
-    open fun showToastBeforeRequestPermission(viewGroup: ViewGroup, request: PermissionUtils.PermissionRequest) {
+    open fun showToastBeforeRequestPermission(request: PermissionUtils.PermissionRequest) {
+        val viewGroup = view?.findViewById<ViewGroup>(android.R.id.content) ?: return
         mTopSnackbar = TopSnackbar.make(viewGroup, request.title ?: "", request.rationale ?: "")
         mTopSnackbar!!.show()
     }
@@ -364,17 +356,38 @@ abstract class BaseFragment : Fragment(), IBaseView, EasyPermissions.PermissionC
 
             if (PermissionUtils.somePermissionPermanentlyDenied(this, perms)) {
                 //永久拒绝，只能跳转到设置界面
-                PermissionUtils.newAppSettingsDialogBuilder(requireContext())
-                    .title(R.string.permissions)
-                    .requestCode(REQUEST_CODE_SETTING_PERMANENTLY_DENIED)
-                    .rationale(R.string.request_permission_permanently_denied)
-                    .negativeButtonText(R.string.refuse)
-                    .positiveButtonText(R.string.go_setting)
-                    .openOnNewTask(true)
-                    .build()
-                    .show()
+                showPermissionPermanentlyDeniedDialog()
             }
             requestPermissionLast = null
         }
+    }
+
+    /**
+     * 权限被永久拒绝，需要去设置界面，手动设置
+     */
+    protected fun showPermissionPermanentlyDeniedDialog() {
+        PermissionUtils.newAppSettingsDialogBuilder(requireContext())
+            .title(R.string.permissions)
+            .requestCode(REQUEST_CODE_SETTING_PERMANENTLY_DENIED)
+            .rationale(R.string.request_permission_permanently_denied)
+            .negativeButtonText(R.string.refuse)
+            .positiveButtonText(R.string.go_setting)
+            .openOnNewTask(true)
+            .build()
+            .show()
+    }
+
+    /**
+     * 权限被拒绝后，权限说明时候的弹框，接受
+     */
+    override fun onRationaleAccepted(requestCode: Int) {
+        LogUtils.d("onRationaleAccepted requestCode=" + requestCode)
+    }
+
+    /**
+     * 权限被拒绝后，权限说明时候的弹框，拒绝
+     */
+    override fun onRationaleDenied(requestCode: Int) {
+        LogUtils.d("onRationaleDenied requestCode=" + requestCode)
     }
 }

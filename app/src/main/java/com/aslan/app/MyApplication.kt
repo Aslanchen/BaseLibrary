@@ -22,10 +22,10 @@ class MyApplication : Application() {
     }
 
     private fun initLog() {
-//        LogUtils.config(
-//            "App",
-//            if (BuildConfig.DEBUG) LogLevel.ALL else LogLevel.INFO,
-//            FileUtil.getLog(this).path
-//        )
+        LogUtils.config(
+            "App",
+            if (BuildConfig.DEBUG) LogLevel.ALL else LogLevel.INFO,
+            FileUtil.getLog(this).path
+        )
     }
 }

@@ -1,7 +1,9 @@
 package com.aslan.baselibrary.widget
 
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.aslan.baselibrary.R
 import com.google.android.material.snackbar.BaseTransientBottomBar
 
@@ -23,6 +25,8 @@ class TopSnackbar(
             val mTopSnackbar = TopSnackbar(viewGroup, customSnackbar)
             mTopSnackbar.setDuration(BaseTransientBottomBar.LENGTH_INDEFINITE)
             mTopSnackbar.setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_FADE)
+            val lp = mTopSnackbar.getView().layoutParams as FrameLayout.LayoutParams
+            lp.gravity = Gravity.TOP
             return mTopSnackbar
         }
     }
