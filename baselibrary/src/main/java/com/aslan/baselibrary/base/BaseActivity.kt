@@ -240,7 +240,8 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
     /**
      * 应用市场审核需要，在申请权限之前，需要弹框给出提示，双屏显示
      */
-    open fun showToastBeforeRequestPermission(viewGroup: ViewGroup, request: PermissionUtils.PermissionRequest) {
+    open fun showToastBeforeRequestPermission(request: PermissionUtils.PermissionRequest) {
+        val viewGroup = findViewById<ViewGroup>(android.R.id.content)
         mTopSnackbar = TopSnackbar.make(viewGroup, request.title ?: "", request.rationale ?: "")
         mTopSnackbar!!.show()
     }
@@ -271,10 +272,10 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
      * 采用了Snackbar双屏显示。
      *
      */
-    open fun checkAndRequestPermission(viewGroup: ViewGroup, request: PermissionUtils.PermissionRequest): Boolean {
+    open fun checkAndRequestPermission(request: PermissionUtils.PermissionRequest): Boolean {
         if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
             requestPermissionLast = request
-            showToastBeforeRequestPermission(viewGroup, request)
+            showToastBeforeRequestPermission(request)
             PermissionUtils.requestPermissions(this, request)
             return false
         }
@@ -329,9 +330,9 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
     /**
      * 检查并且请求SD卡读写权限
      */
-    open fun checkAndRequestSDPermission(viewGroup: ViewGroup): Boolean {
+    open fun checkAndRequestSDPermission(): Boolean {
         val request = getRequestSDPermission()
-        return checkAndRequestPermission(viewGroup, request)
+        return checkAndRequestPermission(request)
     }
 
     /**
@@ -368,24 +369,50 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
 
             if (PermissionUtils.somePermissionPermanentlyDenied(this, perms)) {
                 //永久拒绝，只能跳转到设置界面
-                PermissionUtils.newAppSettingsDialogBuilder(this)
-                    .title(R.string.permissions)
-                    .requestCode(REQUEST_CODE_SETTING_PERMANENTLY_DENIED)
-                    .rationale(R.string.request_permission_permanently_denied)
-                    .negativeButtonText(R.string.refuse)
-                    .positiveButtonText(R.string.go_setting)
-                    .openOnNewTask(true)
-                    .build()
-                    .show()
+                showPermissionPermanentlyDeniedDialog()
             }
             requestPermissionLast = null
         }
     }
 
-    override fun onRationaleAccepted(requestCode: Int) {
+    /**
+     * 权限被永久拒绝，需要去设置界面，手动设置
+     */
+    fun showPermissionPermanentlyDeniedDialog() {
+        PermissionUtils.newAppSettingsDialogBuilder(this)
+            .title(R.string.permissions)
+            .requestCode(REQUEST_CODE_SETTING_PERMANENTLY_DENIED)
+            .rationale(R.string.request_permission_permanently_denied)
+            .negativeButtonText(R.string.refuse)
+            .positiveButtonText(R.string.go_setting)
+            .openOnNewTask(true)
+            .build()
+            .show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_SETTING_PERMANENTLY_DENIED) {
+            onPermissionPermanentlyDeniedSettingCallback(data)
+        }
+    }
+
+    fun onPermissionPermanentlyDeniedSettingCallback(data: Intent?) {
+
+    }
+
+    /**
+     * 权限被拒绝后，权限说明时候的弹框，接受
+     */
+    override fun onRationaleAccepted(requestCode: Int) {
+        LogUtils.d("onRationaleAccepted requestCode=" + requestCode)
+    }
+
+    /**
+     * 权限被拒绝后，权限说明时候的弹框，拒绝
+     */
     override fun onRationaleDenied(requestCode: Int) {
+        LogUtils.d("onRationaleDenied requestCode=" + requestCode)
     }
 
     private val launcherInstall = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

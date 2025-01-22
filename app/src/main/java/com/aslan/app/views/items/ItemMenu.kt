@@ -1,15 +1,15 @@
 package com.aslan.app.views.items
 
 import android.view.View
-import com.aslan.app.views.ListSimpleActivity
 import com.aslan.app.R
 import com.aslan.app.databinding.ItemMenuBinding
+import com.aslan.app.views.HomeActivity
 import com.aslan.baselibrary.base.VBBaseViewHolder
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
 
-class ItemMenu(val data: ListSimpleActivity.Menu) : AbstractFlexibleItem<ItemMenu.ViewHolder>() {
+class ItemMenu(val data: HomeActivity.Menu) : AbstractFlexibleItem<ItemMenu.ViewHolder>() {
 
     override fun equals(o: Any?): Boolean {
         if (o is ItemMenu) {
@@ -45,12 +45,6 @@ class ItemMenu(val data: ListSimpleActivity.Menu) : AbstractFlexibleItem<ItemMen
 
     inner class ViewHolder(view: View, adapter: FlexibleAdapter<*>) :
         VBBaseViewHolder<ItemMenuBinding>(view, adapter, ItemMenuBinding::bind) {
-        init {
 
-        }
-
-        override fun toggleActivation() {
-            super.toggleActivation()
-        }
     }
 }
