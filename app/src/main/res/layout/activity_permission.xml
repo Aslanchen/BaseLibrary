@@ -19,4 +19,9 @@
     android:layout_height="wrap_content"
     android:layout_margin="20dp"
     android:text="请求权限" />
+
+  <androidx.fragment.app.FragmentContainerView
+    android:id="@+id/flMain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
 </LinearLayout>
