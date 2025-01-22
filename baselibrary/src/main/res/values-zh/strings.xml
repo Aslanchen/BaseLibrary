@@ -22,7 +22,7 @@
   <string name="request_permission_install_apk">安装APK需要先授权!</string>
   <string name="request_permission_down">为了提升您的使用体验，APP在运行过程中需要将部分数据下载并存储到本地设备。因此，我们需要您授权存储的读写权限，只有在您授权后，才能正常使用相关功能。</string>
   <string name="request_permission_permanently_denied">当前权限被拒绝多次，需要进入设置界面手动打开！</string>
-  <string name="permissions">权限</string>
+  <string name="permissions">权限说明</string>
   <string name="confirm">确认</string>
   <string name="ok">好的</string>
   <string name="agree">同意</string>

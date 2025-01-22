@@ -21,6 +21,11 @@ import com.vmadalin.easypermissions.dialogs.SettingsDialog
  *
  */
 object PermissionUtils {
+    val PERMISSIONS_LOCATION = arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+    )
+
     val PERMISSIONS_EXTERNAL_STORAGE = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(
             Manifest.permission.READ_MEDIA_IMAGES,
@@ -67,7 +72,7 @@ object PermissionUtils {
     }
 
     /**
-     * 释放具备权限
+     * 是否具备权限
      */
     fun hasPermissions(host: Context, @Size(min = 1) vararg perms: String): Boolean {
         return EasyPermissions.hasPermissions(host, *perms)
