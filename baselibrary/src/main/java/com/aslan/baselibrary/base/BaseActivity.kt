@@ -25,16 +25,16 @@ import androidx.lifecycle.lifecycleScope
 import com.aslan.baselibrary.R
 import com.aslan.baselibrary.event.EventDownload
 import com.aslan.baselibrary.listener.IBaseView
+import com.aslan.baselibrary.permissions.EasyPermissions
+import com.aslan.baselibrary.permissions.models.PermissionRequest
 import com.aslan.baselibrary.utils.AppUtil
 import com.aslan.baselibrary.utils.FileUtil
 import com.aslan.baselibrary.utils.LogUtils
-import com.aslan.baselibrary.utils.PermissionUtils
 import com.aslan.baselibrary.view.CustomToolbar
 import com.aslan.baselibrary.widget.TopSnackbar
 import com.jaeger.library.StatusBarUtil
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import com.trello.rxlifecycle3.LifecycleProvider
-import com.vmadalin.easypermissions.EasyPermissions
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -47,7 +47,7 @@ import java.io.File
  * @author Aslan
  * @date 2018/4/11
  */
-abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
+abstract class BaseActivity : AppCompatActivity(), IBaseView {
     companion object {
         const val REQUEST_CODE_SD_PERMISSION = 6150
         const val REQUEST_CODE_SETTING_PERMANENTLY_DENIED = 6100
@@ -230,17 +230,12 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
         return mLifecycleProvider
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
     private var mTopSnackbar: TopSnackbar? = null
 
     /**
      * 应用市场审核需要，在申请权限之前，需要弹框给出提示，双屏显示
      */
-    open fun showToastBeforeRequestPermission(request: PermissionUtils.PermissionRequest) {
+    open fun showToastBeforeRequestPermission(request: PermissionRequest) {
         val viewGroup = findViewById<ViewGroup>(android.R.id.content)
         mTopSnackbar = TopSnackbar.make(viewGroup, request.title ?: "", request.rationale ?: "")
         mTopSnackbar!!.show()
@@ -249,7 +244,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
     /**
      * 应用市场审核需要，在申请权限之前，需要弹框给出提示
      */
-    open fun showDialogBeforeRequestPermission(request: PermissionUtils.PermissionRequest, agree: () -> Unit, refuse: () -> Unit) {
+    open fun showDialogBeforeRequestPermission(request: PermissionRequest, agree: () -> Unit, refuse: () -> Unit) {
         AlertDialog.Builder(requireContext())
             .setTitle(request.title)
             .setMessage(request.rationale)
@@ -262,7 +257,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
             .show()
     }
 
-    protected var requestPermissionLast: PermissionUtils.PermissionRequest? = null
+    protected var requestPermissionLast: PermissionRequest? = null
 
     /**
      * 检查并且请求权限
@@ -272,11 +267,11 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
      * 采用了Snackbar双屏显示。
      *
      */
-    open fun checkAndRequestPermission(request: PermissionUtils.PermissionRequest): Boolean {
-        if (!PermissionUtils.hasPermissions(requireContext(), *request.perms)) {
+    open fun checkAndRequestPermission(request: PermissionRequest): Boolean {
+        if (!EasyPermissions.hasPermissions(requireContext(), *request.perms)) {
             requestPermissionLast = request
             showToastBeforeRequestPermission(request)
-            PermissionUtils.requestPermissions(this, request)
+            EasyPermissions.requestPermissions(this, request)
             return false
         }
 
@@ -294,7 +289,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
     /**
      * 需要全面访问外部存储（例如文件管理器应用）
      */
-    open fun checkAndRequestExternalStorageManager(request: PermissionUtils.PermissionRequest, refuse: () -> Unit): Boolean {
+    open fun checkAndRequestExternalStorageManager(request: PermissionRequest, refuse: () -> Unit): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Android11以上需要申请所有文件访问权限
             if (!Environment.isExternalStorageManager()) {
@@ -311,13 +306,13 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
         return true
     }
 
-    private var mRequestSDPermission: PermissionUtils.PermissionRequest? = null//SD权限
+    private var mRequestSDPermission: PermissionRequest? = null//SD权限
 
-    fun getRequestSDPermission(): PermissionUtils.PermissionRequest {
+    fun getRequestSDPermission(): PermissionRequest {
         if (mRequestSDPermission == null) {
-            mRequestSDPermission = PermissionUtils.PermissionRequest.Builder(this)
+            mRequestSDPermission = PermissionRequest.Builder(this)
                 .code(REQUEST_CODE_SD_PERMISSION)
-                .perms(PermissionUtils.PERMISSIONS_EXTERNAL_STORAGE)
+                .perms(EasyPermissions.PERMISSIONS_EXTERNAL_STORAGE)
                 .title(R.string.permissions)
                 .rationale(R.string.request_permission_down)
                 .positiveButtonText(R.string.agree)
@@ -338,42 +333,42 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
     /**
      * 权限被授予
      */
-    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
-        mTopSnackbar?.dismiss()
-        mTopSnackbar = null
-
-        if (requestPermissionLast != null) {
-            val request = requestPermissionLast!!
-            if (request.code != requestCode) {
-                return
-            }
-
-            if (PermissionUtils.somePermissionPermanentlyDenied(this, requestPermissionLast!!.perms.toList()).not()) {
-                requestPermissionLast = null
-            }
-        }
-    }
+//    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+//        mTopSnackbar?.dismiss()
+//        mTopSnackbar = null
+//
+//        if (requestPermissionLast != null) {
+//            val request = requestPermissionLast!!
+//            if (request.code != requestCode) {
+//                return
+//            }
+//
+//            if (EasyPermissions.somePermissionPermanentlyDenied(this, requestPermissionLast!!.perms.toList()).not()) {
+//                requestPermissionLast = null
+//            }
+//        }
+//    }
 
     /**
      * 权限被拒绝
      */
-    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
-        mTopSnackbar?.dismiss()
-        mTopSnackbar = null
-
-        if (requestPermissionLast != null) {
-            val request = requestPermissionLast!!
-            if (request.code != requestCode) {
-                return
-            }
-
-            if (PermissionUtils.somePermissionPermanentlyDenied(this, perms)) {
-                //永久拒绝，只能跳转到设置界面
-                showPermissionPermanentlyDeniedDialog()
-            }
-            requestPermissionLast = null
-        }
-    }
+//    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+//        mTopSnackbar?.dismiss()
+//        mTopSnackbar = null
+//
+//        if (requestPermissionLast != null) {
+//            val request = requestPermissionLast!!
+//            if (request.code != requestCode) {
+//                return
+//            }
+//
+//            if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+//                //永久拒绝，只能跳转到设置界面
+//                showPermissionPermanentlyDeniedDialog()
+//            }
+//            requestPermissionLast = null
+//        }
+//    }
 
     /**
      * 权限被永久拒绝，需要去设置界面，手动设置
@@ -382,7 +377,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
         val launcherApplicationDetailSettings = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             mTopSnackbar?.dismiss()
             mTopSnackbar = null
-//            onApplicationDetailSettingsReturn(result)
         }
 
         AlertDialog.Builder(requireContext())
@@ -403,15 +397,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
                 mTopSnackbar = null
             }
             .show()
-//        PermissionUtils.newAppSettingsDialogBuilder(this)
-//            .title(R.string.permissions)
-//            .requestCode(REQUEST_CODE_SETTING_PERMANENTLY_DENIED)
-//            .rationale(R.string.request_permission_permanently_denied)
-//            .negativeButtonText(R.string.refuse)
-//            .positiveButtonText(R.string.go_setting)
-//            .openOnNewTask(true)
-//            .build()
-//            .show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -423,24 +408,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView, EasyPermissions.Pe
 
     fun onPermissionPermanentlyDeniedSettingCallback(data: Intent?) {
 
-    }
-
-    /**
-     * 权限被拒绝后，权限说明时候的弹框，接受
-     */
-    override fun onRationaleAccepted(requestCode: Int) {
-        LogUtils.d("onRationaleAccepted requestCode=" + requestCode)
-        mTopSnackbar?.dismiss()
-        mTopSnackbar = null
-    }
-
-    /**
-     * 权限被拒绝后，权限说明时候的弹框，拒绝
-     */
-    override fun onRationaleDenied(requestCode: Int) {
-        LogUtils.d("onRationaleDenied requestCode=" + requestCode)
-        mTopSnackbar?.dismiss()
-        mTopSnackbar = null
     }
 
     private val launcherInstall = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

@@ -3,15 +3,15 @@ package com.aslan.baselibrary.base
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.Size
-import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.coroutineScope
 import com.aslan.baselibrary.listener.IBaseView
 import com.aslan.baselibrary.listener.IMVPBasePresenter
-import com.vmadalin.easypermissions.EasyPermissions
-import com.vmadalin.easypermissions.dialogs.SettingsDialog
-import com.vmadalin.easypermissions.models.PermissionRequest
+import com.aslan.baselibrary.permissions.EasyPermissions
 
 /**
  * MPV基础类
@@ -65,60 +65,6 @@ abstract class MVPBasePresenter<V : IBaseView> : IMVPBasePresenter {
         } else {
             activity.supportFragmentManager
         }
-    }
-
-    /**
-     * EasyPermissions 使用
-     */
-    protected fun somePermissionDenied(vararg perms: String): Boolean {
-        return if (fragment == null) {
-            EasyPermissions.somePermissionDenied(activity, *perms)
-        } else {
-            EasyPermissions.somePermissionDenied(fragment!!, *perms)
-        }
-    }
-
-    /**
-     * EasyPermissions 使用
-     */
-    protected fun requestPermissions(
-        @StringRes rationaleResId: Int, requestCode: Int,
-        @Size(min = 1) vararg perms: String
-    ) {
-        requestPermissions(requireContext().getString(rationaleResId), requestCode, *perms)
-    }
-
-    /**
-     * EasyPermissions 使用
-     */
-    protected fun requestPermissions(
-        rationale: String, requestCode: Int,
-        @Size(min = 1) vararg perms: String
-    ) {
-        if (fragment == null) {
-            EasyPermissions.requestPermissions(activity, rationale, requestCode, *perms)
-        } else {
-            EasyPermissions.requestPermissions(fragment!!, rationale, requestCode, *perms)
-        }
-    }
-
-    /**
-     * EasyPermissions 使用
-     */
-    protected fun newPermissionRequestBuilder(
-        requestCode: Int,
-        @Size(min = 1) vararg perms: String
-    ): PermissionRequest.Builder {
-        return PermissionRequest.Builder(requireContext())
-            .code(requestCode)
-            .perms(perms)
-    }
-
-    /**
-     * EasyPermissions 使用,进入设置界面
-     */
-    protected fun newAppSettingsDialogBuilder(): SettingsDialog.Builder {
-        return SettingsDialog.Builder(requireContext())
     }
 
     /**
