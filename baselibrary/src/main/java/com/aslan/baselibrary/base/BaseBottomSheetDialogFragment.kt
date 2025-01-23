@@ -15,7 +15,7 @@ import com.aslan.baselibrary.listener.IBaseView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import com.trello.rxlifecycle3.LifecycleProvider
-import com.vmadalin.easypermissions.EasyPermissions
+import com.aslan.baselibrary.permissions.EasyPermissions
 
 /**
  * 基础类

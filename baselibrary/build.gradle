@@ -91,9 +91,6 @@ dependencies {
     api 'eu.davidea:flexible-adapter:5.1.0'
     api 'eu.davidea:flexible-adapter-ui:1.0.0'
 
-    //权限
-    api 'com.vmadalin:easypermissions-ktx:1.0.0'
-
     //RxJava2+Rxlifecycle3+retrofit2+okhttp+okio
     //Android 19需要3.12.X版本
     api 'com.squareup.okhttp3:okhttp:3.12.13'
