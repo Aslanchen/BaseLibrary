@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.aslan.baselibrary.permissions.helpers.ActivityPermissionsHelper
 import com.aslan.baselibrary.permissions.helpers.FragmentPermissionsHelper
+import com.aslan.baselibrary.permissions.models.PermissionRequest
+import com.aslan.baselibrary.widget.TopSnackbar
 
 /**
  * Delegate class to make permission calls based on the 'host' (Fragment, Activity, etc).
@@ -38,8 +40,9 @@ abstract class PermissionsHelper<T>(val host: T) {
         }
     }
 
-    abstract var context: Context?
+    abstract var mContext: Context
 
+    abstract fun showToastBeforeRequestPermission(request: PermissionRequest): TopSnackbar
     abstract fun shouldShowRequestPermissionRationale(perm: String): Boolean
 
     fun somePermissionPermanentlyDenied(perms: List<String>): Boolean {

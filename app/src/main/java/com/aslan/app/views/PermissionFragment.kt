@@ -35,7 +35,7 @@ class PermissionFragment : FragmentBase<FragmentPermissionBinding>(FragmentPermi
 
     private fun doRequest() {
         EasyPermissions.mTipType = EasyPermissions.TipType.Dialog
-        checkAndRequestPermission(
+        EasyPermissions.requestPermissions(this,
             PermissionRequest.Builder(requireContext())
                 .title(com.aslan.baselibrary.R.string.permissions)
                 .perms(EasyPermissions.PERMISSIONS_LOCATION)

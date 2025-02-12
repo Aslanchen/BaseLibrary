@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,7 +32,6 @@ import com.aslan.baselibrary.utils.AppUtil
 import com.aslan.baselibrary.utils.FileUtil
 import com.aslan.baselibrary.utils.LogUtils
 import com.aslan.baselibrary.view.CustomToolbar
-import com.aslan.baselibrary.widget.TopSnackbar
 import com.jaeger.library.StatusBarUtil
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import com.trello.rxlifecycle3.LifecycleProvider
@@ -234,129 +232,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
         return mLifecycleProvider
     }
 
-    /**
-     * 应用市场审核需要，在申请权限之前，需要弹框给出提示，双屏显示
-     */
-    open fun showToastBeforeRequestPermission(request: PermissionRequest): TopSnackbar {
-        val viewGroup = findViewById<ViewGroup>(android.R.id.content)
-        val mTopSnackbar = TopSnackbar.make(viewGroup, request.title ?: "", request.rationale ?: "")
-        mTopSnackbar.show()
-        return mTopSnackbar
-    }
-
-    /**
-     * 应用市场审核需要，在申请权限之前，需要弹框给出提示
-     */
-    open fun showDialogBeforeRequestPermission(request: PermissionRequest, agree: () -> Unit, refuse: () -> Unit) {
-        AlertDialog.Builder(requireContext())
-            .setTitle(request.title)
-            .setMessage(request.rationale)
-            .setPositiveButton(request.positiveButtonText) { dialog, which ->
-                agree()
-            }
-            .setNegativeButton(request.negativeButtonText) { dialog, which ->
-                refuse()
-            }
-            .show()
-    }
-
-    open fun checkAndRequestPermission(request: PermissionRequest, callback: PermissionCallbacks) {
-        if (EasyPermissions.mTipType == EasyPermissions.TipType.Toast) {
-            if (!EasyPermissions.hasPermissions(requireContext(), *request.perms)) {
-                if (EasyPermissions.somePermissionDenied(this, *request.perms)) {
-                    val callback2 = object : PermissionCallbacks {
-                        override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
-                            callback.onPermissionsGranted(allGranted, perms)
-                        }
-
-                        override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
-                            callback.onPermissionsDenied(doNotAskAgain, perms)
-
-                            if (EasyPermissions.somePermissionPermanentlyDenied(this@BaseActivity, perms)) {
-                                //永久拒绝，只能跳转到设置界面
-                                showPermissionPermanentlyDeniedDialog({ }, { })
-                            }
-                        }
-
-                        override fun onRationaleAccepted() {
-                            val mTopSnackbar = showToastBeforeRequestPermission(request)
-                            callback.onRationaleAccepted()
-                        }
-
-                        override fun onRationaleDenied() {
-                            callback.onRationaleDenied()
-                        }
-                    }
-                    EasyPermissions.requestPermissions(this, request, callback2)
-                } else {
-                    val mTopSnackbar = showToastBeforeRequestPermission(request)
-                    val callback2 = object : PermissionCallbacks {
-                        override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
-                            mTopSnackbar.dismiss()
-                            callback.onPermissionsGranted(allGranted, perms)
-                        }
-
-                        override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
-                            callback.onPermissionsDenied(doNotAskAgain, perms)
-
-                            if (EasyPermissions.somePermissionPermanentlyDenied(this@BaseActivity, perms)) {
-                                //永久拒绝，只能跳转到设置界面
-                                showPermissionPermanentlyDeniedDialog({ mTopSnackbar.dismiss() }, { mTopSnackbar.dismiss() })
-                            } else {
-                                mTopSnackbar.dismiss()
-                            }
-                        }
-
-                        override fun onRationaleAccepted() {
-                            mTopSnackbar.dismiss()
-                            callback.onRationaleAccepted()
-                        }
-
-                        override fun onRationaleDenied() {
-                            callback.onRationaleDenied()
-                        }
-                    }
-                    EasyPermissions.requestPermissions(this, request, callback2)
-                }
-            } else {
-                EasyPermissions.requestPermissions(this, request, callback)
-            }
-        } else if (EasyPermissions.mTipType == EasyPermissions.TipType.Dialog) {
-            if (!EasyPermissions.hasPermissions(requireContext(), *request.perms)) {
-                val callback2 = object : PermissionCallbacks {
-                    override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
-                        callback.onPermissionsGranted(allGranted, perms)
-                    }
-
-                    override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
-                        callback.onPermissionsDenied(doNotAskAgain, perms)
-
-                        if (EasyPermissions.somePermissionPermanentlyDenied(this@BaseActivity, perms)) {
-                            //永久拒绝，只能跳转到设置界面
-                            showPermissionPermanentlyDeniedDialog({}, {})
-                        }
-                    }
-
-                    override fun onRationaleAccepted() {
-                        callback.onRationaleAccepted()
-                    }
-
-                    override fun onRationaleDenied() {
-                        callback.onRationaleDenied()
-                    }
-                }
-
-                showDialogBeforeRequestPermission(
-                    request,
-                    { EasyPermissions.requestPermissions(this, request, callback2) },
-                    { callback.onPermissionsDenied(false, request.perms.toList()) })
-            } else {
-                EasyPermissions.requestPermissions(this, request, callback)
-            }
-        }
-    }
-
-    private val launcherExternalStorageManager = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    val launcherExternalStorageManager = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         onExternalStorageManagerResult(result)
     }
 
@@ -371,7 +247,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Android11以上需要申请所有文件访问权限
             if (!Environment.isExternalStorageManager()) {
-                showDialogBeforeRequestPermission(request, {
+                EasyPermissions.mIViewProvider.showConfirmDialog(this, request, {
                     val packageUri = Uri.parse("package:$packageName")
                     val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, packageUri)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -404,34 +280,11 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
      */
     open fun checkAndRequestSDPermission(callback: PermissionCallbacks) {
         val request = getRequestSDPermission()
-        checkAndRequestPermission(request, callback)
+        EasyPermissions.requestPermissions(this, request, callback)
     }
 
     private val launcherApplicationDetailSettings = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         onPermissionManualSettingResult(result)
-    }
-
-    /**
-     * 权限被永久拒绝，需要去设置界面，手动设置
-     */
-    fun showPermissionPermanentlyDeniedDialog(agree: () -> Unit, refuse: () -> Unit) {
-        AlertDialog.Builder(requireContext())
-            .setCancelable(false)
-            .setTitle(R.string.permissions)
-            .setMessage(R.string.request_permission_permanently_denied)
-            .setPositiveButton(R.string.go_setting) { dialog, which ->
-                agree()
-
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.fromParts("package", requireContext().packageName, null)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                launcherApplicationDetailSettings.launch(intent)
-            }
-            .setNegativeButton(R.string.refuse) { dialog, which ->
-                refuse()
-            }
-            .show()
     }
 
     /**
