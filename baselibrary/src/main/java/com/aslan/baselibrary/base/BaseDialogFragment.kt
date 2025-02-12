@@ -214,8 +214,8 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
             .show()
     }
 
-    open fun checkAndRequestPermission(tipType: EasyPermissions.TipType, request: PermissionRequest, callback: PermissionCallbacks) {
-        if (tipType == EasyPermissions.TipType.Toast) {
+    open fun checkAndRequestPermission(request: PermissionRequest, callback: PermissionCallbacks) {
+        if (EasyPermissions.mTipType == EasyPermissions.TipType.Toast) {
             if (!EasyPermissions.hasPermissions(requireContext(), *request.perms)) {
                 val mTopSnackbar = showToastBeforeRequestPermission(request)
                 val callback2 = object : PermissionCallbacks {
@@ -229,7 +229,7 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
 
                         if (EasyPermissions.somePermissionPermanentlyDenied(this@BaseDialogFragment, perms)) {
                             //永久拒绝，只能跳转到设置界面
-                            showPermissionPermanentlyDeniedDialog(mTopSnackbar)
+                            showPermissionPermanentlyDeniedDialog({ mTopSnackbar.dismiss() }, { mTopSnackbar.dismiss() })
                         } else {
                             mTopSnackbar.dismiss()
                         }
@@ -239,11 +239,26 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
             } else {
                 EasyPermissions.requestPermissions(this, request, callback)
             }
-        } else if (tipType == EasyPermissions.TipType.Dialog) {
+        } else if (EasyPermissions.mTipType == EasyPermissions.TipType.Dialog) {
             if (!EasyPermissions.hasPermissions(requireContext(), *request.perms)) {
+                val callback2 = object : PermissionCallbacks {
+                    override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
+                        callback.onPermissionsGranted(allGranted, perms)
+                    }
+
+                    override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
+                        callback.onPermissionsDenied(doNotAskAgain, perms)
+
+                        if (EasyPermissions.somePermissionPermanentlyDenied(this@BaseDialogFragment, perms)) {
+                            //永久拒绝，只能跳转到设置界面
+                            showPermissionPermanentlyDeniedDialog({}, {})
+                        }
+                    }
+                }
+
                 showDialogBeforeRequestPermission(
                     request,
-                    { EasyPermissions.requestPermissions(this, request, callback) },
+                    { EasyPermissions.requestPermissions(this, request, callback2) },
                     { callback.onPermissionsDenied(false, request.perms.toList()) })
             } else {
                 EasyPermissions.requestPermissions(this, request, callback)
@@ -297,9 +312,9 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
     /**
      * 检查并且请求SD卡读写权限
      */
-    open fun checkAndRequestSDPermission(tipType: EasyPermissions.TipType, callback: PermissionCallbacks) {
+    open fun checkAndRequestSDPermission(callback: PermissionCallbacks) {
         val request = getRequestSDPermission()
-        checkAndRequestPermission(tipType, request, callback)
+        checkAndRequestPermission(request, callback)
     }
 
     private val launcherApplicationDetailSettings = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -309,13 +324,13 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
     /**
      * 权限被永久拒绝，需要去设置界面，手动设置
      */
-    fun showPermissionPermanentlyDeniedDialog(mTopSnackbar: TopSnackbar) {
+    fun showPermissionPermanentlyDeniedDialog(agree: () -> Unit, refuse: () -> Unit) {
         AlertDialog.Builder(requireContext())
             .setCancelable(false)
             .setTitle(R.string.permissions)
             .setMessage(R.string.request_permission_permanently_denied)
             .setPositiveButton(R.string.go_setting) { dialog, which ->
-                mTopSnackbar.dismiss()
+                agree()
 
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     data = Uri.fromParts("package", requireContext().packageName, null)
@@ -324,7 +339,7 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
                 launcherApplicationDetailSettings.launch(intent)
             }
             .setNegativeButton(R.string.refuse) { dialog, which ->
-                mTopSnackbar.dismiss()
+                refuse()
             }
             .show()
     }

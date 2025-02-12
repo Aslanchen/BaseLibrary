@@ -37,6 +37,7 @@ private const val TAG = "EasyPermissions"
  */
 @Suppress("UNUSED")
 object EasyPermissions {
+    var mTipType = EasyPermissions.TipType.Dialog
 
     enum class TipType {
         Dialog, Toast
