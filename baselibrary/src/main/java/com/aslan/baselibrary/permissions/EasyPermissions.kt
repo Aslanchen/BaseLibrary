@@ -16,19 +16,19 @@
 package com.aslan.baselibrary.permissions
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Size
-import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.aslan.baselibrary.permissions.annotations.AfterPermissionGranted
 import com.aslan.baselibrary.permissions.helpers.base.PermissionsHelper
 import com.aslan.baselibrary.permissions.models.PermissionRequest
-import com.aslan.baselibrary.permissions.utils.AnnotationsUtils
 
 private const val TAG = "EasyPermissions"
 
@@ -37,6 +37,10 @@ private const val TAG = "EasyPermissions"
  */
 @Suppress("UNUSED")
 object EasyPermissions {
+
+    enum class TipType {
+        Dialog, Toast
+    }
 
     //定位权限
     val PERMISSIONS_LOCATION = arrayOf(
@@ -95,20 +99,62 @@ object EasyPermissions {
     /**
      * Callback interface to receive the results of `EasyPermissions.requestPermissions()` calls.
      */
-    interface PermissionCallbacks : ActivityCompat.OnRequestPermissionsResultCallback {
+    interface PermissionCallbacks {
 
-        fun onPermissionsGranted(requestCode: Int, perms: List<String>)
+        fun onPermissionsGranted(allGranted: Boolean, perms: List<String>)
 
-        fun onPermissionsDenied(requestCode: Int, perms: List<String>)
+        fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>)
     }
 
-    /**
-     * Callback interface to receive button clicked events of the rationale dialog
-     */
-    interface RationaleCallbacks {
-        fun onRationaleAccepted(requestCode: Int)
+    private val maps = mutableMapOf<Any, ActivityResultLauncher<Array<String>>>()
 
-        fun onRationaleDenied(requestCode: Int)
+    @JvmStatic
+    fun add(host: Any) {
+        val callback =
+            ActivityResultCallback<Map<String, @JvmSuppressWildcards Boolean>> { grantResults ->
+                val grantedList = mutableListOf<String>()
+                val deniedList = mutableListOf<String>()
+                for ((permission, granted) in grantResults) {
+                    if (granted) {
+                        grantedList.add(permission)
+                    } else {
+                        deniedList.add(permission)
+                    }
+                }
+
+                if (grantedList.isNotEmpty()) {
+                    last?.callback?.onPermissionsGranted(deniedList.isEmpty(), grantedList)
+                }
+
+                if (deniedList.isNotEmpty()) {
+                    val doNotAskAgain = if (host is AppCompatActivity) {
+                        PermissionsHelper.newInstance(host).somePermissionPermanentlyDenied(deniedList)
+                    } else if (host is Fragment) {
+                        PermissionsHelper.newInstance(host).somePermissionPermanentlyDenied(deniedList)
+                    } else {
+                        false
+                    }
+                    last?.callback?.onPermissionsDenied(doNotAskAgain, deniedList)
+                }
+            }
+
+        if (host is AppCompatActivity) {
+            val mLauncher = host.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions(), callback)
+            maps.put(host, mLauncher)
+        } else if (host is Fragment) {
+            val mLauncher = host.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions(), callback)
+            maps.put(host, mLauncher)
+        }
+    }
+
+    @JvmStatic
+    fun remove(host: Any) {
+        maps.remove(host)
+    }
+
+    @JvmStatic
+    private fun getLauncher(host: Any): ActivityResultLauncher<Array<String>>? {
+        return maps.get(host)
     }
 
     /**
@@ -146,23 +192,21 @@ object EasyPermissions {
      * @param host requesting context.
      * @param rationale a message explaining why the application needs this set of permissions;
      * will be displayed if the user rejects the request the first time.
-     * @param requestCode request code to track this request, must be &lt; 256.
      * @param perms a set of permissions to be requested.
      * @see Manifest.permission
      */
     @JvmStatic
     fun requestPermissions(
-        host: Activity,
+        host: AppCompatActivity,
         rationale: String,
-        requestCode: Int,
-        @Size(min = 1) perms: Array<String>
+        @Size(min = 1) perms: Array<String>,
+        callback: PermissionCallbacks,
     ) {
         val request = PermissionRequest.Builder(host)
-            .code(requestCode)
             .perms(perms)
             .rationale(rationale)
             .build()
-        requestPermissions(host, request)
+        requestPermissions(host, request, callback)
     }
 
     /**
@@ -174,16 +218,18 @@ object EasyPermissions {
     fun requestPermissions(
         host: Fragment,
         rationale: String,
-        requestCode: Int,
-        @Size(min = 1) perms: Array<String>
+        @Size(min = 1) perms: Array<String>,
+        callback: PermissionCallbacks,
     ) {
-        val request = PermissionRequest.Builder(host.context)
-            .code(requestCode)
+        val request = PermissionRequest.Builder(host.requireContext())
             .perms(perms)
             .rationale(rationale)
             .build()
-        requestPermissions(host, request)
+        requestPermissions(host, request, callback)
     }
+
+    @Volatile
+    private var last: PermissionRequest? = null
 
     /**
      * Request a set of permissions.
@@ -195,13 +241,16 @@ object EasyPermissions {
     @JvmStatic
     fun requestPermissions(
         host: Fragment,
-        request: PermissionRequest
+        request: PermissionRequest,
+        callback: PermissionCallbacks
     ) {
         // Check for permissions before dispatching the request
+        request.callback = callback
+        this.last = request
         if (hasPermissions(host.context, *request.perms)) {
-            notifyAlreadyHasPermissions(host, request.code, request.perms)
+            request.callback?.onPermissionsGranted(true, request.perms.toList())
         } else {
-            PermissionsHelper.newInstance(host).requestPermissions(request)
+            getLauncher(host)?.launch(request.perms)
         }
     }
 
@@ -214,61 +263,17 @@ object EasyPermissions {
      */
     @JvmStatic
     fun requestPermissions(
-        host: Activity,
-        request: PermissionRequest
+        host: AppCompatActivity,
+        request: PermissionRequest,
+        callback: PermissionCallbacks
     ) {
         // Check for permissions before dispatching the request
+        request.callback = callback
+        this.last = request
         if (hasPermissions(host, *request.perms)) {
-            notifyAlreadyHasPermissions(host, request.code, request.perms)
+            request.callback?.onPermissionsGranted(true, request.perms.toList())
         } else {
-            PermissionsHelper.newInstance(host).requestPermissions(request)
-        }
-    }
-
-    /**
-     * Handle the result of a permission request, should be called from the calling [Activity]'s
-     * [ActivityCompat.OnRequestPermissionsResultCallback.onRequestPermissionsResult] method.
-     *
-     * If any permissions were granted or denied, the `object` will receive the appropriate
-     * callbacks through [PermissionCallbacks] and methods annotated with [AfterPermissionGranted]
-     * will be run if appropriate.
-     *
-     * @param requestCode requestCode argument to permission result callback.
-     * @param permissions permissions argument to permission result callback.
-     * @param grantResults grantResults argument to permission result callback.
-     * @param receivers an array of objects that have a method annotated with
-     * [AfterPermissionGranted] or implement [PermissionCallbacks].
-     */
-    @JvmStatic
-    fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray,
-        vararg receivers: Any
-    ) {
-        val groupedPermissionsResult = grantResults
-            .zip(permissions)
-            .groupBy({ it.first }, { it.second })
-
-        val grantedList = groupedPermissionsResult[PackageManager.PERMISSION_GRANTED] ?: emptyList()
-        val deniedList = groupedPermissionsResult[PackageManager.PERMISSION_DENIED] ?: emptyList()
-
-        receivers.forEach { receiver ->
-            if (receiver is PermissionCallbacks) {
-                if (grantedList.isNotEmpty()) {
-                    receiver.onPermissionsGranted(requestCode, grantedList)
-                }
-
-                if (deniedList.isNotEmpty()) {
-                    receiver.onPermissionsDenied(requestCode, deniedList)
-                }
-            }
-
-            if (grantedList.isNotEmpty() && deniedList.isEmpty()) {
-                AnnotationsUtils.notifyAnnotatedMethods(receiver, AfterPermissionGranted::class) {
-                    it.value == requestCode
-                }
-            }
+            getLauncher(host)?.launch(request.perms)
         }
     }
 
@@ -289,7 +294,7 @@ object EasyPermissions {
      */
     @JvmStatic
     fun somePermissionPermanentlyDenied(
-        host: Activity,
+        host: AppCompatActivity,
         deniedPerms: List<String>
     ): Boolean {
         return PermissionsHelper.newInstance(host).somePermissionPermanentlyDenied(deniedPerms)
@@ -316,7 +321,7 @@ object EasyPermissions {
      */
     @JvmStatic
     fun somePermissionDenied(
-        host: Activity,
+        host: AppCompatActivity,
         @Size(min = 1) vararg perms: String
     ): Boolean {
         return PermissionsHelper.newInstance(host).somePermissionDenied(perms)
@@ -342,7 +347,7 @@ object EasyPermissions {
      */
     @JvmStatic
     fun permissionPermanentlyDenied(
-        host: Activity,
+        host: AppCompatActivity,
         deniedPerms: String
     ): Boolean {
         return PermissionsHelper.newInstance(host).permissionPermanentlyDenied(deniedPerms)
@@ -357,26 +362,5 @@ object EasyPermissions {
         deniedPerms: String
     ): Boolean {
         return PermissionsHelper.newInstance(host).permissionPermanentlyDenied(deniedPerms)
-    }
-
-    // ============================================================================================
-    //  Private Methods
-    // ============================================================================================
-
-    /**
-     * Run permission callbacks on an object that requested permissions but already has them by
-     * simulating [PackageManager.PERMISSION_GRANTED].
-     *
-     * @param receiver the object requesting permissions.
-     * @param requestCode the permission request code.
-     * @param perms a list of permissions requested.
-     */
-    private fun notifyAlreadyHasPermissions(
-        receiver: Any,
-        requestCode: Int,
-        perms: Array<out String>
-    ) {
-        val grantResults = IntArray(perms.size) { PackageManager.PERMISSION_GRANTED }
-        onRequestPermissionsResult(requestCode, perms, grantResults, receiver)
     }
 }

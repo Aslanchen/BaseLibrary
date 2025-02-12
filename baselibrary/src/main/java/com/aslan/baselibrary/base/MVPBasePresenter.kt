@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import com.aslan.baselibrary.listener.IBaseView
 import com.aslan.baselibrary.listener.IMVPBasePresenter
-import com.aslan.baselibrary.permissions.EasyPermissions
 
 /**
  * MPV基础类
@@ -48,16 +47,6 @@ abstract class MVPBasePresenter<V : IBaseView> : IMVPBasePresenter {
     override fun onStop(owner: LifecycleOwner) {}
     override fun onDestroy(owner: LifecycleOwner) {}
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {}
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        if (this is EasyPermissions.PermissionCallbacks) {
-            EasyPermissions
-                .onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-        }
-    }
 
     override fun getFragmentManager(): FragmentManager {
         return if (fragment != null) {

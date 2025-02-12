@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.CallSuper
 import androidx.annotation.StringRes
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AlertDialog
@@ -20,9 +21,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.aslan.baselibrary.R
-import com.aslan.baselibrary.base.BaseActivity.Companion.REQUEST_CODE_SD_PERMISSION
 import com.aslan.baselibrary.listener.IBaseView
 import com.aslan.baselibrary.permissions.EasyPermissions
+import com.aslan.baselibrary.permissions.EasyPermissions.PermissionCallbacks
 import com.aslan.baselibrary.permissions.models.PermissionRequest
 import com.aslan.baselibrary.widget.TopSnackbar
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
@@ -43,6 +44,8 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let { iniBundle(it) }
+
+        EasyPermissions.add(this)
     }
 
     override fun onCreateView(
@@ -165,9 +168,11 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
         }
     }
 
+    @CallSuper
     override fun onDestroy() {
         mToast = null
         closeProgressBar()
+        EasyPermissions.remove(this)
         super.onDestroy()
     }
 
@@ -183,25 +188,67 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
         return provider
     }
 
-    protected var requestPermissionLast: PermissionRequest? = null
+    /**
+     * 应用市场审核需要，在申请权限之前，需要弹框给出提示，双屏显示
+     */
+    open fun showToastBeforeRequestPermission(request: PermissionRequest): TopSnackbar {
+        val viewGroup = requireActivity().findViewById<ViewGroup>(android.R.id.content)
+        val mTopSnackbar = TopSnackbar.make(viewGroup, request.title ?: "", request.rationale ?: "")
+        mTopSnackbar.show()
+        return mTopSnackbar
+    }
 
     /**
-     * 检查并且请求权限
-     *
-     * 应用市场审核需要，在申请权限之前，需要弹框给出提示。
-     *
-     * 采用了Snackbar双屏显示。
-     *
+     * 应用市场审核需要，在申请权限之前，需要弹框给出提示
      */
-    open fun checkAndRequestPermission(request: PermissionRequest): Boolean {
-        if (!EasyPermissions.hasPermissions(requireContext(), *request.perms)) {
-            requestPermissionLast = request
-            showToastBeforeRequestPermission(request)
-            EasyPermissions.requestPermissions(requireActivity(), request)
-            return false
-        }
+    open fun showDialogBeforeRequestPermission(request: PermissionRequest, agree: () -> Unit, refuse: () -> Unit) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(request.title)
+            .setMessage(request.rationale)
+            .setPositiveButton(request.positiveButtonText) { dialog, which ->
+                agree()
+            }
+            .setNegativeButton(request.negativeButtonText) { dialog, which ->
+                refuse()
+            }
+            .show()
+    }
 
-        return true
+    open fun checkAndRequestPermission(tipType: EasyPermissions.TipType, request: PermissionRequest, callback: PermissionCallbacks) {
+        if (tipType == EasyPermissions.TipType.Toast) {
+            if (!EasyPermissions.hasPermissions(requireContext(), *request.perms)) {
+                val mTopSnackbar = showToastBeforeRequestPermission(request)
+                val callback2 = object : PermissionCallbacks {
+                    override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
+                        mTopSnackbar.dismiss()
+                        callback.onPermissionsGranted(allGranted, perms)
+                    }
+
+                    override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
+                        callback.onPermissionsDenied(doNotAskAgain, perms)
+
+                        if (EasyPermissions.somePermissionPermanentlyDenied(this@BaseDialogFragment, perms)) {
+                            //永久拒绝，只能跳转到设置界面
+                            showPermissionPermanentlyDeniedDialog(mTopSnackbar)
+                        } else {
+                            mTopSnackbar.dismiss()
+                        }
+                    }
+                }
+                EasyPermissions.requestPermissions(this, request, callback2)
+            } else {
+                EasyPermissions.requestPermissions(this, request, callback)
+            }
+        } else if (tipType == EasyPermissions.TipType.Dialog) {
+            if (!EasyPermissions.hasPermissions(requireContext(), *request.perms)) {
+                showDialogBeforeRequestPermission(
+                    request,
+                    { EasyPermissions.requestPermissions(this, request, callback) },
+                    { callback.onPermissionsDenied(false, request.perms.toList()) })
+            } else {
+                EasyPermissions.requestPermissions(this, request, callback)
+            }
+        }
     }
 
     private val launcherExternalStorageManager = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -237,7 +284,6 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
     fun getRequestSDPermission(): PermissionRequest {
         if (mRequestSDPermission == null) {
             mRequestSDPermission = PermissionRequest.Builder(requireContext())
-                .code(REQUEST_CODE_SD_PERMISSION)
                 .perms(EasyPermissions.PERMISSIONS_EXTERNAL_STORAGE)
                 .title(R.string.permissions)
                 .rationale(R.string.request_permission_down)
@@ -251,96 +297,42 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView {
     /**
      * 检查并且请求SD卡读写权限
      */
-    open fun checkAndRequestSDPermission(): Boolean {
+    open fun checkAndRequestSDPermission(tipType: EasyPermissions.TipType, callback: PermissionCallbacks) {
         val request = getRequestSDPermission()
-        return checkAndRequestPermission(request)
+        checkAndRequestPermission(tipType, request, callback)
     }
 
-    private var mTopSnackbar: TopSnackbar? = null
-
-    /**
-     * 应用市场审核需要，在申请权限之前，需要弹框给出提示，双屏显示
-     */
-    open fun showToastBeforeRequestPermission(request: PermissionRequest) {
-        val viewGroup = requireActivity().findViewById<ViewGroup>(android.R.id.content)
-        mTopSnackbar = TopSnackbar.make(viewGroup, request.title ?: "", request.rationale ?: "")
-        mTopSnackbar!!.show()
+    private val launcherApplicationDetailSettings = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        onPermissionManualSettingResult(result)
     }
 
     /**
-     * 应用市场审核需要，在申请权限之前，需要弹框给出提示
+     * 权限被永久拒绝，需要去设置界面，手动设置
      */
-    open fun showDialogBeforeRequestPermission(request: PermissionRequest, agree: () -> Unit, refuse: () -> Unit) {
+    fun showPermissionPermanentlyDeniedDialog(mTopSnackbar: TopSnackbar) {
         AlertDialog.Builder(requireContext())
-            .setTitle(request.title)
-            .setMessage(request.rationale)
-            .setPositiveButton(request.positiveButtonText) { dialog, which ->
-                agree()
+            .setCancelable(false)
+            .setTitle(R.string.permissions)
+            .setMessage(R.string.request_permission_permanently_denied)
+            .setPositiveButton(R.string.go_setting) { dialog, which ->
+                mTopSnackbar.dismiss()
+
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", requireContext().packageName, null)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                launcherApplicationDetailSettings.launch(intent)
             }
-            .setNegativeButton(request.negativeButtonText) { dialog, which ->
-                refuse()
+            .setNegativeButton(R.string.refuse) { dialog, which ->
+                mTopSnackbar.dismiss()
             }
             .show()
     }
 
     /**
-     * 权限被授予
+     * 权限手动设置后回调
      */
-//    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
-//        mTopSnackbar?.dismiss()
-//        mTopSnackbar = null
-//
-//        if (requestPermissionLast != null) {
-//            val request = requestPermissionLast!!
-//            if (request.code != requestCode) {
-//                return
-//            }
-//
-//            if (EasyPermissions.somePermissionPermanentlyDenied(this, requestPermissionLast!!.perms.toList()).not()) {
-//                requestPermissionLast = null
-//            }
-//        }
-//    }
+    open fun onPermissionManualSettingResult(result: ActivityResult) {
 
-    /**
-     * 权限被拒绝
-     */
-//    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
-//        mTopSnackbar?.dismiss()
-//        mTopSnackbar = null
-//
-//        if (requestPermissionLast != null) {
-//            val request = requestPermissionLast!!
-//            if (request.code != requestCode) {
-//                return
-//            }
-//
-//            if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-//                //永久拒绝，只能跳转到设置界面
-//                showPermissionPermanentlyDeniedDialog()
-//            }
-//            requestPermissionLast = null
-//        }
-//    }
-
-    /**
-     * 权限被永久拒绝，需要去设置界面，手动设置
-     */
-    protected fun showPermissionPermanentlyDeniedDialog() {
-//        EasyPermissions.newAppSettingsDialogBuilder(requireContext())
-//            .title(R.string.permissions)
-//            .requestCode(REQUEST_CODE_SETTING_PERMANENTLY_DENIED)
-//            .rationale(R.string.request_permission_permanently_denied)
-//            .negativeButtonText(R.string.refuse)
-//            .positiveButtonText(R.string.go_setting)
-//            .openOnNewTask(true)
-//            .build()
-//            .show()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mTopSnackbar?.dismiss()
-        mTopSnackbar = null
     }
 }

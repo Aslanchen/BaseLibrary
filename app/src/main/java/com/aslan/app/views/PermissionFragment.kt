@@ -7,6 +7,7 @@ import com.aslan.app.databinding.FragmentPermissionBinding
 import com.aslan.baselibrary.listener.setSafeOnClickListener
 import com.aslan.baselibrary.permissions.EasyPermissions
 import com.aslan.baselibrary.permissions.models.PermissionRequest
+import com.aslan.baselibrary.utils.LogUtils
 
 class PermissionFragment : FragmentBase<FragmentPermissionBinding>(FragmentPermissionBinding::inflate) {
 
@@ -33,15 +34,22 @@ class PermissionFragment : FragmentBase<FragmentPermissionBinding>(FragmentPermi
     }
 
     private fun doRequest() {
-        checkAndRequestPermission(
+        checkAndRequestPermission(EasyPermissions.TipType.Toast,
             PermissionRequest.Builder(requireContext())
                 .title(com.aslan.baselibrary.R.string.permissions)
-                .code(1000)
                 .perms(EasyPermissions.PERMISSIONS_LOCATION)
                 .rationale("定位需要，申请权限")
                 .positiveButtonText("去授权")
                 .negativeButtonText("取消")
-                .build()
+                .build(), object : EasyPermissions.PermissionCallbacks {
+                override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
+                    LogUtils.d("onPermissionsGranted")
+                }
+
+                override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
+                    LogUtils.d("onPermissionsDenied")
+                }
+            }
         )
     }
 }
