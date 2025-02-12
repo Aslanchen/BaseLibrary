@@ -7,6 +7,8 @@ import com.aslan.app.R
 import com.aslan.app.base.ActivityBase
 import com.aslan.app.databinding.ActivityPermissionBinding
 import com.aslan.baselibrary.listener.setSafeOnClickListener
+import com.aslan.baselibrary.permissions.EasyPermissions
+import com.aslan.baselibrary.utils.LogUtils
 
 class PermissionActivity : ActivityBase<ActivityPermissionBinding>(ActivityPermissionBinding::inflate) {
 
@@ -34,6 +36,14 @@ class PermissionActivity : ActivityBase<ActivityPermissionBinding>(ActivityPermi
     }
 
     private fun doRequest() {
-        checkAndRequestSDPermission()
+        checkAndRequestSDPermission(EasyPermissions.TipType.Toast, object : EasyPermissions.PermissionCallbacks {
+            override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
+                LogUtils.d("onPermissionsGranted")
+            }
+
+            override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
+                LogUtils.d("onPermissionsDenied")
+            }
+        })
     }
 }

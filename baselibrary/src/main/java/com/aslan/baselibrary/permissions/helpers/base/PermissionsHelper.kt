@@ -17,16 +17,10 @@ package com.aslan.baselibrary.permissions.helpers.base
 
 import android.app.Activity
 import android.content.Context
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.aslan.baselibrary.permissions.helpers.ActivityPermissionsHelper
-import com.aslan.baselibrary.permissions.helpers.AppCompatActivityPermissionsHelper
 import com.aslan.baselibrary.permissions.helpers.FragmentPermissionsHelper
-import com.aslan.baselibrary.permissions.models.PermissionRequest
 
 /**
  * Delegate class to make permission calls based on the 'host' (Fragment, Activity, etc).
@@ -35,10 +29,8 @@ abstract class PermissionsHelper<T>(val host: T) {
 
     companion object {
 
-        fun newInstance(host: Activity): PermissionsHelper<out Activity> {
-            return (host as? AppCompatActivity)?.let {
-                AppCompatActivityPermissionsHelper(it)
-            } ?: ActivityPermissionsHelper(host)
+        fun newInstance(host: AppCompatActivity): PermissionsHelper<out Activity> {
+            return ActivityPermissionsHelper(host)
         }
 
         fun newInstance(host: Fragment): PermissionsHelper<Fragment> {
@@ -52,39 +44,11 @@ abstract class PermissionsHelper<T>(val host: T) {
 
     abstract var context: Context?
 
-    abstract fun <I, O> registerForActivityResult(
-        contract: ActivityResultContract<I, O>,
-        callback: ActivityResultCallback<O>
-    ): ActivityResultLauncher<I>
-
-    abstract fun directRequestPermissions(requestCode: Int, perms: Array<String>)
-
     abstract fun shouldShowRequestPermissionRationale(perm: String): Boolean
-
-    abstract fun showRequestPermissionRationale(permissionRequest: PermissionRequest)
 
     // ============================================================================================
     //  Public methods
     // ============================================================================================
-
-    fun requestPermissions(permissionRequest: PermissionRequest) {
-        if (shouldShowRationale(permissionRequest.perms)) {
-            showRequestPermissionRationale(permissionRequest)
-        } else {
-            val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-//            if (isGranted) {
-//                // PERMISSION GRANTED
-//            } else {
-//                // PERMISSION NOT GRANTED
-//            }
-
-                for (permission in permissions) {
-
-                }
-            }
-            requestPermissionLauncher.launch(permissionRequest.perms)
-        }
-    }
 
     fun somePermissionPermanentlyDenied(perms: List<String>): Boolean {
         return perms.any { permissionPermanentlyDenied(it) }

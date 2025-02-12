@@ -16,14 +16,8 @@
 package com.aslan.baselibrary.permissions.helpers
 
 import android.content.Context
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.aslan.baselibrary.permissions.dialogs.RationaleDialog
 import com.aslan.baselibrary.permissions.helpers.base.PermissionsHelper
-import com.aslan.baselibrary.permissions.models.PermissionRequest
 
 /**
  * Permissions helper for [Fragment].
@@ -32,35 +26,7 @@ internal class FragmentPermissionsHelper(host: Fragment) : PermissionsHelper<Fra
 
     override var context: Context? = host.requireContext()
 
-    override fun <I, O> registerForActivityResult(
-        contract: ActivityResultContract<I, O>,
-        callback: ActivityResultCallback<O>
-    ): ActivityResultLauncher<I> {
-        return host.registerForActivityResult(contract, callback)
-    }
-
-    override fun directRequestPermissions(requestCode: Int, perms: Array<String>) {
-        val requestPermissionLauncher = host.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-//            if (isGranted) {
-//                // PERMISSION GRANTED
-//            } else {
-//                // PERMISSION NOT GRANTED
-//            }
-
-            for (permission in permissions) {
-
-            }
-        }
-        requestPermissionLauncher.launch(perms)
-    }
-
     override fun shouldShowRequestPermissionRationale(perm: String): Boolean {
         return host.shouldShowRequestPermissionRationale(perm)
-    }
-
-    override fun showRequestPermissionRationale(permissionRequest: PermissionRequest) {
-        context?.let {
-            RationaleDialog(it, permissionRequest).showDialog()
-        }
     }
 }
