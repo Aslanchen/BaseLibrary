@@ -263,25 +263,61 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
     open fun checkAndRequestPermission(request: PermissionRequest, callback: PermissionCallbacks) {
         if (EasyPermissions.mTipType == EasyPermissions.TipType.Toast) {
             if (!EasyPermissions.hasPermissions(requireContext(), *request.perms)) {
-                val mTopSnackbar = showToastBeforeRequestPermission(request)
-                val callback2 = object : PermissionCallbacks {
-                    override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
-                        mTopSnackbar.dismiss()
-                        callback.onPermissionsGranted(allGranted, perms)
-                    }
+                if (EasyPermissions.somePermissionDenied(this, *request.perms)) {
+                    val callback2 = object : PermissionCallbacks {
+                        override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
+                            callback.onPermissionsGranted(allGranted, perms)
+                        }
 
-                    override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
-                        callback.onPermissionsDenied(doNotAskAgain, perms)
+                        override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
+                            callback.onPermissionsDenied(doNotAskAgain, perms)
 
-                        if (EasyPermissions.somePermissionPermanentlyDenied(this@BaseActivity, perms)) {
-                            //永久拒绝，只能跳转到设置界面
-                            showPermissionPermanentlyDeniedDialog({ mTopSnackbar.dismiss() }, { mTopSnackbar.dismiss() })
-                        } else {
-                            mTopSnackbar.dismiss()
+                            if (EasyPermissions.somePermissionPermanentlyDenied(this@BaseActivity, perms)) {
+                                //永久拒绝，只能跳转到设置界面
+                                showPermissionPermanentlyDeniedDialog({ }, { })
+                            }
+                        }
+
+                        override fun onRationaleAccepted() {
+                            val mTopSnackbar = showToastBeforeRequestPermission(request)
+                            callback.onRationaleAccepted()
+                        }
+
+                        override fun onRationaleDenied() {
+                            callback.onRationaleDenied()
                         }
                     }
+                    EasyPermissions.requestPermissions(this, request, callback2)
+                } else {
+                    val mTopSnackbar = showToastBeforeRequestPermission(request)
+                    val callback2 = object : PermissionCallbacks {
+                        override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
+                            mTopSnackbar.dismiss()
+                            callback.onPermissionsGranted(allGranted, perms)
+                        }
+
+                        override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
+                            callback.onPermissionsDenied(doNotAskAgain, perms)
+
+                            if (EasyPermissions.somePermissionPermanentlyDenied(this@BaseActivity, perms)) {
+                                //永久拒绝，只能跳转到设置界面
+                                showPermissionPermanentlyDeniedDialog({ mTopSnackbar.dismiss() }, { mTopSnackbar.dismiss() })
+                            } else {
+                                mTopSnackbar.dismiss()
+                            }
+                        }
+
+                        override fun onRationaleAccepted() {
+                            mTopSnackbar.dismiss()
+                            callback.onRationaleAccepted()
+                        }
+
+                        override fun onRationaleDenied() {
+                            callback.onRationaleDenied()
+                        }
+                    }
+                    EasyPermissions.requestPermissions(this, request, callback2)
                 }
-                EasyPermissions.requestPermissions(this, request, callback2)
             } else {
                 EasyPermissions.requestPermissions(this, request, callback)
             }
@@ -299,6 +335,14 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView {
                             //永久拒绝，只能跳转到设置界面
                             showPermissionPermanentlyDeniedDialog({}, {})
                         }
+                    }
+
+                    override fun onRationaleAccepted() {
+                        callback.onRationaleAccepted()
+                    }
+
+                    override fun onRationaleDenied() {
+                        callback.onRationaleDenied()
                     }
                 }
 

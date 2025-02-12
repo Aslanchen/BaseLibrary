@@ -42,7 +42,7 @@ class PermissionFragment : FragmentBase<FragmentPermissionBinding>(FragmentPermi
                 .rationale("定位需要，申请权限")
                 .positiveButtonText("去授权")
                 .negativeButtonText("取消")
-                .build(), object : EasyPermissions.PermissionCallbacks {
+                .build(), object : EasyPermissions.SimplePermissionCallbacks() {
                 override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
                     LogUtils.d("onPermissionsGranted")
                 }

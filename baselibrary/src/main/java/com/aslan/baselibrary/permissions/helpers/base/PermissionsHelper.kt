@@ -38,17 +38,9 @@ abstract class PermissionsHelper<T>(val host: T) {
         }
     }
 
-    // ============================================================================================
-    // Public abstract methods
-    // ============================================================================================
-
     abstract var context: Context?
 
     abstract fun shouldShowRequestPermissionRationale(perm: String): Boolean
-
-    // ============================================================================================
-    //  Public methods
-    // ============================================================================================
 
     fun somePermissionPermanentlyDenied(perms: List<String>): Boolean {
         return perms.any { permissionPermanentlyDenied(it) }
@@ -62,11 +54,7 @@ abstract class PermissionsHelper<T>(val host: T) {
         return shouldShowRationale(perms)
     }
 
-    // ============================================================================================
-    //  Private methods
-    // ============================================================================================
-
-    private fun shouldShowRationale(perms: Array<out String>): Boolean {
+    fun shouldShowRationale(perms: Array<out String>): Boolean {
         return perms.any { shouldShowRequestPermissionRationale(it) }
     }
 }

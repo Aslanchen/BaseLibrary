@@ -36,8 +36,8 @@ class PermissionActivity : ActivityBase<ActivityPermissionBinding>(ActivityPermi
     }
 
     private fun doRequest() {
-        EasyPermissions.mTipType = EasyPermissions.TipType.Dialog
-        checkAndRequestSDPermission(object : EasyPermissions.PermissionCallbacks {
+        EasyPermissions.mTipType = EasyPermissions.TipType.Toast
+        checkAndRequestSDPermission(object : EasyPermissions.SimplePermissionCallbacks() {
             override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
                 LogUtils.d("onPermissionsGranted")
             }
