@@ -20,12 +20,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
-import android.view.ViewGroup
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Size
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -41,7 +39,7 @@ private const val TAG = "EasyPermissions"
 @Suppress("UNUSED")
 object EasyPermissions {
     var mTipType = EasyPermissions.TipType.Dialog
-    var mRationaleDialogProvider: IViewProvider = RationaleDialogProvider()
+    var mIViewProvider: IViewProvider = DefaultViewProvider()
 
     enum class TipType {
         Dialog, Toast
@@ -262,56 +260,91 @@ object EasyPermissions {
         callback: PermissionCallbacks
     ) {
         // Check for permissions before dispatching the request
-        request.callback = callback
         this.last = request
+        request.callback = callback
+
+        val mHelper = PermissionsHelper.newInstance(host)
         if (mTipType == TipType.Toast) {
-            if (hasPermissions(host.context, *request.perms)) {
-                request.callback?.onPermissionsGranted(true, request.perms.toList())
-            } else if (PermissionsHelper.newInstance(host).shouldShowRationale(request.perms)) {
-                mRationaleDialogProvider.showRationaleDialog(host.requireContext(), request,
+            if (hasPermissions(host.requireContext(), *request.perms)) {
+                callback.onPermissionsGranted(true, request.perms.toList())
+            } else if (mHelper.shouldShowRationale(request.perms)) {
+                mIViewProvider.showRationaleDialog(host.requireContext(), request,
                     {
-                        getLauncher(host)?.launch(request.perms)
                         callback.onRationaleAccepted()
+
+                        val mTopSnackbar = mHelper.showToastBeforeRequestPermission(request)
+                        requestPermissionsReal(mHelper, mTopSnackbar, request, callback)
                     },
                     {
                         callback.onRationaleDenied()
+                        callback.onPermissionsDenied(false, request.perms.toList())
                     })
             } else {
-                getLauncher(host)?.launch(request.perms)
+                val mTopSnackbar = mHelper.showToastBeforeRequestPermission(request)
+                requestPermissionsReal(mHelper, mTopSnackbar, request, callback)
             }
         } else if (mTipType == TipType.Dialog) {
-            if (hasPermissions(host.context, *request.perms)) {
-                request.callback?.onPermissionsGranted(true, request.perms.toList())
+            if (hasPermissions(host.requireContext(), *request.perms)) {
+                callback.onPermissionsGranted(true, request.perms.toList())
+            } else if (mHelper.shouldShowRationale(request.perms)) {
+                mIViewProvider.showRationaleDialog(host.requireContext(), request,
+                    {
+                        callback.onRationaleAccepted()
+                        requestPermissionsReal(mHelper, null, request, callback)
+                    },
+                    {
+                        callback.onRationaleDenied()
+                        callback.onPermissionsDenied(false, request.perms.toList())
+                    })
             } else {
-                getLauncher(host)?.launch(request.perms)
+                mIViewProvider.showConfirmDialog(host.requireContext(), request,
+                    {
+                        requestPermissionsReal(mHelper, null, request, callback)
+                    },
+                    {
+                        callback.onPermissionsDenied(false, request.perms.toList())
+                    })
             }
         }
     }
 
-    /**
-     * 应用市场审核需要，在申请权限之前，需要弹框给出提示，双屏显示
-     */
-    private fun showToastBeforeRequestPermission(host: AppCompatActivity, request: PermissionRequest): TopSnackbar {
-        val viewGroup = host.findViewById<ViewGroup>(android.R.id.content)
-        val mTopSnackbar = TopSnackbar.make(viewGroup, request.title ?: "", request.rationale ?: "")
-        mTopSnackbar.show()
-        return mTopSnackbar
-    }
+    private fun requestPermissionsReal(
+        helper: PermissionsHelper<*>,
+        mTopSnackbar: TopSnackbar? = null,
+        request: PermissionRequest,
+        callback: PermissionCallbacks
+    ) {
+        val callback2 = object : PermissionCallbacks {
+            override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
+                mTopSnackbar?.dismiss()
+                callback.onPermissionsGranted(allGranted, perms)
+            }
 
-    /**
-     * 应用市场审核需要，在申请权限之前，需要弹框给出提示
-     */
-    private fun showDialogBeforeRequestPermission(request: PermissionRequest, agree: () -> Unit, refuse: () -> Unit) {
-        AlertDialog.Builder(requireContext())
-            .setTitle(request.title)
-            .setMessage(request.rationale)
-            .setPositiveButton(request.positiveButtonText) { dialog, which ->
-                agree()
+            override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
+                if (helper.somePermissionPermanentlyDenied(perms)) {
+                    //永久拒绝，只能跳转到设置界面
+                    mIViewProvider.showPermanentlyDeniedDialog(helper.mContext, { mTopSnackbar?.dismiss() },
+                        {
+                            mTopSnackbar?.dismiss()
+                            callback.onPermissionsDenied(false, request.perms.toList())
+                        })
+                } else {
+                    mTopSnackbar?.dismiss()
+                    callback.onPermissionsDenied(doNotAskAgain, perms)
+                }
             }
-            .setNegativeButton(request.negativeButtonText) { dialog, which ->
-                refuse()
+
+            override fun onRationaleAccepted() {
+                mTopSnackbar?.dismiss()
+                callback.onRationaleAccepted()
             }
-            .show()
+
+            override fun onRationaleDenied() {
+                callback.onRationaleDenied()
+            }
+        }
+        request.callback = callback2
+        getLauncher(helper.host!!)?.launch(request.perms)
     }
 
     /**
@@ -328,58 +361,50 @@ object EasyPermissions {
         callback: PermissionCallbacks
     ) {
         // Check for permissions before dispatching the request
-        request.callback = callback
         this.last = request
+        request.callback = callback
 
+        val mHelper = PermissionsHelper.newInstance(host)
         if (mTipType == TipType.Toast) {
             if (hasPermissions(host, *request.perms)) {
-                request.callback?.onPermissionsGranted(true, request.perms.toList())
-            } else if (PermissionsHelper.newInstance(host).shouldShowRationale(request.perms)) {
-                mRationaleDialogProvider.showRationaleDialog(host, request,
+                callback.onPermissionsGranted(true, request.perms.toList())
+            } else if (mHelper.shouldShowRationale(request.perms)) {
+                mIViewProvider.showRationaleDialog(host, request,
                     {
                         callback.onRationaleAccepted()
 
-                        val mTopSnackbar = showToastBeforeRequestPermission(host, request)
-                        val callback2 = object : PermissionCallbacks {
-                            override fun onPermissionsGranted(allGranted: Boolean, perms: List<String>) {
-                                mTopSnackbar.dismiss()
-                                callback.onPermissionsGranted(allGranted, perms)
-                            }
-
-                            override fun onPermissionsDenied(doNotAskAgain: Boolean, perms: List<String>) {
-                                callback.onPermissionsDenied(doNotAskAgain, perms)
-
-                                if (somePermissionPermanentlyDenied(host, perms)) {
-                                    //永久拒绝，只能跳转到设置界面
-                                    mRationaleDialogProvider.showPermanentlyDeniedDialog({ mTopSnackbar.dismiss() }, { mTopSnackbar.dismiss() })
-                                } else {
-                                    mTopSnackbar.dismiss()
-                                }
-                            }
-
-                            override fun onRationaleAccepted() {
-                                mTopSnackbar.dismiss()
-                                callback.onRationaleAccepted()
-                            }
-
-                            override fun onRationaleDenied() {
-                                callback.onRationaleDenied()
-                            }
-                        }
-                        request.callback = callback2
-                        getLauncher(host)?.launch(request.perms)
+                        val mTopSnackbar = mHelper.showToastBeforeRequestPermission(request)
+                        requestPermissionsReal(mHelper, mTopSnackbar, request, callback)
                     },
                     {
                         callback.onRationaleDenied()
+                        callback.onPermissionsDenied(false, request.perms.toList())
                     })
             } else {
-                getLauncher(host)?.launch(request.perms)
+                val mTopSnackbar = mHelper.showToastBeforeRequestPermission(request)
+                requestPermissionsReal(mHelper, mTopSnackbar, request, callback)
             }
         } else if (mTipType == TipType.Dialog) {
             if (hasPermissions(host, *request.perms)) {
-                request.callback?.onPermissionsGranted(true, request.perms.toList())
+                callback.onPermissionsGranted(true, request.perms.toList())
+            } else if (mHelper.shouldShowRationale(request.perms)) {
+                mIViewProvider.showRationaleDialog(host, request,
+                    {
+                        callback.onRationaleAccepted()
+                        requestPermissionsReal(mHelper, null, request, callback)
+                    },
+                    {
+                        callback.onRationaleDenied()
+                        callback.onPermissionsDenied(false, request.perms.toList())
+                    })
             } else {
-                getLauncher(host)?.launch(request.perms)
+                mIViewProvider.showConfirmDialog(host, request,
+                    {
+                        requestPermissionsReal(mHelper, null, request, callback)
+                    },
+                    {
+                        callback.onPermissionsDenied(false, request.perms.toList())
+                    })
             }
         }
     }

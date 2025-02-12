@@ -16,15 +16,24 @@
 package com.aslan.baselibrary.permissions.helpers
 
 import android.content.Context
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.aslan.baselibrary.permissions.helpers.base.PermissionsHelper
+import com.aslan.baselibrary.permissions.models.PermissionRequest
+import com.aslan.baselibrary.widget.TopSnackbar
 
 /**
  * Permissions helper for [Fragment].
  */
 internal class FragmentPermissionsHelper(host: Fragment) : PermissionsHelper<Fragment>(host) {
 
-    override var context: Context? = host.requireContext()
+    override var mContext: Context = host.requireContext()
+    override fun showToastBeforeRequestPermission(request: PermissionRequest): TopSnackbar {
+        val viewGroup = host.requireActivity().findViewById<ViewGroup>(android.R.id.content)
+        val mTopSnackbar = TopSnackbar.make(viewGroup, request.title ?: "", request.rationale ?: "")
+        mTopSnackbar.show()
+        return mTopSnackbar
+    }
 
     override fun shouldShowRequestPermissionRationale(perm: String): Boolean {
         return host.shouldShowRequestPermissionRationale(perm)
