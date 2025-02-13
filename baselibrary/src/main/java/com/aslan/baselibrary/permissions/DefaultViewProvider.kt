@@ -8,7 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import com.aslan.baselibrary.R
 import com.aslan.baselibrary.permissions.models.PermissionRequest
 
-class DefaultViewProvider : IViewProvider {
+open class DefaultViewProvider : IViewProvider {
     override fun showConfirmDialog(context: Context, request: PermissionRequest, agree: () -> Unit, refuse: () -> Unit) {
         AlertDialog.Builder(context)
             .setCancelable(false)
@@ -45,15 +45,19 @@ class DefaultViewProvider : IViewProvider {
             .setPositiveButton(R.string.go_setting) { dialog, which ->
                 agree()
 
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.fromParts("package", context.packageName, null)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                context.startActivity(intent)
+                gotoSetting(context)
             }
             .setNegativeButton(R.string.refuse) { dialog, which ->
                 refuse()
             }
             .show()
+    }
+
+    open protected fun gotoSetting(context: Context) {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", context.packageName, null)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
     }
 }
