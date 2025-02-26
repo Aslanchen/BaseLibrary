@@ -65,12 +65,10 @@ object EasyPermissions {
         )
     }
 
-    //外部存储和拍照
-    val PERMISSIONS_CAMERA_AND_ALBUM = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    //拍照以及相册
+    val PERMISSIONS_IMAGE_AND_ALBUM = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(
             Manifest.permission.READ_MEDIA_IMAGES,
-            Manifest.permission.READ_MEDIA_AUDIO,
-            Manifest.permission.READ_MEDIA_VIDEO,
             Manifest.permission.CAMERA,
         )
     } else {
@@ -81,7 +79,7 @@ object EasyPermissions {
         )
     }
 
-    //外部存储和录视频
+    //录视频以及相册
     val PERMISSIONS_VIDEO_AND_ALBUM = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(
             Manifest.permission.READ_MEDIA_IMAGES,
@@ -95,6 +93,20 @@ object EasyPermissions {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+        )
+    }
+
+    //录音以及文件
+    val PERMISSIONS_AUDIO_AND_ALBUM = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.RECORD_AUDIO,
+        )
+    } else {
+        arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO,
         )
     }
