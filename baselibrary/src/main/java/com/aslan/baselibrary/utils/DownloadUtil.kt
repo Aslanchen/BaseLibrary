@@ -17,6 +17,9 @@ import java.io.File
  */
 object DownloadUtil {
 
+    /**
+     * 查询当前下载器任务状态
+     */
     private fun getStatusForDownloadedFile(context: Context, id: Long): Int? {
         val mDownloadManager = context.getSystemService(DOWNLOAD_SERVICE) as android.app.DownloadManager
         val query = android.app.DownloadManager.Query().setFilterById(id)
@@ -36,6 +39,9 @@ object DownloadUtil {
         return null
     }
 
+    /**
+     * 系统系统DownloadManager实现下载，下载完成后会触发Event时间[com.aslan.baselibrary.event.EventDownload]
+     */
     fun downloadByManager(context: Context, url: String, filename: String, title: String, description: String, downloadId: Long? = -1): Long {
         if (downloadId != null && downloadId != -1L) {
             val status = getStatusForDownloadedFile(context, downloadId)
@@ -60,6 +66,9 @@ object DownloadUtil {
         return mDownloadManager.enqueue(request)
     }
 
+    /**
+     * 通过系统浏览器下载
+     */
     fun downloadByBrowser(context: Context, url: String) {
         val uri = Uri.parse(url)
         val intent = Intent(Intent.ACTION_VIEW)
