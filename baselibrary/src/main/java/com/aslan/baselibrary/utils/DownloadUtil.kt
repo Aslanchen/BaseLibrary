@@ -20,7 +20,7 @@ object DownloadUtil {
     /**
      * 查询当前下载器任务状态
      */
-    private fun getStatusForDownloadedFile(context: Context, id: Long): Int? {
+    fun getStatusForDownloadedFile(context: Context, id: Long): Int? {
         val mDownloadManager = context.getSystemService(DOWNLOAD_SERVICE) as android.app.DownloadManager
         val query = android.app.DownloadManager.Query().setFilterById(id)
         var cursor: Cursor? = null
@@ -42,27 +42,28 @@ object DownloadUtil {
     /**
      * 系统系统DownloadManager实现下载，下载完成后会触发Event时间[com.aslan.baselibrary.event.EventDownload]
      */
-    fun downloadByManager(context: Context, url: String, filename: String, title: String, description: String, downloadId: Long? = -1): Long {
-        if (downloadId != null && downloadId != -1L) {
-            val status = getStatusForDownloadedFile(context, downloadId)
+    fun downloadByManager(context: Context, mConfig: Config): Long {
+        if (mConfig.downloadId != null && mConfig.downloadId != -1L) {
+            val status = getStatusForDownloadedFile(context, mConfig.downloadId)
             if (status == android.app.DownloadManager.STATUS_RUNNING) {
                 throw DownloadError(context.getString(com.aslan.baselibrary.R.string.download_is_in_download))
             }
         }
 
         val root = FileUtil.getDownload(context)
-        val file = File(root, filename)
+        val file = File(root, mConfig.filename)
         LogUtils.d(file.path)
         if (file.exists()) {
             file.delete()
         }
 
         val mDownloadManager = context.getSystemService(DOWNLOAD_SERVICE) as android.app.DownloadManager
-        val request = android.app.DownloadManager.Request(Uri.parse(url))
-            .setAllowedNetworkTypes(android.app.DownloadManager.Request.NETWORK_WIFI or android.app.DownloadManager.Request.NETWORK_MOBILE)
-            .setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED).setTitle(title)
-            .setDescription(description)
-            .setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, file.name)
+        val request = android.app.DownloadManager.Request(Uri.parse(mConfig.url))
+            .setAllowedNetworkTypes(mConfig.allowedNetworkTypes)
+            .setNotificationVisibility(mConfig.notificationVisibility)
+            .setTitle(mConfig.title)
+            .setDescription(mConfig.description)
+            .setDestinationInExternalFilesDir(context, mConfig.dirType, file.name)
         return mDownloadManager.enqueue(request)
     }
 
@@ -82,5 +83,16 @@ object DownloadUtil {
         }
     }
 
-    class DownloadError(message: String) : Throwable(message)
+    open class DownloadError(message: String) : Throwable(message)
+
+    open class Config(
+        val downloadId: Long? = -1,
+        val url: String,
+        val dirType: String = Environment.DIRECTORY_DOWNLOADS,
+        val filename: String,
+        val title: String,
+        val description: String,
+        val allowedNetworkTypes: Int = android.app.DownloadManager.Request.NETWORK_WIFI or android.app.DownloadManager.Request.NETWORK_MOBILE,
+        val notificationVisibility: Int = android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+    )
 }
