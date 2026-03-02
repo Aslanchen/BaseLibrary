@@ -247,19 +247,21 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
     /**
      * @param curPage 当前页数，从1开始
      */
-    protected abstract fun getDatas(rushState: UpdateState, @Size(min = 1) curPage: Int): Observable<List<M>>
+    protected abstract fun getDatas(rushState: UpdateState, @Size(min = 1) curPage: Int): Maybe<List<M>>
 
-    protected open fun addToListView(rushState: UpdateState, datas: List<M>) {
-        if (rushState == UpdateState.Refresh && datas.isEmpty()) {
+    protected open fun addToListView(rushState: UpdateState, datas: List<M>?) {
+        if (rushState == UpdateState.Refresh && datas.isNullOrEmpty()) {
             adapter.updateDataSet(null)
             adapter.onLoadMoreComplete(null)
             return
         }
 
         val items = ArrayList<IFlexible<*>>()
-        for (model in datas) {
-            val item = getItem(model)
-            items.add(item)
+        if (!datas.isNullOrEmpty()) {
+            for (model in datas) {
+                val item = getItem(model)
+                items.add(item)
+            }
         }
 
         if (rushState == UpdateState.Refresh) {
