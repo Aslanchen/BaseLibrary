@@ -191,7 +191,9 @@ abstract class VBBaseListActivity<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
             .bindUntilEvent(this, getHttpBindUntilEvent())
             .compose(DataTransformer(mBaseView = this, isShowProgressbar = false, isShowToast = isShowToast()))
             .doFinally {
-                swipeRefreshLayout?.isRefreshing = false
+                if (!isDestroyed && !isFinishing) {
+                    swipeRefreshLayout?.isRefreshing = false
+                }
                 isRefreshing = false
             }
             .subscribe(object : DataMaybeObserver<List<M>>(this) {
@@ -249,6 +251,10 @@ abstract class VBBaseListActivity<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
     protected abstract fun getDatas(rushState: UpdateState, @Size(min = 1) curPage: Int): Maybe<List<M>>
 
     protected open fun addToListView(rushState: UpdateState, datas: List<M>?) {
+        if (isDestroyed || isFinishing) {
+            return
+        }
+
         if (rushState == UpdateState.Refresh && datas.isNullOrEmpty()) {
             adapter.updateDataSet(null)
             adapter.onLoadMoreComplete(null)
@@ -256,9 +262,11 @@ abstract class VBBaseListActivity<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
         }
 
         val items = ArrayList<IFlexible<*>>()
-        for (model in datas!!) {
-            val item = getItem(model)
-            items.add(item)
+        if (!datas.isNullOrEmpty()) {
+            for (model in datas) {
+                val item = getItem(model)
+                items.add(item)
+            }
         }
 
         if (rushState == UpdateState.Refresh) {

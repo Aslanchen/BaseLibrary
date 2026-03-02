@@ -257,9 +257,11 @@ abstract class VBBaseListFragment<M, A : FlexibleAdapter<IFlexible<*>>, VB : Vie
         }
 
         val items = ArrayList<IFlexible<*>>()
-        for (model in datas!!) {
-            val item = getItem(model)
-            items.add(item)
+        if (!datas.isNullOrEmpty()) {
+            for (model in datas) {
+                val item = getItem(model)
+                items.add(item)
+            }
         }
 
         if (rushState == UpdateState.Refresh) {
