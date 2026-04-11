@@ -78,7 +78,7 @@ class SideLetterBar : View {
 
     private var lastIndex = -1 //标记上次的触摸字母的索引
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         for (i in 0 until mSideLetter.size) {
             val x = letterWidth / 2F
@@ -86,7 +86,7 @@ class SideLetterBar : View {
 
             paint!!.color = if (lastIndex == i) textColorSelected else textColor
 
-            canvas!!.drawText(mSideLetter[i], x, y, paint!!)
+            canvas.drawText(mSideLetter[i], x, y, paint!!)
         }
     }
 
