@@ -88,7 +88,7 @@ dependencies {
     api 'com.tencent:mmkv:1.2.15'
 
     //list adapter
-    api 'eu.davidea:flexible-adapter:5.1.0'
+    api 'eu.davidea:flexible-adapter:5.1.0-2026'
     api 'eu.davidea:flexible-adapter-ui:1.0.0'
 
     //RxJava2+Rxlifecycle3+retrofit2+okhttp+okio

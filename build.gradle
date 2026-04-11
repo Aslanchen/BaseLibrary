@@ -6,7 +6,7 @@ plugins {
 }
 
 ext {
-    VERSIONCODE = 76
+    VERSIONCODE = 77
     VERSIONNAME = "1.7.11-SNAPSHOT"
 
     GROUPID = 'com.github.Aslanchen'
