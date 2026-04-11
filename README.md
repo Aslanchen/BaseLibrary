@@ -1,13 +1,23 @@
 # BaseLibrary
+
 平常开发的基础框架
 
 [![](https://jitpack.io/v/Aslanchen/BaseLibrary.svg)](https://jitpack.io/#Aslanchen/BaseLibrary)
 
 ## 上传
+
+```` sh
+# Mac/Linux
 gradlew build
 gradlew publish
 
+# Windows
+./gradlew build
+./gradlew publish
+````
+
 ## 使用
+
 ```
 maven {
     url 'https://jitpack.io'
