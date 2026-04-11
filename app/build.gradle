@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -7,7 +9,7 @@ plugins {
 
 android {
     namespace "com.aslan.app"
-    compileSdk 33
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.aslan.app"
@@ -39,12 +41,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 
     buildFeatures {
@@ -63,6 +61,11 @@ android {
         }
     }
 }
+
+kotlin.compilerOptions {
+    jvmTarget.set(JvmTarget.JVM_21)
+}
+
 
 //maven缓存时间
 configurations.all {

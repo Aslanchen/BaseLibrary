@@ -1,5 +1,7 @@
 package com.aslan.baselibrary.utils;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -21,6 +23,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.Builder;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -111,6 +114,7 @@ public final class NotificationHelp {
     createNotificationChannel(context, channelId, channelName, importance, null);
   }
 
+  @SuppressLint("WrongConstant")
   @RequiresApi(api = VERSION_CODES.O)
   public static void createNotificationChannel(Context context, @NonNull String channelId,
       @NonNull String channelName, @Importance int importance,
@@ -141,6 +145,11 @@ public final class NotificationHelp {
   public void notify(int id) {
     Notification mNotification = build();
     if (mNotificationManager != null) {
+      if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU
+          && ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+          != PackageManager.PERMISSION_GRANTED) {
+        return;
+      }
       mNotificationManager.notify(id, mNotification);
     }
   }
