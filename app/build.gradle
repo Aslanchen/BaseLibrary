@@ -50,11 +50,6 @@ android {
         buildConfig true
     }
 
-    lint {
-        // https://github.com/bumptech/glide/issues/4940
-        lintConfig = file("$rootDir/android_glide_lint.xml")
-    }
-
     android.applicationVariants.all { variant ->
         variant.outputs.all {
             outputFileName = "v${variant.versionName}.apk"
