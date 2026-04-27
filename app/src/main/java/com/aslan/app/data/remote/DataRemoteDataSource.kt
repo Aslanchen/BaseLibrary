@@ -5,7 +5,6 @@ import com.aslan.app.BuildConfig
 import com.aslan.app.data.DataSource
 import com.aslan.app.model.User
 import com.aslan.baselibrary.http.HTTPManager
-import com.aslan.baselibrary.http.SSLSocketClient
 import com.elvishew.xlog.XLog
 import com.google.gson.Gson
 import io.reactivex.Completable
@@ -15,7 +14,11 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.security.KeyStore
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.X509TrustManager
 
 class DataRemoteDataSource(private val mContext: Context) : DataSource {
     private val mLogger = XLog.tag(HTTPManager.TAG_LOG).build()
@@ -33,14 +36,23 @@ class DataRemoteDataSource(private val mContext: Context) : DataSource {
             logging.level = HttpLoggingInterceptor.Level.BASIC
         }
 
+        val trustManagerFactory = TrustManagerFactory
+            .getInstance(TrustManagerFactory.getDefaultAlgorithm()).apply {
+                init(null as KeyStore?) // null 表示使用系统默认证书库
+            }
+        val trustManager = trustManagerFactory.trustManagers[0] as X509TrustManager
+        val sslContext = SSLContext.getInstance("TLS").apply {
+            init(null, arrayOf(trustManager), null)
+        }
+
         var okHttpClientBuilder = OkHttpClient.Builder()
         if (BuildConfig.DEBUG) {
-            //为了给Fiddler抓包
-            okHttpClientBuilder =
-                okHttpClientBuilder.sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
+            okHttpClientBuilder = okHttpClientBuilder
+                .hostnameVerifier { _, _ -> true }
         }
 
         val okHttpClient = okHttpClientBuilder
+            .sslSocketFactory(sslContext.socketFactory, trustManager)
             .connectTimeout(timeout, TimeUnit.SECONDS)
             .readTimeout(timeout, TimeUnit.SECONDS)
             .writeTimeout(timeout, TimeUnit.SECONDS)
