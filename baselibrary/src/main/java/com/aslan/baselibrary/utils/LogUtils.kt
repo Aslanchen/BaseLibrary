@@ -1,131 +1,189 @@
-package com.aslan.baselibrary.utils;
+package com.aslan.baselibrary.utils
 
-import android.text.TextUtils;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.elvishew.xlog.LogConfiguration;
-import com.elvishew.xlog.LogLevel;
-import com.elvishew.xlog.XLog;
-import com.elvishew.xlog.flattener.Flattener2;
-import com.elvishew.xlog.printer.AndroidPrinter;
-import com.elvishew.xlog.printer.Printer;
-import com.elvishew.xlog.printer.file.FilePrinter;
-import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy;
-import com.elvishew.xlog.printer.file.clean.FileLastModifiedCleanStrategy;
-import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import android.text.TextUtils
+import com.elvishew.xlog.LogConfiguration
+import com.elvishew.xlog.LogLevel
+import com.elvishew.xlog.XLog
+import com.elvishew.xlog.printer.AndroidPrinter
+import com.elvishew.xlog.printer.Printer
+import com.elvishew.xlog.printer.file.FilePrinter
+import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy2
+import com.elvishew.xlog.printer.file.clean.FileLastModifiedCleanStrategy
+import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * 日志模块
- *
+ * 
  * @author Aslan chenhengfei@yy.com
  * @date 2020/5/26
  */
-public final class LogUtils {
+object LogUtils {
+    const val DEFAULT_LOG_FILE_MAX_SIZE = 50L * 1024 * 1024
+    const val DEFAULT_LOG_FILE_MAX_BACKUP_INDEX = 1
+    const val DEFAULT_LOG_FILE_MAX_ALIVE_TIME = 3L * 24 * 60 * 60 * 1000
 
-  private LogUtils() {
-  }
+    private val mFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
 
-  private static final SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS",
-      Locale.getDefault());
+    class Config private constructor(
+        val tag: String,
+        val logLevel: Int,
+        val folderPath: String?,
+        val maxLogFileSize: Long,
+        val maxLogFileBackupIndex: Int,
+        val maxLogFileAliveTime: Long
+    ) {
+        class Builder(
+            private var tag: String,
+            private var logLevel: Int,
+            private var folderPath: String?
+        ) {
+            private var maxLogFileSize: Long = DEFAULT_LOG_FILE_MAX_SIZE
+            private var maxLogFileBackupIndex: Int = DEFAULT_LOG_FILE_MAX_BACKUP_INDEX
+            private var maxLogFileAliveTime: Long = DEFAULT_LOG_FILE_MAX_ALIVE_TIME
 
-  /**
-   * 配置
-   *
-   * @param tag        标签
-   * @param logLevel   {@link LogLevel}
-   * @param folderPath 本地日志文件夹路径
-   */
-  public static void config(@NonNull String tag, int logLevel, @Nullable String folderPath) {
-    LogConfiguration config = new LogConfiguration.Builder()
-        .tag(tag)
-        .logLevel(logLevel)
-        .build();
-
-    //android控制台
-    Printer androidPrinter = new AndroidPrinter();
-
-    if (TextUtils.isEmpty(folderPath)) {
-      XLog.init(config, androidPrinter);
-    } else {
-      //本地日志
-      Printer filePrinter = new FilePrinter
-          .Builder(folderPath)
-          .fileNameGenerator(new DateFileNameGenerator())
-          .backupStrategy(new FileSizeBackupStrategy(5 * 1024 * 1024))
-          .cleanStrategy(new FileLastModifiedCleanStrategy(3 * 24 * 60 * 60 * 1000))
-          .flattener(new Flattener2() {
-            @Override
-            public CharSequence flatten(long timeMillis, int logLevel, String tag,
-                String message) {
-              return String.format("%s %s/%s: %s", mFormat.format(timeMillis),
-                  LogLevel.getShortLevelName(logLevel),
-                  tag, message);
+            fun setTag(tag: String): Builder = apply {
+                this.tag = tag
             }
-          })
-          .build();
-      XLog.init(config, androidPrinter, filePrinter);
+
+            fun setLogLevel(logLevel: Int): Builder = apply {
+                this.logLevel = logLevel
+            }
+
+            fun setFolderPath(folderPath: String?): Builder = apply {
+                this.folderPath = folderPath
+            }
+
+            fun setMaxLogFileSize(maxLogFileSize: Long): Builder = apply {
+                this.maxLogFileSize = maxLogFileSize
+            }
+
+            fun setMaxLogFileBackupIndex(maxLogFileBackupIndex: Int): Builder = apply {
+                this.maxLogFileBackupIndex = maxLogFileBackupIndex
+            }
+
+            fun setMaxLogFileAliveTime(maxLogFileAliveTime: Long): Builder = apply {
+                this.maxLogFileAliveTime = maxLogFileAliveTime
+            }
+
+            fun build(): Config {
+                return Config(
+                    tag = tag,
+                    logLevel = logLevel,
+                    folderPath = folderPath,
+                    maxLogFileSize = maxLogFileSize,
+                    maxLogFileBackupIndex = maxLogFileBackupIndex,
+                    maxLogFileAliveTime = maxLogFileAliveTime
+                )
+            }
+        }
     }
-  }
 
-  public static void v(String msg) {
-    XLog.v(msg);
-  }
+    /**
+     * 配置
+     */
+    fun config(config: Config) {
+        val logConfiguration = LogConfiguration.Builder()
+            .tag(config.tag)
+            .logLevel(config.logLevel)
+            .build()
 
-  public static void v(String format, Object... args) {
-    XLog.v(format, args);
-  }
+        //android控制台
+        val androidPrinter: Printer = AndroidPrinter()
 
-  public static void v(String msg, Throwable tr) {
-    XLog.v(msg, tr);
-  }
+        if (TextUtils.isEmpty(config.folderPath)) {
+            XLog.init(logConfiguration, androidPrinter)
+        } else {
+            require(config.maxLogFileSize > 0) { "maxLogFileSize must be greater than 0." }
+            require(config.maxLogFileBackupIndex >= 0 && config.maxLogFileBackupIndex != Int.MAX_VALUE) {
+                "maxLogFileBackupIndex must be 0 or a positive value less than Int.MAX_VALUE."
+            }
+            require(config.maxLogFileAliveTime > 0) { "maxLogFileAliveTime must be greater than 0." }
 
-  public static void d(String msg) {
-    XLog.d(msg);
-  }
+            //本地日志
+            val filePrinter: Printer? = FilePrinter.Builder(config.folderPath)
+                .fileNameGenerator(DateFileNameGenerator())
+                .backupStrategy(
+                    FileSizeBackupStrategy2(
+                        config.maxLogFileSize,
+                        config.maxLogFileBackupIndex
+                    )
+                )
+                .cleanStrategy(FileLastModifiedCleanStrategy(config.maxLogFileAliveTime))
+                .flattener { timeMillis, logLevel, tag, message ->
+                    String.format(
+                        "%s %s/%s: %s", mFormat.format(timeMillis),
+                        LogLevel.getShortLevelName(logLevel),
+                        tag, message
+                    )
+                }
+                .build()
+            XLog.init(logConfiguration, androidPrinter, filePrinter)
+        }
+    }
 
-  public static void d(String format, Object... args) {
-    XLog.d(format, args);
-  }
+    fun config(builder: Config.Builder) {
+        config(builder.build())
+    }
 
-  public static void d(String msg, Throwable tr) {
-    XLog.d(msg, tr);
-  }
+    fun v(msg: String?) {
+        XLog.v(msg)
+    }
 
-  public static void i(String msg) {
-    XLog.i(msg);
-  }
+    fun v(format: String?, vararg args: Any?) {
+        XLog.v(format, *args)
+    }
 
-  public static void i(String format, Object... args) {
-    XLog.i(format, args);
-  }
+    fun v(msg: String?, tr: Throwable?) {
+        XLog.v(msg, tr)
+    }
 
-  public static void i(String msg, Throwable tr) {
-    XLog.i(msg, tr);
-  }
+    fun d(msg: String?) {
+        XLog.d(msg)
+    }
 
-  public static void w(String msg) {
-    XLog.w(msg);
-  }
+    fun d(format: String?, vararg args: Any?) {
+        XLog.d(format, *args)
+    }
 
-  public static void w(String format, Object... args) {
-    XLog.w(format, args);
-  }
+    fun d(msg: String?, tr: Throwable?) {
+        XLog.d(msg, tr)
+    }
 
-  public static void w(String msg, Throwable tr) {
-    XLog.w(msg, tr);
-  }
+    fun i(msg: String?) {
+        XLog.i(msg)
+    }
 
-  public static void e(String msg) {
-    XLog.e(msg);
-  }
+    fun i(format: String?, vararg args: Any?) {
+        XLog.i(format, *args)
+    }
 
-  public static void e(String format, Object... args) {
-    XLog.e(format, args);
-  }
+    fun i(msg: String?, tr: Throwable?) {
+        XLog.i(msg, tr)
+    }
 
-  public static void e(String msg, Throwable tr) {
-    XLog.e(msg, tr);
-  }
+    fun w(msg: String?) {
+        XLog.w(msg)
+    }
+
+    fun w(format: String?, vararg args: Any?) {
+        XLog.w(format, *args)
+    }
+
+    fun w(msg: String?, tr: Throwable?) {
+        XLog.w(msg, tr)
+    }
+
+    fun e(msg: String?) {
+        XLog.e(msg)
+    }
+
+    fun e(format: String?, vararg args: Any?) {
+        XLog.e(format, *args)
+    }
+
+    fun e(msg: String?, tr: Throwable?) {
+        XLog.e(msg, tr)
+    }
 }
