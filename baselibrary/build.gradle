@@ -15,8 +15,8 @@ android {
     defaultConfig {
         minSdk 19
         targetSdk 33
-        versionCode VERSIONCODE
-        versionName VERSIONNAME
+        versionCode 1
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "proguard-rules.pro"
@@ -131,38 +131,34 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }
 
-apply plugin: 'maven-publish'
 afterEvaluate {
     publishing {
+        def publishVersion = findProperty("VERSION_NAME") ?: android.defaultConfig.versionName
+
         publications {
             maven(MavenPublication) {
                 from components.release
-                groupId = GROUPID
-                artifactId = ARTIFACTID
-                version = VERSIONNAME
-            }
-
-            aliyun(MavenPublication) {
-                from components.release
-                groupId = GROUPID
-                artifactId = ARTIFACTID
-                version = VERSIONNAME
+                groupId = 'com.github.Aslanchen'
+                artifactId = 'BaseLibrary'
+                version = publishVersion
             }
         }
 
         repositories {
             maven {
+                name = "aliyunRelease"
                 url = 'https://packages.aliyun.com/maven/repository/2431942-release-hscuua/'
                 credentials {
-                    username = aliyun_maven_username
-                    password = aliyun_maven_password
+                    username = findProperty("aliyun_maven_username") ?: System.getenv("ALIYUN_MAVEN_USERNAME")
+                    password = findProperty("aliyun_maven_password") ?: System.getenv("ALIYUN_MAVEN_PASSWORD")
                 }
             }
             maven {
+                name = "aliyunSnapshot"
                 url = 'https://packages.aliyun.com/maven/repository/2431942-snapshot-vvk1B7/'
                 credentials {
-                    username = aliyun_maven_username
-                    password = aliyun_maven_password
+                    username = findProperty("aliyun_maven_username") ?: System.getenv("ALIYUN_MAVEN_USERNAME")
+                    password = findProperty("aliyun_maven_password") ?: System.getenv("ALIYUN_MAVEN_PASSWORD")
                 }
             }
         }

@@ -79,7 +79,7 @@ dependencies {
 
 //上传到bugly
 private def doUploadMappingToBugly() {
-    def VERSIONNAME = ext.VERSIONNAME
+    def VERSIONNAME = android.defaultConfig.versionName
     android.applicationVariants.all { variant ->
         def buildType = variant.buildType.name
 

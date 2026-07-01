@@ -43,7 +43,7 @@
 ./gradlew publish
 ```
 
-发布相关配置在根目录 `build.gradle` 和 `baselibrary/build.gradle` 中。`VERSIONCODE`、`VERSIONNAME`、`GROUPID`、`ARTIFACTID` 定义在根目录 `build.gradle`。
+发布相关配置在 `baselibrary/build.gradle` 和 `.github/workflows/android-publish.yml` 中。GitHub Actions 会根据分支或 tag 传入 Maven 发布版本。
 
 ## 目录说明
 

@@ -1,0 +1,83 @@
+name: Android Maven Publish
+
+on:
+  push:
+    branches:
+      - master
+      - feature/**
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ref_name="${GITHUB_REF_NAME:-}"
+          publish_target="none"
+          version_name=""
+
+          if [[ "$ref_name" == "master" ]]; then
+            tag_name="$(git tag --points-at HEAD | grep -E '^v[0-9]+(\.[0-9]+){1,3}$' | sort -V | tail -n 1 || true)"
+            if [[ -z "$tag_name" ]]; then
+              echo "master must point to a version tag like v1.7.12." >&2
+              exit 1
+            fi
+            version_name="${tag_name#v}"
+            publish_target="release"
+          elif [[ "$ref_name" == feature/* ]]; then
+            version_name="${ref_name##*/}"
+            version_name="${version_name#v}"
+            version_name="${version_name#V}"
+            version_name="${version_name%-SNAPSHOT}-SNAPSHOT"
+            publish_target="snapshot"
+          fi
+
+          if [[ ! "$version_name" =~ ^[0-9]+(\.[0-9]+){1,3}([.-][0-9A-Za-z][0-9A-Za-z.-]*)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid version_name: $version_name" >&2
+            exit 1
+          fi
+
+          {
+            echo "PUBLISH_TARGET=$publish_target"
+            echo "VERSION_NAME=$version_name"
+          } >> "$GITHUB_ENV"
+
+          echo "version_name=$version_name"
+          echo "publish_target=$publish_target"
+
+      - name: Publish release package
+        if: env.PUBLISH_TARGET == 'release'
+        env:
+          ALIYUN_MAVEN_USERNAME: ${{ secrets.ALIYUN_MAVEN_USERNAME }}
+          ALIYUN_MAVEN_PASSWORD: ${{ secrets.ALIYUN_MAVEN_PASSWORD }}
+        run: ./gradlew :baselibrary:publishMavenPublicationToAliyunReleaseRepository -PVERSION_NAME="${VERSION_NAME}"
+
+      - name: Publish snapshot package
+        if: env.PUBLISH_TARGET == 'snapshot'
+        env:
+          ALIYUN_MAVEN_USERNAME: ${{ secrets.ALIYUN_MAVEN_USERNAME }}
+          ALIYUN_MAVEN_PASSWORD: ${{ secrets.ALIYUN_MAVEN_PASSWORD }}
+        run: ./gradlew :baselibrary:publishMavenPublicationToAliyunSnapshotRepository -PVERSION_NAME="${VERSION_NAME}"
